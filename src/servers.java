@@ -12,15 +12,15 @@ public abstract class servers {
     this.naam = naam;
     this.prijs = prijs;
     this.beschikbaarheid = beschikbaarheid;
-    this.panelX = panelX;
-    this.panelY = panelY;
+    this.panelX = panelx;
+    this.panelY = panely;
     }
 
     public servers(JPanel parentPanel, String naam, int prijs, boolean beschikbaarheid){
 
     }
     public void vernietigen(){
-
+        System.out.println("jemoeder");
     }
     public void declareerType(){
 
