@@ -8,9 +8,9 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class DesignFrame extends JFrame implements ActionListener {
-    private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen;
+    private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
     private Designpanel designpanel;
-
+  
     private Firewall firewall;
     private ArrayList webServer = new ArrayList<WebServer>();
     private ArrayList databaseServer = new ArrayList<DatabaseServer>();
@@ -26,6 +26,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int ServerCount;
     private int[] WSgeoptimaliseerde;
     private int[] DSgeoptimaliseerde;
+    private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
@@ -34,7 +35,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         setTitle("Nerdygadgets monitoring aplicatie");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(schermbreedte/3*3,schermhoogte/3*3); //Maakt de groote van de gui de helft van de schermgrootte
+        setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
 
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
@@ -46,10 +47,8 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(JBoptimaliseren);
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
         add(JBserveropties_wijzigen);
-
-        designpanel = new Designpanel(this);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
+        JBvolscherm = create_button(JBvolscherm, "enlargebutton");
+        add(JBvolscherm);
 
         setVisible(true);
         setResizable(false);
@@ -99,6 +98,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         timer.start();
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
@@ -111,6 +111,23 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
+        } else if (e.getSource() == JBvolscherm) {
+            if(isVolscherm) {
+                dispose();
+                setExtendedState(JFrame.NORMAL);
+                setUndecorated(false);
+                isVolscherm = false;
+                setSize(schermbreedte/30*26,schermhoogte/30*26);
+                setVisible(true);
+                JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
+            } else {
+                dispose();
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setUndecorated(true);
+                isVolscherm = true;
+                setVisible(true);
+                JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
+            }
         }
     }
 }
