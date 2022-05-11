@@ -12,7 +12,7 @@ public class MonitoringPanel extends JFrame
     private boolean WebsiteOnline;
     private boolean DatabaseOnline;
 
-    public MonitoringPanel(server servers)
+    public MonitoringPanel(server server)
     {
 
     }
