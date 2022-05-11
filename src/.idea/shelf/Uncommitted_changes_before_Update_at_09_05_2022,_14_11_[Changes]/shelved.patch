@@ -1,0 +1,155 @@
+Index: main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class main {\n    public static void main(String[] args) {\n\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.java b/main.java
+--- a/main.java	(revision 9cf02745ef9cc518d373d5664bbc674be387489b)
++++ b/main.java	(date 1652096698678)
+@@ -1,5 +1,6 @@
+ public class main {
+     public static void main(String[] args) {
+ 
++
+     }
+ }
+Index: src.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src.iml b/src.iml
+new file mode 100644
+--- /dev/null	(date 1652096188631)
++++ b/src.iml	(date 1652096188631)
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="JAVA_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$">
++      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
++    </content>
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: src/MonitoringPanel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/MonitoringPanel.java b/src/MonitoringPanel.java
+new file mode 100644
+--- /dev/null	(date 1652098137203)
++++ b/src/MonitoringPanel.java	(date 1652098137203)
+@@ -0,0 +1,22 @@
++import javax.swing.*;
++import java.util.ArrayList;
++
++public class MonitoringPanel extends JFrame
++{
++    private JFrame frame;
++    public server Servers[];
++    public boolean cpuUsage[];
++    public boolean memoryUsage[];
++    public int websiteUptime;
++    public int databaseUptime;
++    public boolean WebsiteOnline;
++    public boolean DatabaseOnline;
++
++    public MonitoringPanel(server servers){
++
++    }
++
++    public void update(){
++
++    }
++}
+Index: src/MonitoringFrame.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/MonitoringFrame.java b/src/MonitoringFrame.java
+new file mode 100644
+--- /dev/null	(date 1652097926007)
++++ b/src/MonitoringFrame.java	(date 1652097926007)
+@@ -0,0 +1,8 @@
++public class MonitoringFrame extends Main{
++    public int maxiumservercount;
++    public paneel MonitoringPanel;
++
++    public MonitoringFrame(server servers){
++
++    }
++}
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1652096201417)
++++ b/.idea/vcs.xml	(date 1652096201417)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1652096193418)
++++ b/.idea/.gitignore	(date 1652096193418)
+@@ -0,0 +1,3 @@
++# Default ignored files
++/shelf/
++/workspace.xml
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1652096188647)
++++ b/.idea/misc.xml	(date 1652096188647)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="openjdk-17" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1652096188639)
++++ b/.idea/modules.xml	(date 1652096188639)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/src.iml" filepath="$PROJECT_DIR$/src.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
