@@ -1,5 +1,7 @@
+package nerdygadgets.Monitoring;
+
 import javax.swing.*;
-import java.util.ArrayList;
+import nerdygadgets.Design.components.servers;
 
 public class MonitoringPanel extends JFrame
 {
