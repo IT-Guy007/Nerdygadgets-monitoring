@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
-
+    private Designpanel designpanel;
+  
     private Firewall firewall;
     private ArrayList webServer = new ArrayList<WebServer>();
     private ArrayList databaseServer = new ArrayList<DatabaseServer>();
@@ -48,8 +49,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(JBserveropties_wijzigen);
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
-
-
 
         setVisible(true);
         setResizable(false);
