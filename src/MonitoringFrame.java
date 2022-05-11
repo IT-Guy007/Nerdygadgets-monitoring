@@ -1,7 +1,7 @@
 public class MonitoringFrame
 {
-    public int maxiumservercount;
-    public paneel MonitoringPanel;
+    private int maxiumservercount;
+    private paneel MonitoringPanel;
 
     public MonitoringFrame(server servers)
     {
