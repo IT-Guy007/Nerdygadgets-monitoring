@@ -50,6 +50,9 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
+        designpanel = new Designpanel(this);
+        add(designpanel);
+
         setVisible(true);
         setResizable(false);
     }

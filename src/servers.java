@@ -3,12 +3,12 @@ import javax.swing.*;
 public abstract class servers {
     private String naam;
     private int prijs;
-    private boolean beschikbaarheid;
+    private double beschikbaarheid;
     private int panelX, panelY;
     private JPanel parentPanel;
 
 
-    public servers(JPanel parentPanel, String naam, int prijs, boolean beschikbaarheid, int panelx, int panely){
+    public servers(JPanel parentPanel, String naam, int prijs, double beschikbaarheid, int panelx, int panely){
     this.naam = naam;
     this.prijs = prijs;
     this.beschikbaarheid = beschikbaarheid;
@@ -16,8 +16,10 @@ public abstract class servers {
     this.panelY = panely;
     }
 
-    public servers(JPanel parentPanel, String naam, int prijs, boolean beschikbaarheid){
-
+    public servers(JPanel parentPanel, String naam, int prijs, double beschikbaarheid){
+        this.naam = naam;
+        this.prijs = prijs;
+        this.beschikbaarheid = beschikbaarheid;
     }
     public void vernietigen(){
         System.out.println("jemoeder");
@@ -48,11 +50,11 @@ public abstract class servers {
         this.prijs = prijs;
     }
 
-    public boolean isBeschikbaarheid() {
+    public double isBeschikbaarheid() {
         return beschikbaarheid;
     }
 
-    public void setBeschikbaarheid(boolean beschikbaarheid) {
+    public void setBeschikbaarheid(double beschikbaarheid) {
         this.beschikbaarheid = beschikbaarheid;
     }
 

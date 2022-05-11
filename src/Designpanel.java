@@ -8,9 +8,9 @@ public class Designpanel extends JPanel implements ComponentListener {
 
     public Designpanel(JFrame frame) {
         this.frame = frame;
-        frame.addComponentListener(this);
+        this.frame.addComponentListener(this);
         setResponsiveSize();
-        setBackground(Color.white);
+        setBackground(Color.green);
         setLayout(null);
         repaint();
     }

@@ -1,9 +1,11 @@
+import javax.swing.*;
+
 public class MonitoringFrame
 {
     private int maxiumservercount;
-    private paneel MonitoringPanel;
+    private JPanel MonitoringPanel;
 
-    public MonitoringFrame(server servers)
+    public MonitoringFrame(servers servers)
     {
 
     }
