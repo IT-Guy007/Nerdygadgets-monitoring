@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen;
+    private Designpanel designpanel;
 
     private Firewall firewall;
     private ArrayList webServer = new ArrayList<WebServer>();
@@ -45,6 +46,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(JBoptimaliseren);
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
         add(JBserveropties_wijzigen);
+
+        designpanel = new Designpanel(this);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(true);
 
         setVisible(true);
         setResizable(false);
