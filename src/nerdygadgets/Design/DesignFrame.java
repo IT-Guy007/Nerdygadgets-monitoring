@@ -40,7 +40,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        setTitle("Nerdygadgets monitoring aplicatie");
+        setTitle("Design");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
