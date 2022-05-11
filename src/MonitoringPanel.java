@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class MonitoringPanel extends JFrame
 {
     private JFrame frame;
-    private server Servers[];
+    private servers Servers[];
     private boolean cpuUsage[];
     private boolean memoryUsage[];
     private int websiteUptime;
@@ -12,7 +12,7 @@ public class MonitoringPanel extends JFrame
     private boolean WebsiteOnline;
     private boolean DatabaseOnline;
 
-    public MonitoringPanel(server servers)
+    public MonitoringPanel(servers server)
     {
 
     }
