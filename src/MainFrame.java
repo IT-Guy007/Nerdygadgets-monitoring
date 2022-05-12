@@ -14,10 +14,10 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton design, monitoring;
 
     public MainFrame() {
-        setTitle("Nerdygadgets monitoring aplicatie");
+        setTitle("Nerdygadgets monitoring");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
+        setSize(300,75);
 
         design = new JButton("Design");
         design.addActionListener(this);

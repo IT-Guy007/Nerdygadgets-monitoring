@@ -54,7 +54,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton"); add(JBvolscherm); //Fullscreen
 
         setVisible(true);
-        setResizable(false);
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
@@ -116,19 +115,12 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
         } else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
-                dispose();
                 setExtendedState(JFrame.NORMAL);
-                setUndecorated(false);
                 isVolscherm = false;
-                setSize(schermbreedte/30*26,schermhoogte/30*26);
-                setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
             } else {
-                dispose();
-                setExtendedState(JFrame.MAXIMIZED_BOTH);
-                setUndecorated(true);
+                setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
                 isVolscherm = true;
-                setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
             }
         } else if(e.getSource() == JBbestand_openen){
