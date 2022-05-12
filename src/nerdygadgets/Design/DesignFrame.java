@@ -4,6 +4,7 @@ import com.google.gson.*;
 import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.WebServer;
+import nerdygadgets.Design.components.servers;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class DesignFrame extends JFrame implements ActionListener {
@@ -20,8 +22,8 @@ public class DesignFrame extends JFrame implements ActionListener {
     private Designpanel designpanel;
   
     private Firewall firewall;
-    private ArrayList webServer = new ArrayList<WebServer>();
-    private ArrayList databaseServer = new ArrayList<DatabaseServer>();
+    private ArrayList webServers = new ArrayList<WebServer>();
+    private ArrayList databaseServers = new ArrayList<DatabaseServer>();
     private int maxServerBacktracking;
     private int[] WSCountPerSoort;
     private int[] DSCountPerSoort;
@@ -35,9 +37,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int[] WSgeoptimaliseerde;
     private int[] DSgeoptimaliseerde;
     private boolean isVolscherm = false;
-    Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
+    private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
+
 
     public DesignFrame() {
         setTitle("Design");
@@ -51,11 +54,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBlegenveld = create_button(JBlegenveld, "Legen-veld"); add(JBlegenveld); //Veld legen
         JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren"); add(JBoptimaliseren); //Optimaliseren
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen"); add(JBserveropties_wijzigen); // Serveropties
-        JBvolscherm = create_button(JBvolscherm, "enlargebutton"); add(JBvolscherm); //Fullscreen
+        JBvolscherm = create_button(JBvolscherm, "Opslaan"); add(JBvolscherm); //Fullscreen
 
         designpanel = new Designpanel(this);
         add(designpanel);
-
         setVisible(true);
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
@@ -102,6 +104,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         timer.setRepeats( false );
         timer.start();
     }
+
 
 
     @Override
