@@ -1,6 +1,7 @@
 package nerdygadgets.Design;
 
 import nerdygadgets.Design.components.*;
+import java.awt.FontMetrics;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -38,10 +39,17 @@ public class Designpanel extends JPanel implements ComponentListener {
     }
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        String newline = System.getProperty("line.separator");
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - 300, 20);
-        g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid()  + "%", getWidth() - 300, 40);
+        FontMetrics metrics = g.getFontMetrics();
+
+        if (serverVoorwaardenCheck()) {
+            g.setColor(Color.black);
+            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()), 20);
+            g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid()), 40);
+        } else {
+            g.setColor(Color.red);
+            g.drawString("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!",getWidth() - metrics.stringWidth("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!"),20);
+        }
     }
     @Override
     public void componentResized(ComponentEvent e) {setResponsiveSize();}
@@ -77,11 +85,6 @@ public class Designpanel extends JPanel implements ComponentListener {
         this.serversArray = serversArray;
     }
 
-    public void addServersArray(servers server) {
-        ArrayList<servers> servers = getServersArray();
-        servers.add(server);
-        setServersArray(servers);
-    }
 
     public String berekenTotalePrijs() {
         double totalePrijs = 0;
@@ -108,6 +111,24 @@ public class Designpanel extends JPanel implements ComponentListener {
         double totaleBeschikbaarheid = (1 - firewallBeschikbaarheid) * (1 - webServerBeschikbaarheid) * (1 - databaseBeschikbaarheid);
         return removeTrailingZeros((double) Math.round((totaleBeschikbaarheid*100) * 1000d)/1000d);
 
+    }
+    public boolean serverVoorwaardenCheck(){
+        boolean firewallCheck = false;
+        boolean webCheck = false;
+        boolean dbCheck = false;
+        for (servers server : serversArray) {
+            if (server instanceof Firewall) {
+                firewallCheck = true;
+            }
+            if (server instanceof WebServer) {
+                webCheck = true;
+            }
+            if (server instanceof DatabaseServer) {
+                dbCheck = true;
+            }
+            if (firewallCheck && webCheck && dbCheck){
+                return true;
+            }} return false;
     }
     public String removeTrailingZeros(double number) {
         if (number % 1 == 0) {
