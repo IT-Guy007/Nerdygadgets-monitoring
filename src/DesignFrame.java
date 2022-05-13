@@ -54,7 +54,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(designpanel);
 
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
@@ -88,14 +88,31 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam = new JButton(""); // Knop die er voor zorgt dat de actuele toestand word opgeslagen.
         naam.setBorderPainted(false);
         naam.setContentAreaFilled(false);
-        naam.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/"+path+".png")), schermbreedte/15, schermhoogte/20));
+
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("resources/"+path+".png"));
+        Image img = icon.getImage();
+        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+        ImageIcon newIcon = new ImageIcon(newimg);
+        naam.setIcon(newIcon);
+        //naam.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/"+path+".png")), schermbreedte/15, schermhoogte/20));
         naam.addActionListener(this);
         return naam;
     }
     public void activebutton(JButton knop, String active, String normal){
-        knop.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/" + active +".png")), schermbreedte/15, schermhoogte/20));
+        // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
+        // stop weer terug veranderd.
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("resources/"+active+".png"));
+        Image img = icon.getImage();
+        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+        ImageIcon newIcon = new ImageIcon(newimg);
+        knop.setIcon(newIcon);
+
         Timer timer = new Timer( 200, t -> {
-            knop.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/" + normal +".png")), schermbreedte/15, schermhoogte/20));
+            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("resources/"+normal+".png"));
+            Image img2 = icon2.getImage();
+            Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+            ImageIcon newIcon2 = new ImageIcon(newimg2);
+            knop.setIcon(newIcon2);
         });
         timer.setRepeats( false );
         timer.start();
@@ -106,6 +123,9 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
+            Serveroptie server1= new Serveroptie(designpanel,"webserver1",88,9000,"webserver");
+            designpanel.add(server1);
+            designpanel.repaint();
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
         }else if(e.getSource() == JBlegenveld){
@@ -123,6 +143,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 setSize(schermbreedte/30*26,schermhoogte/30*26);
                 setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
+                designpanel.setvastesize(schermbreedte/30*26-25,schermhoogte/30*26-25);
             } else {
                 dispose();
                 setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -130,6 +151,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 isVolscherm = true;
                 setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
+                designpanel.setvastesize(schermbreedte,schermhoogte);
             }
         }
     }

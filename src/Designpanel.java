@@ -10,7 +10,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         this.frame = frame;
         this.frame.addComponentListener(this);
         setResponsiveSize();
-        setBackground(Color.green);
+        setBackground(Color.white);
         setLayout(null);
         repaint();
     }
@@ -22,7 +22,9 @@ public class Designpanel extends JPanel implements ComponentListener {
     public void setResponsiveSize() {
         setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
     }
-
+    public void setvastesize(int width, int height){
+        setPreferredSize(new Dimension(width - 40, height - 100));
+    }
 
     @Override
     public void componentMoved(ComponentEvent e) {
