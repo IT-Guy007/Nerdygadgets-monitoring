@@ -15,6 +15,7 @@ public class Designpanel extends JPanel implements ComponentListener {
     private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     private int schermhoogte = schermgrootte.height;
     private int schermbreedte = schermgrootte.width;
+
     private ArrayList<servers> serversArray = new ArrayList<>();
     Firewall pfSense = new Firewall(this, "pfSense", 4000, 99.998, schermbreedte/2, schermhoogte/2);
     WebServer w1 = new WebServer(this, "HAL9001W", 2200, 80);
@@ -39,16 +40,20 @@ public class Designpanel extends JPanel implements ComponentListener {
     }
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics metrics = g.getFontMetrics();
-
         if (serverVoorwaardenCheck()) {
             g.setColor(Color.black);
-            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()), 20);
-            g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid()), 40);
+            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,getHeight());
+            g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5, 20);
+            g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5, 40);
+            g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5, 60);
+            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,75, schermgrootte.width, 75);
+            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5, 90);
+            g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5, 110);
         } else {
             g.setColor(Color.red);
-            g.drawString("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!",getWidth() - metrics.stringWidth("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!"),20);
+            g.drawString("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!",getWidth() - metrics.stringWidth("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!") - 5,20);
         }
     }
     @Override
@@ -56,7 +61,9 @@ public class Designpanel extends JPanel implements ComponentListener {
     public void setResponsiveSize() {
         setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
     }
-
+    public void setvastesize(int width, int height){
+        setPreferredSize(new Dimension(width - 40, height - 100));
+    }
 
     @Override
     public void componentMoved(ComponentEvent e) {
@@ -76,6 +83,8 @@ public class Designpanel extends JPanel implements ComponentListener {
         serversArray.add(w1);
         serversArray.add(db1);
         serversArray.add(pfSense);
+        serversArray.add(w3);
+        serversArray.add(db3);
     }
     public ArrayList<servers> getServersArray() {
         return serversArray;
@@ -85,7 +94,6 @@ public class Designpanel extends JPanel implements ComponentListener {
         this.serversArray = serversArray;
     }
 
-
     public String berekenTotalePrijs() {
         double totalePrijs = 0;
         for (servers server : serversArray) {
@@ -93,7 +101,22 @@ public class Designpanel extends JPanel implements ComponentListener {
         }
         return removeTrailingZeros(totalePrijs);
     }
-
+    public int countDBServers(){
+        int i = 0;
+        for (servers server : serversArray) {
+            if (server instanceof DatabaseServer) {
+                i++;
+            }
+        }  return i;
+    }
+    public int countWebServers(){
+        int i = 0;
+        for (servers server : serversArray) {
+            if (server instanceof WebServer) {
+                i++;
+            }
+        }  return i;
+    }
     public String berekenTotaleBeschikbaarheid() {
         double firewallBeschikbaarheid = 1;
         double webServerBeschikbaarheid = 1;

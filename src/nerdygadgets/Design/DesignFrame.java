@@ -54,7 +54,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBlegenveld = create_button(JBlegenveld, "Legen-veld"); add(JBlegenveld); //Veld legen
         JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren"); add(JBoptimaliseren); //Optimaliseren
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen"); add(JBserveropties_wijzigen); // Serveropties
-        JBvolscherm = create_button(JBvolscherm, "Opslaan"); add(JBvolscherm); //Fullscreen
+        JBvolscherm = create_button(JBvolscherm, "enlargebutton"); add(JBvolscherm); //Fullscreen
 
         designpanel = new Designpanel(this);
         add(designpanel);
@@ -121,13 +121,22 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
         } else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
+                dispose();
                 setExtendedState(JFrame.NORMAL);
+                setUndecorated(false);
                 isVolscherm = false;
-                JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
+                setSize(schermbreedte/30*26,schermhoogte/30*26);
+                setVisible(true);
+                JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
+                designpanel.setvastesize(schermbreedte/30*26-25,schermhoogte/30*26-25);
             } else {
-                setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+                dispose();
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setUndecorated(true);
                 isVolscherm = true;
-                JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
+                setVisible(true);
+                JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
+                designpanel.setvastesize(schermbreedte,schermhoogte);
             }
         } else if(e.getSource() == JBbestand_openen){
             Gson gson = new GsonBuilder()
