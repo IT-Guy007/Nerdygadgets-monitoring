@@ -1,29 +1,19 @@
-package nerdygadgets.Design;
-
-import com.google.gson.*;
-import nerdygadgets.Design.components.DatabaseServer;
-import nerdygadgets.Design.components.Firewall;
-import nerdygadgets.Design.components.WebServer;
-import nerdygadgets.Design.components.servers;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class DesignFrame extends JFrame implements ActionListener {
-    private JButton JBbestand_openen,JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
+    private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
     private Designpanel designpanel;
   
     private Firewall firewall;
-    private ArrayList webServers = new ArrayList<WebServer>();
-    private ArrayList databaseServers = new ArrayList<DatabaseServer>();
+    private ArrayList webServer = new ArrayList<WebServer>();
+    private ArrayList databaseServer = new ArrayList<DatabaseServer>();
     private int maxServerBacktracking;
     private int[] WSCountPerSoort;
     private int[] DSCountPerSoort;
@@ -37,28 +27,34 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int[] WSgeoptimaliseerde;
     private int[] DSgeoptimaliseerde;
     private boolean isVolscherm = false;
-    private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
+    Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
 
-
     public DesignFrame() {
-        setTitle("Design");
+        setTitle("Nerdygadgets monitoring aplicatie");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
 
-        JBbestand_openen = create_button(JBbestand_openen,"Opslaan"); add(JBbestand_openen); //Bestand openen
-        JBopslaan = create_button(JBopslaan, "Opslaan"); add(JBopslaan); // Opslaan
-        JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button"); add(JBnieuw_ontwerp); // Nieuw ontwerp
-        JBlegenveld = create_button(JBlegenveld, "Legen-veld"); add(JBlegenveld); //Veld legen
-        JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren"); add(JBoptimaliseren); //Optimaliseren
-        JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen"); add(JBserveropties_wijzigen); // Serveropties
-        JBvolscherm = create_button(JBvolscherm, "enlargebutton"); add(JBvolscherm); //Fullscreen
+        JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
+        add(JBnieuw_ontwerp);
+        JBopslaan = create_button(JBopslaan, "Opslaan");
+        add(JBopslaan);
+        JBlegenveld = create_button(JBlegenveld, "Legen-veld");
+        add(JBlegenveld);
+        JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren");
+        add(JBoptimaliseren);
+        JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
+        add(JBserveropties_wijzigen);
+        JBvolscherm = create_button(JBvolscherm, "enlargebutton");
+        add(JBvolscherm);
 
         designpanel = new Designpanel(this);
         add(designpanel);
+
         setVisible(true);
+        setResizable(true);
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
@@ -92,25 +88,44 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam = new JButton(""); // Knop die er voor zorgt dat de actuele toestand word opgeslagen.
         naam.setBorderPainted(false);
         naam.setContentAreaFilled(false);
-        naam.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/"+path+".png")), schermbreedte/15, schermhoogte/20));
+
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("resources/"+path+".png"));
+        Image img = icon.getImage();
+        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+        ImageIcon newIcon = new ImageIcon(newimg);
+        naam.setIcon(newIcon);
+        //naam.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/"+path+".png")), schermbreedte/15, schermhoogte/20));
         naam.addActionListener(this);
         return naam;
     }
     public void activebutton(JButton knop, String active, String normal){
-        knop.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/" + active +".png")), schermbreedte/15, schermhoogte/20));
-        Timer timer = new Timer( 100, t -> {
-            knop.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/" + normal +".png")), schermbreedte/15, schermhoogte/20));
+        // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
+        // stop weer terug veranderd.
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("resources/"+active+".png"));
+        Image img = icon.getImage();
+        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+        ImageIcon newIcon = new ImageIcon(newimg);
+        knop.setIcon(newIcon);
+
+        Timer timer = new Timer( 200, t -> {
+            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("resources/"+normal+".png"));
+            Image img2 = icon2.getImage();
+            Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+            ImageIcon newIcon2 = new ImageIcon(newimg2);
+            knop.setIcon(newIcon2);
         });
         timer.setRepeats( false );
         timer.start();
     }
 
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
+            Serveroptie server1= new Serveroptie(designpanel,"webserver1",88,9000,"webserver");
+            designpanel.add(server1);
+            designpanel.repaint();
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
         }else if(e.getSource() == JBlegenveld){
@@ -137,47 +152,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                 setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
                 designpanel.setvastesize(schermbreedte,schermhoogte);
-            }
-        } else if(e.getSource() == JBbestand_openen){
-            Gson gson = new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .create();
-
-            // Let user pick a file to open
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Open Infrastructure Design File");
-            int option = fileChooser.showOpenDialog(this);
-            if(option == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                JsonArray array = null;
-                try {
-                    // Create file reader
-                    Scanner reader = new Scanner(file);
-                    JsonParser parser = new JsonParser();
-
-                    // Convert file to a json array
-                    array = (JsonArray) parser.parse(new FileReader(file.getAbsolutePath()));
-                } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                }
-
-                try {
-                    // Loop over the json array to retrieve the infrastructure components
-                    for (Object object : array) {
-                        JsonObject jsonObject = (JsonObject) object;
-
-                        // Convert json component values to usable variables
-                        String name = jsonObject.get("name").getAsString();
-                        String type = jsonObject.get("type").getAsString();
-                        double availability = jsonObject.get("availability").getAsDouble();
-                        double annualPrice = jsonObject.get("annualPrice").getAsDouble();
-                        int panelX = jsonObject.get("panelX").getAsInt();
-                        int panelY = jsonObject.get("panelY").getAsInt();
-
-                    }
-                } catch (Exception ex) {
-
-                }
             }
         }
     }

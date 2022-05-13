@@ -4,9 +4,10 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 public class Servercomponent extends JLabel {
-    private ImageIcon icon;
+    private BufferedImage icon;
     private JPanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
