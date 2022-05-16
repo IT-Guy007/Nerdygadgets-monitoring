@@ -37,6 +37,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         repaint();
         setVisible(true);
         test();
+        System.out.println("constructor");
     }
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
