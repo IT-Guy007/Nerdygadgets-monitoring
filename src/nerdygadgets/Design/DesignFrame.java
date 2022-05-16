@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
-    private DesignPanel designpanel;
+    private nerdygadgets.Design.designpanel designpanel;
   
     private Firewall firewall;
     private ArrayList webServer = new ArrayList<WebServer>();
@@ -52,12 +52,12 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        //designpanel = new Designpanel(this);
+        //designpanel = new designpanel(this);
         //designpanel.setBackground(Color.green);
         //designpanel.setPreferredSize(new Dimension(this.getWidth() - 25, this.getHeight() - 100));
         //add(designpanel);
 
-        designpanel = new DesignPanel(this);
+        designpanel = new designpanel(this);
         //designpanel.setBackground(Color.green);
         //designpanel.setPreferredSize(new Dimension(this.getWidth() - 25, this.getHeight() - 100));
         add(designpanel);

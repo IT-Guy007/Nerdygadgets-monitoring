@@ -10,25 +10,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Designpanel extends JPanel implements ComponentListener {
+import static java.lang.Math.round;
+
+public class designpanel extends JPanel implements ComponentListener {
     private JFrame frame;
     private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     private int schermhoogte = schermgrootte.height;
     private int schermbreedte = schermgrootte.width;
 
-    private ArrayList<servers> serversArray = new ArrayList<>();
-    Firewall pfSense = new Firewall(this, "pfSense", 4000, 99.998, schermbreedte/2, schermhoogte/2);
-    WebServer w1 = new WebServer(this, "HAL9001W", 2200, 80);
-    WebServer w2 = new WebServer(this, "HAL9002W",  3200, 90);
-    WebServer w3 = new WebServer(this, "HAL9003W",  5100, 95);
-    WebServer w4 = new WebServer(this, "HAL9003W",  5100, 100);
-    DatabaseServer db1 = new DatabaseServer(this, "HAL9001DB", 5100, 90);
-    DatabaseServer db2 = new DatabaseServer(this, "HAL9002DB", 7700, 95);
-    DatabaseServer db3 = new DatabaseServer(this, "HAL9003DB", 12200, 98);
+    private ArrayList<ServerDragAndDrop> serversArray = new ArrayList<>();
+    Firewall pfSense = new Firewall("pfSense", 4000, 99.998, schermbreedte/2, schermhoogte/2);
+    WebServer w1 = new WebServer("HAL9001W", 2200, 80);
+    WebServer w2 = new WebServer("HAL9002W",  3200, 90);
+    WebServer w3 = new WebServer("HAL9003W",  5100, 95);
+    WebServer w4 = new WebServer("HAL9003W",  5100, 100);
+    DatabaseServer db1 = new DatabaseServer("HAL9001DB", 5100, 90);
+    DatabaseServer db2 = new DatabaseServer("HAL9002DB", 7700, 95);
+    DatabaseServer db3 = new DatabaseServer( "HAL9003DB", 12200, 98);
 
 
 
-    public Designpanel(JFrame frame) {
+    public designpanel(JFrame frame) {
         this.frame = frame;
         this.frame.addComponentListener(this);
         setResponsiveSize();
@@ -58,7 +60,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         }
     }
     @Override
-    public void componentResized(ComponentEvent e) {setResponsiveSize();}
+    public void componentResized(ComponentEvent e) {SetKleinScherm();}
     public void setResponsiveSize() {
         setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
     }
@@ -87,24 +89,24 @@ public class Designpanel extends JPanel implements ComponentListener {
         serversArray.add(w3);
         serversArray.add(db3);
     }
-    public ArrayList<servers> getServersArray() {
+    public ArrayList<ServerDragAndDrop> getServersArray() {
         return serversArray;
     }
 
-    public void setServersArray(ArrayList<servers> serversArray) {
+    public void setServersArray(ArrayList<ServerDragAndDrop> serversArray) {
         this.serversArray = serversArray;
     }
 
     public String berekenTotalePrijs() {
         double totalePrijs = 0;
-        for (servers server : serversArray) {
+        for (ServerDragAndDrop server : serversArray) {
             totalePrijs += server.getPrijs();
         }
         return removeTrailingZeros(totalePrijs);
     }
     public int countDBServers(){
         int i = 0;
-        for (servers server : serversArray) {
+        for (ServerDragAndDrop server : serversArray) {
             if (server instanceof DatabaseServer) {
                 i++;
             }
@@ -112,7 +114,7 @@ public class Designpanel extends JPanel implements ComponentListener {
     }
     public int countWebServers(){
         int i = 0;
-        for (servers server : serversArray) {
+        for (ServerDragAndDrop server : serversArray) {
             if (server instanceof WebServer) {
                 i++;
             }
@@ -123,7 +125,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         double webServerBeschikbaarheid = 1;
         double databaseBeschikbaarheid = 1;
 
-        for (servers server : serversArray) {
+        for (ServerDragAndDrop server : serversArray) {
                 if (server instanceof Firewall) {
                     firewallBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
                 }else if (server instanceof WebServer) {
@@ -140,7 +142,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         boolean firewallCheck = false;
         boolean webCheck = false;
         boolean dbCheck = false;
-        for (servers server : serversArray) {
+        for (ServerDragAndDrop server : serversArray) {
             if (server instanceof Firewall) {
                 firewallCheck = true;
             }
@@ -160,5 +162,14 @@ public class Designpanel extends JPanel implements ComponentListener {
         } else {
             return String.valueOf(number);
         }
+    }
+
+    public void SetGrootScherm() {
+        setPreferredSize(new Dimension((int) round(0.99*schermbreedte), (int) round(0.92*schermhoogte) ));
+        repaint();
+    }
+    public void SetKleinScherm(){
+        setPreferredSize(new Dimension((int) round(0.98*(schermbreedte/30*26)),(int) round(0.78*(schermhoogte/30*26)) ));
+        repaint();
     }
 }

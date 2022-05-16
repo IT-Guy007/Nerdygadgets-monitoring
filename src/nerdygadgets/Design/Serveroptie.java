@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Serveroptie extends JLabel{
-    private DesignPanel hoofdpanel;
+    private designpanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
     private ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/Server-blauw.png"));;
     private int x,y,width,height;
 
-    public Serveroptie(DesignPanel parentPanel, String name, double availability, double annualPrice, String type){
+    public Serveroptie(designpanel parentPanel, String name, double availability, double annualPrice, String type){
         this.beschikbaarheid = availability;
         this.hoofdpanel = parentPanel;
         this.naam = name;

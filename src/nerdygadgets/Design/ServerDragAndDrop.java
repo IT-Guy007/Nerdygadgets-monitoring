@@ -1,3 +1,5 @@
+package nerdygadgets.Design;
+import  nerdygadgets.Design.components.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -61,5 +63,37 @@ public abstract class ServerDragAndDrop extends JLabel {
         //setIcon(new ImageIcon(icon));
         //setBounds(getParentPanelWidth()/2, getParentPanelHeight()/2, 64, 64);
         setOpaque(false);
+    }
+
+    public String getNaam() {
+        return naam;
+    }
+
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getBeschikbaarheid() {
+        return beschikbaarheid;
+    }
+
+    public void setBeschikbaarheid(double beschikbaarheid) {
+        this.beschikbaarheid = beschikbaarheid;
+    }
+
+    public double getPrijs() {
+        return prijs;
+    }
+
+    public void setPrijs(double prijs) {
+        this.prijs = prijs;
     }
 }
