@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
-    private Designpanel designpanel;
+    private DesignPanel designpanel;
   
     private Firewall firewall;
     private ArrayList webServer = new ArrayList<WebServer>();
@@ -52,11 +52,19 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        designpanel = new Designpanel(this);
+        //designpanel = new Designpanel(this);
+        //designpanel.setBackground(Color.green);
+        //designpanel.setPreferredSize(new Dimension(this.getWidth() - 25, this.getHeight() - 100));
+        //add(designpanel);
+
+        designpanel = new DesignPanel(this);
+        //designpanel.setBackground(Color.green);
+        //designpanel.setPreferredSize(new Dimension(this.getWidth() - 25, this.getHeight() - 100));
         add(designpanel);
 
         setVisible(true);
         setResizable(true);
+
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
@@ -125,9 +133,25 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
-            Serveroptie server1= new Serveroptie(designpanel,"webserver1",88,9000,"webserver");
-            designpanel.add(server1);
+            //Serveroptie server1= new Serveroptie(designpanel,"webserver1",88,9000,"webserver");
+            //designpanel.add(server1);
+            //designpanel.repaint();
+            ServerDragAndDrop server1 = new DatabaseServer("WD10239",99.99,9000);
+            ServerDragAndDrop server2 = new WebServer("WD10239",99.99,9000);
+            ServerDragAndDrop server3 = new Firewall("WD10239",99.99,9000);
+            Serveroptie optie1 = new Serveroptie(designpanel,"Hal3405",99,900,"webserver");
+
+            server1.setBounds(10, 10, 100, 100);
+            server2.setBounds(10, 150, 100, 100);
+            server3.setBounds(schermbreedte/2, schermhoogte/2, 100, 100);
+            optie1.setBounds(100, 10, 100, 100);
+            
+            designpanel.add(server3,server2);
+            designpanel.add(server3,server1);
+
+            designpanel.add(optie1);
             designpanel.repaint();
+
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
         }else if(e.getSource() == JBlegenveld){
@@ -145,7 +169,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 setSize(schermbreedte/30*26,schermhoogte/30*26);
                 setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
-                designpanel.setvastesize(schermbreedte/30*26-25,schermhoogte/30*26-25);
+                designpanel.SetKleinScherm();
             } else {
                 dispose();
                 setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -153,9 +177,13 @@ public class DesignFrame extends JFrame implements ActionListener {
                 isVolscherm = true;
                 setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
-                designpanel.setvastesize(schermbreedte,schermhoogte);
+                designpanel.SetGrootScherm();
             }
         }
+    }
+
+    public boolean getisVolscherm() {
+        return isVolscherm;
     }
 }
 
