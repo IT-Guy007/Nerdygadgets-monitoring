@@ -1,3 +1,5 @@
+package nerdygadgets.Design.components;
+import java.awt.Component.*;
 import javax.swing.*;
 
 public abstract class servers {
@@ -50,7 +52,7 @@ public abstract class servers {
         this.prijs = prijs;
     }
 
-    public double isBeschikbaarheid() {
+    public double getBeschikbaarheid() {
         return beschikbaarheid;
     }
 

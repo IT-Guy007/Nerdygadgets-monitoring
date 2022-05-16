@@ -1,3 +1,5 @@
+package nerdygadgets.Design;
+import nerdygadgets.Design.components.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -92,12 +94,12 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void Huidig(){
 
     }
-    public JButton create_button(JButton naam, String path){
+    public JButton create_button(JButton naam, String path) {
         naam = new JButton(""); // Knop die er voor zorgt dat de actuele toestand word opgeslagen.
         naam.setBorderPainted(false);
         naam.setContentAreaFilled(false);
 
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("resources/"+path+".png"));
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+path+".png"));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);

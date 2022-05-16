@@ -1,5 +1,7 @@
+package nerdygadgets.Monitoring;
+
 import javax.swing.*;
-import java.util.ArrayList;
+import nerdygadgets.Design.components.servers;
 
 public class MonitoringPanel extends JFrame
 {
@@ -12,7 +14,7 @@ public class MonitoringPanel extends JFrame
     private boolean WebsiteOnline;
     private boolean DatabaseOnline;
 
-    public MonitoringPanel(servers servers)
+    public MonitoringPanel(servers server)
     {
 
     }

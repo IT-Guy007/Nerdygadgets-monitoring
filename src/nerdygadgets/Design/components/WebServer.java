@@ -1,3 +1,5 @@
+package nerdygadgets.Design.components;
+
 import javax.swing.*;
 
     public class WebServer extends ServerDragAndDrop {
