@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Serveroptie extends JLabel{
-    private JPanel hoofdpanel;
+    private DesignPanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
-    private BufferedImage icon;
+    private ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/Server-blauw.png"));;
     private int x,y,width,height;
 
-    public Serveroptie(JPanel parentPanel, String name, double availability, double annualPrice, String type){
+    public Serveroptie(DesignPanel parentPanel, String name, double availability, double annualPrice, String type){
         this.beschikbaarheid = availability;
         this.hoofdpanel = parentPanel;
         this.naam = name;
@@ -23,15 +23,14 @@ public class Serveroptie extends JLabel{
         toevoegenafbeelding();
         setLocation(30,30);
         repaintParentPanel();
+        setVisible(true);
 
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                try {
-                    icon = ImageIO.read(Objects.requireNonNull(this.getClass().getResource("/recources/server.png")));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+
+                icon = new ImageIcon(this.getClass().getResource("/resources/Server-groen.png"));
+
                 setIcon(new ImageIcon(String.valueOf(icon)));
                 setBounds(getParentPanelWidth()/2, getParentPanelHeight()/2, 64, 64);
                 repaintParentPanel();
@@ -45,6 +44,7 @@ public class Serveroptie extends JLabel{
         setVisible(true);
     }
     public void toevoegenafbeelding(){
+        /*
         try{
             // Determine icon and type
             if(type.equals("firewall")){
@@ -62,6 +62,7 @@ public class Serveroptie extends JLabel{
         } catch(Exception e){
             System.err.println("Something went wrong while loading the icons");
         }
+        */
 
         // Assign icon
         setIcon(new ImageIcon(String.valueOf(icon)));
