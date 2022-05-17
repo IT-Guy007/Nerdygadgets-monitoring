@@ -16,6 +16,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton design, monitoring;
 
     public MainFrame() {
+
         setTitle("Nerdygadgets monitoring");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,6 +39,7 @@ public class MainFrame extends JFrame implements ActionListener {
             setVisible(false);
             JFrame design = new JFrame();
             design = new DesignFrame();
+
         } else if(e.getSource() == monitoring) {
             setVisible(false);
             JFrame project = new JFrame();
