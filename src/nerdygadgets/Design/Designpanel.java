@@ -1,7 +1,9 @@
 package nerdygadgets.Design;
 
+
 import nerdygadgets.Design.components.*;
 import java.awt.FontMetrics;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -42,6 +44,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         connections_list = new ArrayList<>();
         this.frame_DesignFrame = frame;
         this.frame_DesignFrame.addComponentListener(this);
+
         setResponsiveSize();
         setBackground(Color.white);
         setLayout(null);
@@ -164,6 +167,7 @@ public class Designpanel extends JPanel implements ComponentListener {
     @Override
     public void componentMoved(ComponentEvent e) {
         // Deze fucntie is nodig voor de Componentlistener
+
     }
 
     @Override
@@ -269,5 +273,6 @@ public class Designpanel extends JPanel implements ComponentListener {
     public DesignFrame getFrame() {
         //getter van het Designframe.
         return frame_DesignFrame;
+
     }
 }

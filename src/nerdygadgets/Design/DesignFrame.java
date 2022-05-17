@@ -1,6 +1,9 @@
 package nerdygadgets.Design;
+
 import nerdygadgets.Design.components.*;
 import javax.imageio.ImageIO;
+
+import com.google.gson.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,6 +11,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
@@ -16,6 +24,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     private Firewall firewall;
     private ArrayList<WebServer> webServer = new ArrayList<WebServer>();
     private ArrayList<DatabaseServer> databaseServer = new ArrayList<DatabaseServer>();
+
     private int maxServerBacktracking;
     private int[] WSCountPerSoort;
     private int[] DSCountPerSoort;
@@ -34,7 +43,6 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-
         DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
         DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
         DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
@@ -45,6 +53,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
 
         setTitle("Nerdygadgets monitoring aplicatie");
+
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
@@ -94,6 +103,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         // Een manier om afbeeldingen te veranderen van grootte, maar niet optimaal omdat je kwaliteit verliest.
         int nw = icon.getIconWidth();
         int nh = icon.getIconHeight();
+
         if(nh > h) {
             nh = h;
             nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
@@ -126,10 +136,12 @@ public class DesignFrame extends JFrame implements ActionListener {
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
         naam.setIcon(newIcon);
+
         naam.addActionListener(this);
         return naam;
     }
     public void activebutton(JButton knop, String active, String normal){
+
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
         // stop weer terug veranderd.
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
@@ -144,10 +156,12 @@ public class DesignFrame extends JFrame implements ActionListener {
             Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
             ImageIcon newIcon2 = new ImageIcon(newimg2);
             knop.setIcon(newIcon2);
+
         });
         timer.setRepeats( false );
         timer.start();
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
@@ -179,6 +193,47 @@ public class DesignFrame extends JFrame implements ActionListener {
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
                 designpanel.SetGrootScherm();
             }
+        }else if(e.getSource() == JBbestand_openen){
+            Gson gson = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create();
+
+            // Let user pick a file to open
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Open Infrastructure Design File");
+            int option = fileChooser.showOpenDialog(this);
+            if(option == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                JsonArray array = null;
+                try {
+                    // Create file reader
+                    Scanner reader = new Scanner(file);
+                    JsonParser parser = new JsonParser();
+
+                    // Convert file to a json array
+                    array = (JsonArray) parser.parse(new FileReader(file.getAbsolutePath()));
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                }
+
+                try {
+                    // Loop over the json array to retrieve the infrastructure components
+                    for (Object object : array) {
+                        JsonObject jsonObject = (JsonObject) object;
+
+                        // Convert json component values to usable variables
+                        String name = jsonObject.get("name").getAsString();
+                        String type = jsonObject.get("type").getAsString();
+                        double availability = jsonObject.get("availability").getAsDouble();
+                        double annualPrice = jsonObject.get("annualPrice").getAsDouble();
+                        int panelX = jsonObject.get("panelX").getAsInt();
+                        int panelY = jsonObject.get("panelY").getAsInt();
+
+                    }
+                } catch (Exception ex) {
+
+                }
+            }
         }
     }
 
@@ -201,5 +256,6 @@ public class DesignFrame extends JFrame implements ActionListener {
     public int getSchermbreedte() {
         return schermbreedte;
     }
+
 }
 
