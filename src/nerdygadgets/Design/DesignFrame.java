@@ -18,7 +18,7 @@ import java.io.FileReader;
 
 
 public class DesignFrame extends JFrame implements ActionListener {
-    private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
+    private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
     private Designpanel designpanel;
   
     private Firewall firewall;
@@ -62,8 +62,8 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
         add(JBopslaan);
-        JBlegenveld = create_button(JBlegenveld, "Legen-veld");
-        add(JBlegenveld);
+        JBbestand_openen = create_button(JBbestand_openen, "Legen-veld");
+        add(JBbestand_openen);
         JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren");
         add(JBoptimaliseren);
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
@@ -168,8 +168,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
-        }else if(e.getSource() == JBlegenveld){
-            activebutton(JBlegenveld,"Legen-veld-active","Legen-veld");
         }else if(e.getSource() == JBoptimaliseren){
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
         }else if(e.getSource() == JBserveropties_wijzigen){
