@@ -1,7 +1,6 @@
 package nerdygadgets.Monitoring;
 
-import nerdygadgets.Design.components.servers;
-
+import nerdygadgets.Design.components.ServerDragAndDrop;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,8 +21,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public MonitoringFrame(servers server)
-    {
+    public MonitoringFrame(ServerDragAndDrop server){
 
     }
 

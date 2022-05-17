@@ -1,27 +1,30 @@
 package nerdygadgets.Design;
 
-import com.google.gson.*;
-import nerdygadgets.Design.components.DatabaseServer;
-import nerdygadgets.Design.components.Firewall;
-import nerdygadgets.Design.components.WebServer;
+import nerdygadgets.Design.components.*;
+import javax.imageio.ImageIO;
 
+import com.google.gson.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Scanner;
+
 
 public class DesignFrame extends JFrame implements ActionListener {
-    private JButton JBbestand_openen,JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
+    private JButton JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
     private Designpanel designpanel;
   
     private Firewall firewall;
-    private ArrayList webServer = new ArrayList<WebServer>();
-    private ArrayList databaseServer = new ArrayList<DatabaseServer>();
+    private ArrayList<WebServer> webServer = new ArrayList<WebServer>();
+    private ArrayList<DatabaseServer> databaseServer = new ArrayList<DatabaseServer>();
+
     private int maxServerBacktracking;
     private int[] WSCountPerSoort;
     private int[] DSCountPerSoort;
@@ -40,28 +43,67 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        setTitle("Design");
+        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
+        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
+        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
+        WebServer ServerOptie4 = new WebServer("HAL10239",99.99,0.8);
+        WebServer ServerOptie5 = new WebServer("HAL10240",130.4,0.85);
+        WebServer ServerOptie6 = new WebServer("HAL10241",2200,0.9);
+        webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
+        databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
+
+        setTitle("Nerdygadgets monitoring aplicatie");
+
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
 
-        JBbestand_openen = create_button(JBbestand_openen,"Opslaan"); add(JBbestand_openen); //Bestand openen
-        JBopslaan = create_button(JBopslaan, "Opslaan"); add(JBopslaan); // Opslaan
-        JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button"); add(JBnieuw_ontwerp); // Nieuw ontwerp
-        JBlegenveld = create_button(JBlegenveld, "Legen-veld"); add(JBlegenveld); //Veld legen
-        JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren"); add(JBoptimaliseren); //Optimaliseren
-        JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen"); add(JBserveropties_wijzigen); // Serveropties
-        JBvolscherm = create_button(JBvolscherm, "enlargebutton"); add(JBvolscherm); //Fullscreen
+        JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
+        add(JBnieuw_ontwerp);
+        JBopslaan = create_button(JBopslaan, "Opslaan");
+        add(JBopslaan);
+        JBlegenveld = create_button(JBlegenveld, "Legen-veld");
+        add(JBlegenveld);
+        JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren");
+        add(JBoptimaliseren);
+        JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
+        add(JBserveropties_wijzigen);
+        JBvolscherm = create_button(JBvolscherm, "enlargebutton");
+        add(JBvolscherm);
 
+        designpanel = new Designpanel(this);
+        add(designpanel);
+
+        Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
+        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,100,125);
+        designpanel.add(ServerOptie8);
+        firewall = ServerOptie8;
+
+        int yhoogte = 10;
+        for (WebServer webservertje : webServer){
+            webservertje.getPrijs();
+            Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+            optie1.setBounds(10, yhoogte, 121, 61);
+            designpanel.add(optie1);
+            designpanel.repaint();
+            yhoogte = yhoogte + 71;
+        }
+        for (DatabaseServer webservertje : databaseServer){
+            webservertje.getPrijs();
+            Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+            optie1.setBounds(10, yhoogte, 121, 61);
+            designpanel.add(optie1);
+            designpanel.repaint();
+            yhoogte = yhoogte + 71;
+        }
         setVisible(true);
+        setResizable(false);
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
+        // Een manier om afbeeldingen te veranderen van grootte, maar niet optimaal omdat je kwaliteit verliest.
         int nw = icon.getIconWidth();
         int nh = icon.getIconHeight();
-        //if(icon.getIconWidth() > w) {
-        //    nw = w;
-        //    nh = (nw * icon.getIconHeight()) / icon.getIconWidth();
-        //}
+
         if(nh > h) {
             nh = h;
             nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
@@ -83,23 +125,42 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void Huidig(){
 
     }
-    public JButton create_button(JButton naam, String path){
+    public JButton create_button(JButton naam, String path) {
         naam = new JButton(""); // Knop die er voor zorgt dat de actuele toestand word opgeslagen.
         naam.setBorderPainted(false);
         naam.setContentAreaFilled(false);
-        naam.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/"+path+".png")), schermbreedte/15, schermhoogte/20));
+        naam.setBorderPainted(false);
+
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+path+".png"));
+        Image img = icon.getImage();
+        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+        ImageIcon newIcon = new ImageIcon(newimg);
+        naam.setIcon(newIcon);
+
         naam.addActionListener(this);
         return naam;
     }
     public void activebutton(JButton knop, String active, String normal){
-        knop.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/" + active +".png")), schermbreedte/15, schermhoogte/20));
-        Timer timer = new Timer( 100, t -> {
-            knop.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/" + normal +".png")), schermbreedte/15, schermhoogte/20));
+
+        // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
+        // stop weer terug veranderd.
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
+        Image img = icon.getImage();
+        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+        ImageIcon newIcon = new ImageIcon(newimg);
+        knop.setIcon(newIcon);
+
+        Timer timer = new Timer( 200, t -> {
+            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("/resources/"+normal+".png"));
+            Image img2 = icon2.getImage();
+            Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
+            ImageIcon newIcon2 = new ImageIcon(newimg2);
+            knop.setIcon(newIcon2);
+
         });
         timer.setRepeats( false );
         timer.start();
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -115,15 +176,24 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
         } else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
+                dispose();
                 setExtendedState(JFrame.NORMAL);
+                setUndecorated(false);
                 isVolscherm = false;
+                setSize(schermbreedte/30*26,schermhoogte/30*26);
+                setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/enlargebutton.png")), schermbreedte/15, schermhoogte/20));
+                designpanel.SetKleinScherm();
             } else {
-                setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+                dispose();
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setUndecorated(true);
                 isVolscherm = true;
+                setVisible(true);
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
+                designpanel.SetGrootScherm();
             }
-        } else if(e.getSource() == JBbestand_openen){
+        }else if(e.getSource() == JBbestand_openen){
             Gson gson = new GsonBuilder()
                     .excludeFieldsWithoutExposeAnnotation()
                     .create();
@@ -166,5 +236,26 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
         }
     }
+
+    public boolean getisVolscherm() {
+        return isVolscherm;
+    }
+
+    public Firewall getFirewall() {
+        return firewall;
+    }
+
+    public JButton getJBopslaan() {
+        return JBopslaan;
+    }
+
+    public int getSchermhoogte() {
+        return schermhoogte;
+    }
+
+    public int getSchermbreedte() {
+        return schermbreedte;
+    }
+
 }
 
