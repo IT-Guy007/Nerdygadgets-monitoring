@@ -13,22 +13,17 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
-    // private paneel MonitoringPanel;
-    public MonitoringFrame() {
-        setTitle("Design");
+
+    public MonitoringFrame(int projectID) {
+        setTitle("Monitoring");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
         setVisible(true);
     }
 
-    public MonitoringFrame(servers server)
-    {
-
-    }
+    public MonitoringFrame(servers server) {}
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
+    public void actionPerformed(ActionEvent e) {}
 }

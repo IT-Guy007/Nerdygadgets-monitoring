@@ -15,7 +15,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class DesignFrame extends JFrame implements ActionListener {
+
     private JButton JBbestand_openen,JBopslaan,JBnieuw_ontwerp,JBlegenveld,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
     private Designpanel designpanel;
   
@@ -58,10 +60,6 @@ public class DesignFrame extends JFrame implements ActionListener {
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
         int nh = icon.getIconHeight();
-        //if(icon.getIconWidth() > w) {
-        //    nw = w;
-        //    nh = (nw * icon.getIconHeight()) / icon.getIconWidth();
-        //}
         if(nh > h) {
             nh = h;
             nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
@@ -74,12 +72,8 @@ public class DesignFrame extends JFrame implements ActionListener {
     public int BerekenKosten(){
         return 0;
     }
-    public void Optimaliseer(){
-
-    }
-    public void OptimaliseerHuidig(){
-
-    }
+    public void Optimaliseer(){}
+    public void OptimaliseerHuidig(){}
     public void Huidig(){
 
     }
@@ -105,6 +99,9 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
+
+            //Opslaan
+
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
         }else if(e.getSource() == JBlegenveld){
@@ -124,6 +121,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
             }
         } else if(e.getSource() == JBbestand_openen){
+            activebutton(JBopslaan,"Opslaan-active","Opslaan");
             Gson gson = new GsonBuilder()
                     .excludeFieldsWithoutExposeAnnotation()
                     .create();
