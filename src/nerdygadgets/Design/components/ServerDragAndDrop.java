@@ -1,11 +1,8 @@
 package nerdygadgets.Design.components;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import static javax.swing.text.StyleConstants.setIcon;
 
 public abstract class ServerDragAndDrop extends JLabel {
     private BufferedImage icon;

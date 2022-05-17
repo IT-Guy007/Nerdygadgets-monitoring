@@ -1,8 +1,10 @@
 package nerdygadgets.Design;
 
 
-import nerdygadgets.Design.components.*;
-import java.awt.FontMetrics;
+import nerdygadgets.Design.components.DatabaseServer;
+import nerdygadgets.Design.components.Firewall;
+import nerdygadgets.Design.components.ServerDragAndDrop;
+import nerdygadgets.Design.components.WebServer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import static java.lang.Math.round;
 
@@ -133,10 +133,10 @@ public class Designpanel extends JPanel implements ComponentListener {
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
             if (connection[1] instanceof WebServer || connection[1] instanceof DatabaseServer|| connection[1] instanceof Firewall){
-            Rectangle parent = connection[0].getBounds();
-            Rectangle child = connection[1].getBounds();
+                Rectangle parent = connection[0].getBounds();
+                Rectangle child = connection[1].getBounds();
 
-            g2d.draw(new Line2D.Double(parent.getCenterX(), parent.getCenterY(), child.getCenterX(), child.getCenterY()));
+                g2d.draw(new Line2D.Double(parent.getCenterX(), parent.getCenterY(), child.getCenterX(), child.getCenterY()));
             }
         }
         g2d.dispose();
@@ -220,13 +220,13 @@ public class Designpanel extends JPanel implements ComponentListener {
         double databaseBeschikbaarheid = 1;
 
         for (ServerDragAndDrop server : serversArray_ArrayList) {
-                if (server instanceof Firewall) {
-                    firewallBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
-                }else if (server instanceof WebServer) {
-                    webServerBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
-                }else if (server instanceof DatabaseServer) {
-                    databaseBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
-                }
+            if (server instanceof Firewall) {
+                firewallBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
+            }else if (server instanceof WebServer) {
+                webServerBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
+            }else if (server instanceof DatabaseServer) {
+                databaseBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
+            }
         }
         double totaleBeschikbaarheid = (1 - firewallBeschikbaarheid) * (1 - webServerBeschikbaarheid) * (1 - databaseBeschikbaarheid);
         return removeTrailingZeros((double) Math.round((totaleBeschikbaarheid*100) * 1000d)/1000d);

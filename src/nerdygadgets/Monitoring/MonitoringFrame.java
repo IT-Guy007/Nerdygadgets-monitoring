@@ -1,7 +1,6 @@
 package nerdygadgets.Monitoring;
 
-import nerdygadgets.Design.components.servers;
-
+import nerdygadgets.Design.components.ServerDragAndDrop;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,17 +12,21 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
-
-    public MonitoringFrame(int projectID) {
-        setTitle("Monitoring");
+    // private paneel MonitoringPanel;
+    public MonitoringFrame(int finalI) {
+        setTitle("Design");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
         setVisible(true);
     }
 
-    public MonitoringFrame(servers server) {}
+    public MonitoringFrame(ServerDragAndDrop server){
+
+    }
 
     @Override
-    public void actionPerformed(ActionEvent e) {}
+    public void actionPerformed(ActionEvent e) {
+
+    }
 }
