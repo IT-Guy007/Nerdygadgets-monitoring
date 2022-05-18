@@ -74,7 +74,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(designpanel);
 
         Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
-        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,100,125);
+        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
         firewall = ServerOptie8;
 
@@ -82,7 +82,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (WebServer webservertje : webServer){
             webservertje.getPrijs();
             Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
-            optie1.setBounds(10, yhoogte, 121, 61);
+            optie1.setBounds(0, yhoogte, 140, 61);
             designpanel.add(optie1);
             designpanel.repaint();
             yhoogte = yhoogte + 71;
@@ -90,7 +90,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (DatabaseServer webservertje : databaseServer){
             webservertje.getPrijs();
             Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
-            optie1.setBounds(10, yhoogte, 121, 61);
+            optie1.setBounds(0, yhoogte, 140, 61);
             designpanel.add(optie1);
             designpanel.repaint();
             yhoogte = yhoogte + 71;
