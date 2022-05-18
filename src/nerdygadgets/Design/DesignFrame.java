@@ -43,12 +43,12 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
-        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
-        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
-        WebServer ServerOptie4 = new WebServer("HAL10239",99.99,0.8);
-        WebServer ServerOptie5 = new WebServer("HAL10240",130.4,0.85);
-        WebServer ServerOptie6 = new WebServer("HAL10241",2200,0.9);
+        DatabaseServer ServerOptie1 = new DatabaseServer( "HAL9001DB", 5100, 90);
+        DatabaseServer ServerOptie2 = new DatabaseServer( "HAL9002DB", 7700, 95);
+        DatabaseServer ServerOptie3 = new DatabaseServer( "HAL9003DB", 12200, 98);
+        WebServer ServerOptie4 = new WebServer( "HAL9001W", 2200, 80);
+        WebServer ServerOptie5 = new WebServer( "HAL9002W",  3200, 90);
+        WebServer ServerOptie6 = new WebServer( "HAL9003W",  5100, 95);
         webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
         databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
 
@@ -81,9 +81,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         designpanel = new Designpanel(this);
         add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,100,125);
         designpanel.add(ServerOptie8);
+        designpanel.addArrayList(ServerOptie8);
         firewall = ServerOptie8;
 
         int yhoogte = 10;
