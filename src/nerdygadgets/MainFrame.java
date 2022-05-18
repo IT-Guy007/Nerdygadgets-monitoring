@@ -21,6 +21,10 @@ public class MainFrame extends JFrame implements ActionListener {
     JLabel tekst_label = new JLabel("Nerdygadgets monitoring & ontwerpapplicatie©");
 
     public MainFrame() {
+        setTitle("Nerdygadgets monitoring");
+        setLayout(new FlowLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(schermbreedte/30*26,schermhoogte/30*26);
 
         Nieuw_Ontwerp = create_button(Nieuw_Ontwerp,"Nieuw Ontwerp_mainframe",(int) ((schermbreedte/30*26)/3.5),(int) (round((schermbreedte/30*26)/3)),220,50); add(Nieuw_Ontwerp); // Nieuw ontwerp
         monitoring = create_button(monitoring, "Monitoring_mainframe",(int) ((schermbreedte/30*26)/2.4),(int) (round((schermbreedte/30*26)/4)),220,50); add(monitoring); //Veld legen
