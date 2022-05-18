@@ -13,7 +13,8 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
     private JCheckBox JCserverlimiet;
     private double beschikbaarheid_Double;
     private int serverlimiet_Int;
-    private int standaardaantalserver_Int = 10;
+    private int standaardaantalserver_Int = 5;
+    private boolean go = false;
 
     // Nodig om frame op een percentage van schermgrootte te zetten
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
@@ -25,7 +26,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         // Optimalisatie frame
         super(frame, true);
         setLayout(new GridLayout(3, 2));
-        setSize(schermbreedte/15*13,schermhoogte/15*13);
+        setSize(schermbreedte/300*50,schermhoogte/300*50);
         setTitle("Optimaliseer");
 
         JLbeschikbaarheid = new JLabel("Beschikbaarheid %: ");
@@ -38,7 +39,8 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         JCserverlimiet.addActionListener(this);
         add(JCserverlimiet);
 
-        JTserverlimiet = new JTextField("Server limiet: ");
+        JTserverlimiet = new JTextField("Standaard: " + standaardaantalserver_Int);
+        JTserverlimiet.setEditable(false);
         JTserverlimiet.addActionListener(this);
         add(JTserverlimiet);
 
@@ -52,6 +54,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+
     public boolean serverlimiet()
     {
         if (JCserverlimiet.isSelected())
@@ -62,6 +65,14 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         {
             return false;
         }
+    }
+
+    public boolean isGo() {
+        return go;
+    }
+
+    public void setGo(boolean go) {
+        this.go = go;
     }
 
     public double getBeschikbaarheid_Double() {
@@ -110,7 +121,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
             }
             catch (NumberFormatException nfe)
             {
-                showMessageDialog(this, "Gewenste beschikbaarheid onmogelijk!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                showMessageDialog(this, "Punt gebruiken geen komma!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 JTbeschickbaarheid.setText("");
                 return;
             }
@@ -137,6 +148,8 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
                     return;
                 }
             }
+            setGo(true);
+            setVisible(false);
         }
 
         else if(e.getSource() == JCserverlimiet)
@@ -149,9 +162,10 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
             else
             {
                 JTserverlimiet.setEditable(false);
-                JTserverlimiet.setText("Standard: " + standaardaantalserver_Int);
+                JTserverlimiet.setText("Standaard: " + standaardaantalserver_Int);
             }
         }
+
         else if (e.getSource() == JBannuleer)
         {
             setVisible(false);
