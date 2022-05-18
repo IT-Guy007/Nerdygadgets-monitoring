@@ -17,14 +17,15 @@ public class ProjectFrame extends JFrame implements ActionListener {
 
     public ProjectFrame() {
         setTitle("Project lijst");
-        setLayout(new GridLayout());
+        setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Back button
         back = new JButton("Back");
         back.addActionListener(this);
-        back.setSize(3,4);
+        back.setSize(2,1);
         back.setVisible(true);
+        add(back);
 
         projects = getprojects();
         boolean projects_present = false;
@@ -106,7 +107,6 @@ public class ProjectFrame extends JFrame implements ActionListener {
 
         return output;
     }
-
 
 
     @Override
