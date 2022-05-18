@@ -19,7 +19,7 @@ public abstract class ServerDragAndDrop extends JLabel {
         this.beschikbaarheid = availability;
         this.prijs = annualPrice;
         JLabel label = new JLabel();
-        String myString = "   "+naam + "\n" + availability*100 + "%, " + prijs + "€";
+        String myString = "   "+naam + "\n" + availability + "%, " + prijs + "€";
         label.setText("<html>" + myString.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
 
         if (this instanceof Firewall){
