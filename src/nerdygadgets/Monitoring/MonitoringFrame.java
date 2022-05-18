@@ -1,5 +1,6 @@
 package nerdygadgets.Monitoring;
 
+import nerdygadgets.Design.components.ServerDragAndDrop;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +13,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     // private paneel MonitoringPanel;
-    public MonitoringFrame() {
+    public MonitoringFrame(int finalI) {
         setTitle("Design");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,10 +21,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-//    public MonitoringFrame(S server)
-//    {
-//
-//    }
+    public MonitoringFrame(ServerDragAndDrop server){
+
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

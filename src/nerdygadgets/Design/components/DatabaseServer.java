@@ -1,8 +1,7 @@
 package nerdygadgets.Design.components;
 
-import nerdygadgets.Design.ServerDragAndDrop;
-
 import javax.swing.*;
+
 
 
 public class DatabaseServer extends ServerDragAndDrop {
@@ -12,6 +11,7 @@ public class DatabaseServer extends ServerDragAndDrop {
 
     public DatabaseServer( String naam, double prijs, double beschikbaarheid){
         super( naam, beschikbaarheid, prijs);
+
     }
 
 }

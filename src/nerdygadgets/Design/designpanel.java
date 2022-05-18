@@ -1,48 +1,146 @@
 package nerdygadgets.Design;
 
-import nerdygadgets.Design.components.*;
-import java.awt.FontMetrics;
+
+import nerdygadgets.Design.components.DatabaseServer;
+import nerdygadgets.Design.components.Firewall;
+import nerdygadgets.Design.components.ServerDragAndDrop;
+import nerdygadgets.Design.components.WebServer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.List;
 
 import static java.lang.Math.round;
 
-public class designpanel extends JPanel implements ComponentListener {
-    private JFrame frame;
-    private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
-    private int schermhoogte = schermgrootte.height;
-    private int schermbreedte = schermgrootte.width;
+public class Designpanel extends JPanel implements ComponentListener {
+    private final DesignFrame frame_DesignFrame;
+    private final Dimension schermgrootte_Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    private final int schermhoogte_int = schermgrootte_Dimension.height;
+    private final int schermbreedte_int = schermgrootte_Dimension.width;
+    private final List<Component[]> connections_list;
 
-    private ArrayList<ServerDragAndDrop> serversArray = new ArrayList<>();
-    Firewall pfSense = new Firewall("pfSense", 4000, 99.998, schermbreedte/2, schermhoogte/2);
-    WebServer w1 = new WebServer("HAL9001W", 2200, 80);
-    WebServer w2 = new WebServer("HAL9002W",  3200, 90);
-    WebServer w3 = new WebServer("HAL9003W",  5100, 95);
-    WebServer w4 = new WebServer("HAL9003W",  5100, 100);
-    DatabaseServer db1 = new DatabaseServer("HAL9001DB", 5100, 90);
-    DatabaseServer db2 = new DatabaseServer("HAL9002DB", 7700, 95);
+    private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
+
+    //Deze servers worden aangemaakt voor stan om te testenof de beschikbaarheidberekening werkt.
+    Firewall pfSense = new Firewall( "pfSense", 4000, 99.998, schermbreedte_int/2, schermhoogte_int/2);
+    WebServer w1 = new WebServer( "HAL9001W", 2200, 80);
+    WebServer w2 = new WebServer( "HAL9002W",  3200, 90);
+    WebServer w3 = new WebServer( "HAL9003W",  5100, 95);
+    WebServer w4 = new WebServer( "HAL9003W",  5100, 100);
+    DatabaseServer db1 = new DatabaseServer( "HAL9001DB", 5100, 90);
+    DatabaseServer db2 = new DatabaseServer( "HAL9002DB", 7700, 95);
     DatabaseServer db3 = new DatabaseServer( "HAL9003DB", 12200, 98);
 
 
 
-    public designpanel(JFrame frame) {
-        this.frame = frame;
-        this.frame.addComponentListener(this);
+    public Designpanel(DesignFrame frame) {
+        // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
+        connections_list = new ArrayList<>();
+        this.frame_DesignFrame = frame;
+        this.frame_DesignFrame.addComponentListener(this);
+
         setResponsiveSize();
         setBackground(Color.white);
         setLayout(null);
         repaint();
         setVisible(true);
         test();
-        System.out.println("constructor");
+
+        MouseAdapter ma = new MouseAdapter() {
+            private Component dragComponent;
+            private Point offset;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Deze functie zorgt ervoor dat als je op een knop rechtermuis klikt, deze word aangeroepen om te verdwijnen
+                Component component = getComponentAt(e.getPoint());
+                if(e.getButton() == MouseEvent.BUTTON3){
+                    int screenX = e.getXOnScreen();
+                    int screenY = e.getYOnScreen();
+                    suicide(component, screenY, screenX);
+                }else{
+                    if (component != Designpanel.this && component != null) {
+                        dragComponent = component;
+                        Point clickPoint = e.getPoint();
+                        int deltaX = clickPoint.x - dragComponent.getX();
+                        int deltaY = clickPoint.y - dragComponent.getY();
+                        offset = new Point(deltaX, deltaY);
+                    }
+                }
+            }
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                // Deze functie zorgt ervoor dat als je een object sleept, de locatie van het object veranderd.
+                int mouseX = e.getX();
+                int mouseY = e.getY();
+                int xDelta;
+                int yDelta;
+                try {
+                    xDelta = mouseX - offset.x;
+                    yDelta = mouseY - offset.y;
+                }catch (Exception FE){
+                    xDelta = mouseX - 0;
+                    yDelta = mouseY - 0;
+                }
+                if (frame.getisVolscherm()){
+                    if (xDelta >=140 &&yDelta >= 0 && xDelta <= schermbreedte_int -280 && yDelta <= schermhoogte_int-180){
+                        dragComponent.setLocation(xDelta, yDelta);
+                    }
+                }else{
+                    if (xDelta >=140 && yDelta >= 0 && xDelta <= schermbreedte_int/36*26 && yDelta <= schermhoogte_int/41*26){
+                        dragComponent.setLocation(xDelta, yDelta);
+                    }
+                }
+                repaint();
+            }
+        };
+        addMouseListener(ma);
+        addMouseMotionListener(ma);
+        repaint();
     }
+    public void add(Component parent, Component child) {
+        // Deze functie voegt de firewall toe als parent en zorgt dat het andere attribuut een child is, zodat deze er altijd overheen gaat.
+        if (parent.getParent() != this) {
+            add(parent);
+        }
+        if (child.getParent() != this) {
+            add(child);
+        }
+        connections_list.add(new Component[]{parent, child});
+    }
+    public void suicide(Component server, int screeny, int screenx){
+        // Kijkt of het object dat je wilt verwijderen geen firewall is en haalt vervolgens het object van het scherm, en haalt deze uit de lijst met objecten.
+        if(!(server instanceof Firewall)){
+            remove(server);
+            for (Component[] coneections: connections_list){
+                if (server.getBounds().equals(coneections[1].getBounds())){
+                    connections_list.remove(this);
+                }
+            }
+            repaint();
+        }
+    }
+    @Override
     protected void paintComponent(Graphics g) {
+        // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g.create();
+        for (Component[] connection : connections_list) {
+            if (connection[1] instanceof WebServer || connection[1] instanceof DatabaseServer|| connection[1] instanceof Firewall){
+                Rectangle parent = connection[0].getBounds();
+                Rectangle child = connection[1].getBounds();
+
+                g2d.draw(new Line2D.Double(parent.getCenterX(), parent.getCenterY(), child.getCenterX(), child.getCenterY()));
+            }
+        }
+        g2d.dispose();
+        g.drawLine(140,0,140,getHeight());
         g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics metrics = g.getFontMetrics();
         if (serverVoorwaardenCheck()) {
@@ -51,7 +149,7 @@ public class designpanel extends JPanel implements ComponentListener {
             g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5, 20);
             g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5, 40);
             g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5, 60);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,75, schermgrootte.width, 75);
+            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,75, schermgrootte_Dimension.width, 75);
             g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5, 90);
             g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5, 110);
         } else {
@@ -62,87 +160,84 @@ public class designpanel extends JPanel implements ComponentListener {
     @Override
     public void componentResized(ComponentEvent e) {SetKleinScherm();}
     public void setResponsiveSize() {
-        setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
-    }
-    public void setvastesize(int width, int height){
-        setPreferredSize(new Dimension(width - 40, height - 100));
+        //Deze functie ze de responsive size van het panel
+        setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, frame_DesignFrame.getHeight() - 100));
     }
 
     @Override
     public void componentMoved(ComponentEvent e) {
+        // Deze fucntie is nodig voor de Componentlistener
 
     }
 
     @Override
     public void componentShown(ComponentEvent e) {
-
+        // Deze fucntie is nodig voor de Componentlistener
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
-
+        // Deze fucntie is nodig voor de Componentlistener
     }
     public void test(){
-        serversArray.add(w1);
-        serversArray.add(db1);
-        serversArray.add(pfSense);
-        serversArray.add(w3);
-        serversArray.add(db3);
+        // Deze functie is voor stan om te testen of de doorgerekende beschikbaarheid klopt.
+        serversArray_ArrayList.add(w1);
+        serversArray_ArrayList.add(db1);
+        serversArray_ArrayList.add(pfSense);
+        serversArray_ArrayList.add(w3);
+        serversArray_ArrayList.add(db3);
     }
-    public ArrayList<ServerDragAndDrop> getServersArray() {
-        return serversArray;
-    }
-
-    public void setServersArray(ArrayList<ServerDragAndDrop> serversArray) {
-        this.serversArray = serversArray;
-    }
-
     public String berekenTotalePrijs() {
+        // Deze fucntie berekend de totale prijs per maand van het actuele design.
         double totalePrijs = 0;
-        for (ServerDragAndDrop server : serversArray) {
+        for (ServerDragAndDrop server : serversArray_ArrayList) {
             totalePrijs += server.getPrijs();
         }
         return removeTrailingZeros(totalePrijs);
     }
     public int countDBServers(){
+        // Deze functie kijkt hoeveel databaseservers er zijn.
         int i = 0;
-        for (ServerDragAndDrop server : serversArray) {
+        for (ServerDragAndDrop server : serversArray_ArrayList) {
             if (server instanceof DatabaseServer) {
                 i++;
             }
         }  return i;
     }
     public int countWebServers(){
+        // Deze functie kijkt hoeveel webservers er zijn.
         int i = 0;
-        for (ServerDragAndDrop server : serversArray) {
+        for (ServerDragAndDrop server : serversArray_ArrayList) {
             if (server instanceof WebServer) {
                 i++;
             }
         }  return i;
     }
     public String berekenTotaleBeschikbaarheid() {
+        // Deze functie berekend de totale beschikbaarheid van het huidige ontwerp.
         double firewallBeschikbaarheid = 1;
         double webServerBeschikbaarheid = 1;
         double databaseBeschikbaarheid = 1;
 
-        for (ServerDragAndDrop server : serversArray) {
-                if (server instanceof Firewall) {
-                    firewallBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
-                }else if (server instanceof WebServer) {
-                    webServerBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
-                }else if (server instanceof DatabaseServer) {
-                    databaseBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
-                }
+        for (ServerDragAndDrop server : serversArray_ArrayList) {
+            if (server instanceof Firewall) {
+                firewallBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
+            }else if (server instanceof WebServer) {
+                webServerBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
+            }else if (server instanceof DatabaseServer) {
+                databaseBeschikbaarheid *= (1 - (server.getBeschikbaarheid() / 100));
+            }
         }
         double totaleBeschikbaarheid = (1 - firewallBeschikbaarheid) * (1 - webServerBeschikbaarheid) * (1 - databaseBeschikbaarheid);
         return removeTrailingZeros((double) Math.round((totaleBeschikbaarheid*100) * 1000d)/1000d);
 
     }
     public boolean serverVoorwaardenCheck(){
+        // Deze functie checkt of de servers wel de juiste formatten hebben.
         boolean firewallCheck = false;
         boolean webCheck = false;
         boolean dbCheck = false;
-        for (ServerDragAndDrop server : serversArray) {
+        for (ServerDragAndDrop server : serversArray_ArrayList) {
             if (server instanceof Firewall) {
                 firewallCheck = true;
             }
@@ -157,19 +252,27 @@ public class designpanel extends JPanel implements ComponentListener {
             }} return false;
     }
     public String removeTrailingZeros(double number) {
+        // Deze functie haalt overbodige nullen weg.
         if (number % 1 == 0) {
             return String.format("%.0f", number);
         } else {
             return String.valueOf(number);
         }
     }
-
     public void SetGrootScherm() {
-        setPreferredSize(new Dimension((int) round(0.99*schermbreedte), (int) round(0.92*schermhoogte) ));
+        // Deze functie vergroot het panel zodat dit ook in fullscreen werkt
+        setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
         repaint();
     }
     public void SetKleinScherm(){
-        setPreferredSize(new Dimension((int) round(0.98*(schermbreedte/30*26)),(int) round(0.78*(schermhoogte/30*26)) ));
+        // Deze fucntie verkleind het panel zodat deze ook in normale omstandigheden werkt.
+        setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
         repaint();
+    }
+
+    public DesignFrame getFrame() {
+        //getter van het Designframe.
+        return frame_DesignFrame;
+
     }
 }
