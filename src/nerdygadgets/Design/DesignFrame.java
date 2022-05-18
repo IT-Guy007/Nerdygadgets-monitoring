@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -25,15 +26,18 @@ public class DesignFrame extends JFrame implements ActionListener {
     private ArrayList<DatabaseServer> databaseServer = new ArrayList<DatabaseServer>();
 
     private int maxServerBacktracking;
-    private int[] WSCountPerSoort;
-    private int[] DSCountPerSoort;
-    private int WSCountTotaal;
-    private int DSCountTotaal;
-    private double WSAvaliablityArray;
-    private double DSAvaliablityArray;
+    private int[] WSAantalPerSoort = {};
+    private int[] DSAantalPerSoort = {};
+    private int WSAantalTotaal;
+    private int DSAantalTotaal;
+    private double[] WSAvaliablityArray = {};
+    private double[] DSAvaliablityArray  = {};
+    private double[] WSPrijsPerSoort = {};
+    private double[] DSPrijsPerSoort = {};
     private double gewensteBeschikbaarheid;
     private double minimaleKosten;
     private int ServerCount;
+    private int maxAantalServers;
     private int[] WSgeoptimaliseerde;
     private int[] DSgeoptimaliseerde;
     private boolean isVolscherm = false;
@@ -116,11 +120,41 @@ public class DesignFrame extends JFrame implements ActionListener {
     public int BerekenKosten(){
         return 0;
     }
+
     public void Optimaliseer(){
 
-    }
-    public void OptimaliseerHuidig(){
+        for (WebServer WS: webServer){
+            WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, WS.getBeschikbaarheid()/100);
+            WSPrijsPerSoort = voegDoubleToe(WSPrijsPerSoort, WS.getPrijs());
+            WSAantalPerSoort = voegIntToe(WSAantalPerSoort,0);
+            WSAantalTotaal++;
+        }
 
+        for (DatabaseServer DS: databaseServer){
+            DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, DS.getBeschikbaarheid()/100);
+            DSPrijsPerSoort = voegDoubleToe(DSPrijsPerSoort, DS.getPrijs());
+            DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
+            DSAantalTotaal++;
+        }
+        WSLoop(0, 0);
+
+        // Draw functie voor optimaal design; * hier *
+    }
+
+    private int WSLoop(int WSAantalTotaal, int WebServer){
+        for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
+            WSAantalPerSoort[WebServer] = i;
+            if(WebServer == WSAantalTotaal){
+                // DSLoop (0,0); * functie moet nog geschreven worden *
+            }
+            if(WebServer < WSAantalTotaal){
+                WSLoop(i+WSAantalTotaal, WebServer+1);
+            }
+        }
+        return WebServer;
+    }
+
+    public void OptimaliseerHuidig(){
     }
     public void Huidig(){
 
@@ -170,9 +204,20 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
         }else if(e.getSource() == JBoptimaliseren){
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
+            OptimalisatieFrame frame = new OptimalisatieFrame(this);
+            if(frame.isGo()){
+                this.gewensteBeschikbaarheid = frame.getBeschikbaarheid_Double();
+                if(frame.serverlimiet()){
+                    this.maxAantalServers = frame.getServerlimiet_Int();
+                } else {
+                    this.maxAantalServers = frame.getStandaardaantalserver_Int();
+                }
+                Optimaliseer();
+            }
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
-        } else if (e.getSource() == JBvolscherm) {
+        }
+        else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
                 dispose();
                 setExtendedState(JFrame.NORMAL);
@@ -233,6 +278,18 @@ public class DesignFrame extends JFrame implements ActionListener {
                 }
             }
         }
+    }
+
+    static double[] voegDoubleToe (double[] d, double o){
+        d = Arrays.copyOf(d, d.length + 1);
+        d[d.length - 1] = o;
+        return d;
+    }
+
+    static int[] voegIntToe (int[] i, int n){
+        i = Arrays.copyOf(i, i.length + 1);
+        i[i.length - 1] = n;
+        return i;
     }
 
     public boolean getisVolscherm() {
