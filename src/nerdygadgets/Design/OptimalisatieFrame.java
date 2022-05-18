@@ -13,7 +13,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
     private JCheckBox JCserverlimiet;
     private double beschikbaarheid_Double;
     private int serverlimiet_Int;
-    private int standaardaantalserver_Int;
+    private int standaardaantalserver_Int = 10;
 
     // Nodig om frame op een percentage van schermgrootte te zetten
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
@@ -102,6 +102,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
                 showMessageDialog(this, "Gewenste beschikbaarheid is leeg!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
             // Probeert ingevoerde aantal beschikbaarheid door te pasen naar double
             try
             {
@@ -112,6 +113,43 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
                 showMessageDialog(this, "Gewenste beschikbaarheid onmogelijk!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 JTbeschickbaarheid.setText("");
                 return;
+            }
+
+            // Controleert of ingevoerde beschikbaarheid een geldige waarde bevat
+            if (getBeschikbaarheid_Double() > 100 || getBeschikbaarheid_Double() < 0)
+            {
+                showMessageDialog(this, "Gewenste beschikbaarheid moet tussen 0 en 100% liggen!", "Error", JOptionPane.ERROR_MESSAGE);
+                JTbeschickbaarheid.setText("");
+                return;
+            }
+
+            // Probeert aantal ingevoerd server limiet door te pasen naar een int
+            if(JCserverlimiet.isSelected())
+            {
+                try
+                {
+                    setServerlimiet_Int(Integer.parseInt(JTserverlimiet.getText()));
+                }
+                catch (NumberFormatException nfe)
+                {
+                    showMessageDialog(this, "Ongeldig server limiet!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JTserverlimiet.setText("");
+                    return;
+                }
+            }
+        }
+
+        else if(e.getSource() == JCserverlimiet)
+        {
+            if(JCserverlimiet.isSelected())
+            {
+                JTserverlimiet.setEditable(true);
+                JTserverlimiet.setText("");
+            }
+            else
+            {
+                JTserverlimiet.setEditable(false);
+                JTserverlimiet.setText("Standard: " + standaardaantalserver_Int);
             }
         }
         else if (e.getSource() == JBannuleer)
