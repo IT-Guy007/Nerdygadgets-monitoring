@@ -19,7 +19,7 @@ import java.util.Scanner;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm, back;
-    private Designpanel designpanel;
+    private DesignPanel designpanel;
 
     private Firewall firewall;
     private ArrayList<WebServer> webServer = new ArrayList<WebServer>();
@@ -78,7 +78,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        designpanel = new Designpanel(this);
+        designpanel = new DesignPanel(this);
         add(designpanel);
 
         Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
@@ -89,7 +89,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         int yhoogte = 10;
         for (WebServer webservertje : webServer){
             webservertje.getPrijs();
-            Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+            ServerOptie optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
             optie1.setBounds(10, yhoogte, 121, 61);
             designpanel.add(optie1);
             designpanel.repaint();
@@ -97,7 +97,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         for (DatabaseServer webservertje : databaseServer){
             webservertje.getPrijs();
-            Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+            ServerOptie optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
             optie1.setBounds(10, yhoogte, 121, 61);
             designpanel.add(optie1);
             designpanel.repaint();

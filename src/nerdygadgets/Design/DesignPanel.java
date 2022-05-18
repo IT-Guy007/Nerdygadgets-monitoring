@@ -18,7 +18,7 @@ import java.util.List;
 
 import static java.lang.Math.round;
 
-public class Designpanel extends JPanel implements ComponentListener {
+public class DesignPanel extends JPanel implements ComponentListener {
     private final DesignFrame frame_DesignFrame;
     private final Dimension schermgrootte_Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     private final int schermhoogte_int = schermgrootte_Dimension.height;
@@ -37,9 +37,12 @@ public class Designpanel extends JPanel implements ComponentListener {
     DatabaseServer db2 = new DatabaseServer( "HAL9002DB", 7700, 95);
     DatabaseServer db3 = new DatabaseServer( "HAL9003DB", 12200, 98);
 
+    //Objecten vanuit de database maken
 
 
-    public Designpanel(DesignFrame frame) {
+
+
+    public DesignPanel(DesignFrame frame) {
         // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
         connections_list = new ArrayList<>();
         this.frame_DesignFrame = frame;
@@ -65,7 +68,7 @@ public class Designpanel extends JPanel implements ComponentListener {
                     int screenY = e.getYOnScreen();
                     suicide(component, screenY, screenX);
                 }else{
-                    if (component != Designpanel.this && component != null) {
+                    if (component != DesignPanel.this && component != null) {
                         dragComponent = component;
                         Point clickPoint = e.getPoint();
                         int deltaX = clickPoint.x - dragComponent.getX();
