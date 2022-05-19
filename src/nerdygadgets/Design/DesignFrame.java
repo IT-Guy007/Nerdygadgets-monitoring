@@ -171,6 +171,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
+            ServerDialog dialog = new ServerDialog(this, true);
         } else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
                 dispose();
