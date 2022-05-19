@@ -91,7 +91,7 @@ public class CreateProject extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == cancel) {
             setVisible(false);
-            new MonitoringFrame(projectID);
+            new ProjectFrame();
         } else if(e.getSource() == submit) {
             CreateProject(txt_name.getText());
             dispose();

@@ -78,7 +78,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
             // Importing and registering drivers
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.app:3306/application", "group4", "Qwerty1@");
+            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.nl:3306/application", "group4", "Qwerty1@");
 
             // SQL command data stored in String datatype
             String sql = "select * from project";

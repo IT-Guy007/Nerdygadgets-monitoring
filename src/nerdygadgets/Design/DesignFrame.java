@@ -209,6 +209,12 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
+            dispose();
+            DesignFrame design = new DesignFrame();
+            // center frame (Mustafa)
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension size = toolkit.getScreenSize();
+            design.setLocation(size.width/2 - design.getWidth()/2, size.height/2 - design.getHeight()/2);
         }else if(e.getSource() == JBoptimaliseren){
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
             OptimalisatieFrame frame = new OptimalisatieFrame(this);

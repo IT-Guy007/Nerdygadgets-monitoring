@@ -26,7 +26,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         // Optimalisatie frame
         super(frame, true);
         setLayout(new GridLayout(3, 2));
-        setSize(schermbreedte/300*50,schermhoogte/300*50);
+        setSize(schermbreedte/300*70,schermhoogte/300*70);
         setTitle("Optimaliseer");
 
         JLbeschikbaarheid = new JLabel("Beschikbaarheid %: ");
