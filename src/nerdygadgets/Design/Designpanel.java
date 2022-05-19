@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static java.lang.Math.round;
@@ -26,6 +27,7 @@ public class Designpanel extends JPanel implements ComponentListener {
     private final List<Component[]> connections_list;
 
     private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
+    private ArrayList<String[]> lijnzichtbaar = new ArrayList<String[]>();
 
     //Deze servers worden aangemaakt voor stan om te testenof de beschikbaarheidberekening werkt.
     Firewall pfSense = new Firewall( "pfSense", 4000, 99.998, schermbreedte_int/2, schermhoogte_int/2);
@@ -63,7 +65,10 @@ public class Designpanel extends JPanel implements ComponentListener {
                 if(e.getButton() == MouseEvent.BUTTON3){
                     int screenX = e.getXOnScreen();
                     int screenY = e.getYOnScreen();
-                    suicide(component, screenY, screenX);
+
+                        suicide(component, screenY, screenX);
+                        suicide(component, screenY, screenX);
+
                 }else{
                     if (component != Designpanel.this && component != null) {
                         dragComponent = component;
@@ -113,15 +118,26 @@ public class Designpanel extends JPanel implements ComponentListener {
             add(child);
         }
         connections_list.add(new Component[]{parent, child});
+        //lijnzichtbaar.add(new String[]{child,""});
     }
     public void suicide(Component server, int screeny, int screenx){
         // Kijkt of het object dat je wilt verwijderen geen firewall is en haalt vervolgens het object van het scherm, en haalt deze uit de lijst met objecten.
         if(!(server instanceof Firewall)){
             remove(server);
-            for (Component[] coneections: connections_list){
-                if (server.getBounds().equals(coneections[1].getBounds())){
-                    connections_list.remove(server);
+            int counter =0;
+            try {
+                for (Component[] coneections : connections_list) {
+                    try {
+                        if (server.getBounds().equals(coneections[1].getBounds())) {
+                            connections_list.remove(counter);
+                        }
+                        counter++;
+                    } catch (Exception e) {
+                        System.out.println("test");
+                    }
                 }
+            }catch (Exception e){
+                System.out.println("Error in loop");
             }
             repaint();
         }
@@ -130,6 +146,7 @@ public class Designpanel extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
         super.paintComponent(g);
+
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
             if (connection[1] instanceof WebServer || connection[1] instanceof DatabaseServer|| connection[1] instanceof Firewall){
