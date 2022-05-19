@@ -34,10 +34,10 @@ public class MainFrame extends JFrame implements ActionListener {
         tekst_label.setFont(new Font("HelveticaNeue-Light", Font.PLAIN, 24));
         tekst_label.setHorizontalAlignment(JLabel.CENTER);
 
-        add(Nieuw_Ontwerp);
-        add(monitoring);
+        //add(Nieuw_Ontwerp);
+        //add(monitoring);
         add(tekst_label);
-        add(Openen_Ontwerp);
+        //add(Openen_Ontwerp);
 
         setLayout(null);
         setResizable(false);
@@ -50,7 +50,6 @@ public class MainFrame extends JFrame implements ActionListener {
         naam = new JButton(""); // Knop die er voor zorgt dat de actuele toestand word opgeslagen.
         naam.setBorderPainted(false);
         naam.setBounds(x,y,width,height);
-        naam.addActionListener(this);
         naam.setFocusable(false);
         naam.setContentAreaFilled(false);
         naam.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/"+path+".png")), schermbreedte/15, schermhoogte/20));
@@ -89,7 +88,6 @@ public class MainFrame extends JFrame implements ActionListener {
             setVisible(false);
             //JFrame design = new JFrame();
             DesignFrame design = new DesignFrame();
-
             // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();

@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static java.lang.Math.round;
@@ -38,6 +39,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         setLayout(null);
         repaint();
         setVisible(true);
+        //test();
 
         MouseAdapter ma = new MouseAdapter() {
             private Component dragComponent;
@@ -50,7 +52,10 @@ public class Designpanel extends JPanel implements ComponentListener {
                 if(e.getButton() == MouseEvent.BUTTON3){
                     int screenX = e.getXOnScreen();
                     int screenY = e.getYOnScreen();
-                    suicide(component, screenY, screenX);
+
+                        suicide(component, screenY, screenX);
+                        suicide(component, screenY, screenX);
+
                 }else{
                     if (component != Designpanel.this && component != null) {
                         dragComponent = component;
@@ -105,10 +110,20 @@ public class Designpanel extends JPanel implements ComponentListener {
         // Kijkt of het object dat je wilt verwijderen geen firewall is en haalt vervolgens het object van het scherm, en haalt deze uit de lijst met objecten.
         if(!(server instanceof Firewall)){
             remove(server);
-            for (Component[] coneections: connections_list){
-                if (server.getBounds().equals(coneections[1].getBounds())){
-                    connections_list.remove(server);
+            int counter =0;
+            try {
+                for (Component[] coneections : connections_list) {
+                    try {
+                        if (server.getBounds().equals(coneections[1].getBounds())) {
+                            connections_list.remove(counter);
+                        }
+                        counter++;
+                    } catch (Exception e) {
+                        System.out.println("test");
+                    }
                 }
+            }catch (Exception e){
+                System.out.println("Error in loop");
             }
             repaint();
         }
@@ -117,6 +132,7 @@ public class Designpanel extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
         super.paintComponent(g);
+
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
             if (connection[1] instanceof WebServer || connection[1] instanceof DatabaseServer|| connection[1] instanceof Firewall){
@@ -131,12 +147,12 @@ public class Designpanel extends JPanel implements ComponentListener {
         g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics metrics = g.getFontMetrics();
             g.setColor(Color.black);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10, 0, getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10, getHeight());
+            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,getHeight());
             g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5, 20);
             g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5, 40);
             g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5, 60);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10, 75, schermgrootte_Dimension.width, 75);
-            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €" + berekenTotalePrijs()) - 5, 90);
+            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,75, schermgrootte_Dimension.width, 75);
+            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5, 90);
             g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5, 110);
     }
     @Override
