@@ -27,19 +27,6 @@ public class Designpanel extends JPanel implements ComponentListener {
     private final List<Component[]> connections_list;
 
     private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
-    private ArrayList<String[]> lijnzichtbaar = new ArrayList<String[]>();
-
-    //Deze servers worden aangemaakt voor stan om te testenof de beschikbaarheidberekening werkt.
-    Firewall pfSense = new Firewall( "pfSense", 4000, 99.998, schermbreedte_int/2, schermhoogte_int/2);
-    WebServer w1 = new WebServer( "HAL9001W", 2200, 80);
-    WebServer w2 = new WebServer( "HAL9002W",  3200, 90);
-    WebServer w3 = new WebServer( "HAL9003W",  5100, 95);
-    WebServer w4 = new WebServer( "HAL9003W",  5100, 100);
-    DatabaseServer db1 = new DatabaseServer( "HAL9001DB", 5100, 90);
-    DatabaseServer db2 = new DatabaseServer( "HAL9002DB", 7700, 95);
-    DatabaseServer db3 = new DatabaseServer( "HAL9003DB", 12200, 98);
-
-
 
     public Designpanel(DesignFrame frame) {
         // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
@@ -52,7 +39,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         setLayout(null);
         repaint();
         setVisible(true);
-        test();
+        //test();
 
         MouseAdapter ma = new MouseAdapter() {
             private Component dragComponent;
@@ -118,7 +105,6 @@ public class Designpanel extends JPanel implements ComponentListener {
             add(child);
         }
         connections_list.add(new Component[]{parent, child});
-        //lijnzichtbaar.add(new String[]{child,""});
     }
     public void suicide(Component server, int screeny, int screenx){
         // Kijkt of het object dat je wilt verwijderen geen firewall is en haalt vervolgens het object van het scherm, en haalt deze uit de lijst met objecten.
@@ -160,7 +146,6 @@ public class Designpanel extends JPanel implements ComponentListener {
         g.drawLine(140,0,140,getHeight());
         g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics metrics = g.getFontMetrics();
-        if (serverVoorwaardenCheck()) {
             g.setColor(Color.black);
             g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,getHeight());
             g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5, 20);
@@ -169,10 +154,6 @@ public class Designpanel extends JPanel implements ComponentListener {
             g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,75, schermgrootte_Dimension.width, 75);
             g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5, 90);
             g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5, 110);
-        } else {
-            g.setColor(Color.red);
-            g.drawString("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!",getWidth() - metrics.stringWidth("ZORG DAT ER EEN FIREWALL, DATABASE SERVER EN WEBSERVER ZIJN TOEGEVOEGD!") - 5,20);
-        }
     }
     @Override
     public void componentResized(ComponentEvent e) {SetKleinScherm();}
@@ -195,14 +176,6 @@ public class Designpanel extends JPanel implements ComponentListener {
     @Override
     public void componentHidden(ComponentEvent e) {
         // Deze fucntie is nodig voor de Componentlistener
-    }
-    public void test(){
-        // Deze functie is voor stan om te testen of de doorgerekende beschikbaarheid klopt.
-        serversArray_ArrayList.add(w1);
-        serversArray_ArrayList.add(db1);
-        serversArray_ArrayList.add(pfSense);
-        serversArray_ArrayList.add(w3);
-        serversArray_ArrayList.add(db3);
     }
     public String berekenTotalePrijs() {
         // Deze fucntie berekend de totale prijs per maand van het actuele design.
@@ -249,25 +222,6 @@ public class Designpanel extends JPanel implements ComponentListener {
         return removeTrailingZeros((double) Math.round((totaleBeschikbaarheid*100) * 1000d)/1000d);
 
     }
-    public boolean serverVoorwaardenCheck(){
-        // Deze functie checkt of de servers wel de juiste formatten hebben.
-        boolean firewallCheck = false;
-        boolean webCheck = false;
-        boolean dbCheck = false;
-        for (ServerDragAndDrop server : serversArray_ArrayList) {
-            if (server instanceof Firewall) {
-                firewallCheck = true;
-            }
-            if (server instanceof WebServer) {
-                webCheck = true;
-            }
-            if (server instanceof DatabaseServer) {
-                dbCheck = true;
-            }
-            if (firewallCheck && webCheck && dbCheck){
-                return true;
-            }} return false;
-    }
     public String removeTrailingZeros(double number) {
         // Deze functie haalt overbodige nullen weg.
         if (number % 1 == 0) {
@@ -291,5 +245,8 @@ public class Designpanel extends JPanel implements ComponentListener {
         //getter van het Designframe.
         return frame_DesignFrame;
 
+    }
+    public void addArrayList(ServerDragAndDrop server){
+        serversArray_ArrayList.add(server);
     }
 }
