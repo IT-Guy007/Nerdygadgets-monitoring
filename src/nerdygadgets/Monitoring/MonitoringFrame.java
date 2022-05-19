@@ -13,7 +13,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     // private paneel MonitoringPanel;
-    public MonitoringFrame(int finalI) {
+    public MonitoringFrame(int projectID) {
         setTitle("Design");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

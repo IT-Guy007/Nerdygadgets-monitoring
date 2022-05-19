@@ -12,20 +12,27 @@ import java.util.ArrayList;
 
 public class ProjectFrame extends JFrame implements ActionListener {
     private ArrayList<String> projects;
-    private JButton back;
+    private JButton back,create_project;
     int number_of_projects;
 
     public ProjectFrame() {
-
         setTitle("Project lijst");
-        setLayout(new GridLayout());
+        setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Back button
         back = new JButton("Back");
         back.addActionListener(this);
-        back.setSize(3,4);
+        back.setSize(2,1);
         back.setVisible(true);
+        add(back);
+
+        //create project;
+        create_project = new JButton("New project");
+        create_project.setSize(new Dimension(100,50));
+        create_project.addActionListener(this);
+        create_project.setVisible(true);
+        add(create_project);
 
         projects = getprojects();
         boolean projects_present = false;
@@ -35,7 +42,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
             setSize(300,100);
         } else if (number_of_projects >= 1) {
             int height = ((number_of_projects / 4) * 100) + 100;
-            setSize(300,height);
+            setSize(400,height);
         }
 
         //Projects
@@ -55,20 +62,13 @@ public class ProjectFrame extends JFrame implements ActionListener {
                 });
                 naam.setVisible(true);
             }
-        } else {
-            JButton create_project;
-            create_project = new JButton("New project");
-            create_project.setSize(new Dimension(200,50));
-            create_project.setVisible(true);
-
-
         }
 
         setVisible(true);
     }
 
     //Connection to database and get all projects;
-    public static ArrayList<String> getprojects() {
+    public ArrayList<String> getprojects() {
 
         Connection connection = null;
         PreparedStatement p = null;
@@ -78,7 +78,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
             // Importing and registering drivers
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.app:3306/application", "group4", "Qwerty1@");
+            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.nl:3306/application", "group4", "Qwerty1@");
 
             // SQL command data stored in String datatype
             String sql = "select * from project";
@@ -89,12 +89,13 @@ public class ProjectFrame extends JFrame implements ActionListener {
             while (rs.next()) {
                 output.set(rs.getInt("ID"),rs.getString("naam"));
             }
-            return output;
 
 
         } catch (CommunicationsException ce) {
             JLabel error = new JLabel("Error, kan niet verbinden met de server");
             error.setVisible(true);
+            error.repaint();
+            add(error);
 
         } catch (SQLException e) {
             System.out.println(e);
@@ -108,13 +109,18 @@ public class ProjectFrame extends JFrame implements ActionListener {
     }
 
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == back) {
             setVisible(false);
-            JFrame Main = new JFrame();
-            Main = new MainFrame();
+            new MainFrame();
+        } else if (e.getSource() == create_project) {
+            try {
+                new CreateProject();
+            } catch(Exception exception) {
+                System.out.println(exception);
+            }
+            repaint();
         }
 
     }
