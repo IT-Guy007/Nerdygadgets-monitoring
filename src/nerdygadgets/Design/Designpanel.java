@@ -107,7 +107,7 @@ public class Designpanel extends JPanel implements ComponentListener {
             remove(server);
             for (Component[] coneections: connections_list){
                 if (server.getBounds().equals(coneections[1].getBounds())){
-                    connections_list.remove(this);
+                    connections_list.remove(server);
                 }
             }
             repaint();
