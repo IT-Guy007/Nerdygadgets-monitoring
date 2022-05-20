@@ -5,7 +5,7 @@ import javax.swing.*;
 
 
 public class DatabaseServer extends ServerDragAndDrop {
-    public DatabaseServer(JPanel parentPanel, String naam, double prijs, double beschikbaarheid, int panelx, int panely){
+    public DatabaseServer(String naam, double prijs, double beschikbaarheid, int panelx, int panely){
         super(naam,beschikbaarheid, prijs, panelx,panely);
     }
 
