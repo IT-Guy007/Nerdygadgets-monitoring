@@ -40,6 +40,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     private double[] WSPrijsPerSoort = {};
     private double[] DSPrijsPerSoort = {};
 
+    private String serverSetup;
     private double gewensteBeschikbaarheid = -1;
     private double minimaleKosten = Double.MAX_VALUE;
     private int ServerCount;
@@ -136,7 +137,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
 
-    public void Optimaliseer(){
+    public void Optimaliseer(double Beschikbaarheid){
+
+        OptimalisatieReset();
+        this.gewensteBeschikbaarheid = Beschikbaarheid;
 
         for (WebServer WS: webServer){
             WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, WS.getBeschikbaarheid()/100);
@@ -196,6 +200,48 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     private int DatabaseLoop(int AantalDBTotaal, int Database) {
+        int teller = 0;
+        while (teller < maxAantalServers - AantalDBTotaal){
+            DSAantalPerSoort[Database] = teller;
+            teller++;
+            if(Database < DSAantalTotaal){
+                DatabaseLoop(teller+AantalDBTotaal, Database+1);
+            }
+
+            if (Database == DSAantalTotaal){
+                double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
+                double configPrijs = OptimaliseerBerekenPrijs();
+                if (configBeschikbaarheid > gewensteBeschikbaarheid) {
+                    if (configPrijs < minimaleKosten){
+                        minimaleKosten = configPrijs;
+                        DSgeoptimaliseerde = new int[]{};
+                        WSgeoptimaliseerde = new int[]{};
+                        serverSetup = "Fw: 1 | Wb: ";
+                        for (int i = 0; i < WSAantalPerSoort.length; i++){
+                            if (i == 0){
+                                serverSetup += WSAantalPerSoort[i];
+                            } else{
+                                serverSetup += "-" + WSAantalPerSoort[i];
+                            }
+                            WSgeoptimaliseerde = voegIntToe(WSgeoptimaliseerde, WSAantalPerSoort[i]);
+                        }
+                        serverSetup += " | Db: ";
+                        for(int i = 0; i < DSAantalPerSoort.length; i++){
+                            if(i == 0){
+                                serverSetup += DSAantalPerSoort[i];
+                            } else{
+                                serverSetup += "-" + DSAantalPerSoort[i];
+                            }
+                            WSgeoptimaliseerde = voegIntToe(WSgeoptimaliseerde, WSAantalPerSoort[i]);
+                        }
+                    }
+                    return Database;
+                }
+            }
+        }
+        return Database;
+    }
+    /*{
         for (int i = 0; i < maxAantalServers - AantalDBTotaal; i++) {
             DSAantalPerSoort[Database] = i;
             if (Database < DSAantalTotaal) ;
@@ -225,7 +271,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
         }
         return Database;
-    }
+        */
 
     public void OptimaliseerHuidig(){
     }
@@ -328,7 +374,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 } else {
                     this.maxAantalServers = frame.getStandaardaantalserver_Int();
                 }
-                Optimaliseer();
+                Optimaliseer(gewensteBeschikbaarheid/100);
             }
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
@@ -399,6 +445,17 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
     }
 
+    private void OptimalisatieReset(){
+        WSAantalPerSoort = new int[]{};
+        DSAantalPerSoort = new int[]{};
+        WSAvaliablityArray = new double[]{};
+        DSAvaliablityArray  = new double[]{};
+        WSPrijsPerSoort = new double[]{};
+        DSPrijsPerSoort = new double[]{};
+        WSAantalTotaal = -1;
+        DSAantalTotaal = -1;
+        minimaleKosten = Double.MAX_VALUE;
+    }
 
     static double[] voegDoubleToe (double[] d, double o){
         d = Arrays.copyOf(d, d.length + 1);
@@ -411,6 +468,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         i[i.length - 1] = n;
         return i;
     }
+
 
     public boolean getisVolscherm() {
         return isVolscherm;
