@@ -7,7 +7,7 @@ public class WebServer extends ServerDragAndDrop {
     }
 
     public WebServer(String naam, double prijs, double beschikbaarheid){
-        super( naam, beschikbaarheid,prijs);
+        super( naam, beschikbaarheid, prijs);
 
     }
 }

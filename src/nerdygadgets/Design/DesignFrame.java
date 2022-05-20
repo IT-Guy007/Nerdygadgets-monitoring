@@ -47,12 +47,12 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
-        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
-        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
-        WebServer ServerOptie4 = new WebServer("HAL10239",99.99,0.8);
-        WebServer ServerOptie5 = new WebServer("HAL10240",130.4,0.85);
-        WebServer ServerOptie6 = new WebServer("HAL10241",2200,0.9);
+        DatabaseServer ServerOptie1 = new DatabaseServer( "HAL9001DB", 5100, 90);
+        DatabaseServer ServerOptie2 = new DatabaseServer( "HAL9002DB", 7700, 95);
+        DatabaseServer ServerOptie3 = new DatabaseServer( "HAL9003DB", 12200, 98);
+        WebServer ServerOptie4 = new WebServer( "HAL9001W", 2200, 80);
+        WebServer ServerOptie5 = new WebServer( "HAL9002W",  3200, 90);
+        WebServer ServerOptie6 = new WebServer( "HAL9003W",  5100, 95);
         webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
         databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
 
@@ -61,14 +61,13 @@ public class DesignFrame extends JFrame implements ActionListener {
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
-
-        //Back button
+        
         back = new JButton("Back");
         back.addActionListener(this);
         back.setSize(2,1);
         back.setVisible(true);
         add(back);
-
+        
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
@@ -85,16 +84,17 @@ public class DesignFrame extends JFrame implements ActionListener {
         designpanel = new Designpanel(this);
         add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
+        designpanel.addArrayList(ServerOptie8);
         firewall = ServerOptie8;
 
         int yhoogte = 10;
         for (WebServer webservertje : webServer){
             webservertje.getPrijs();
             Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
-            optie1.setBounds(0, yhoogte, 140, 61);
+            optie1.setBounds(10, yhoogte, 121, 61);
             designpanel.add(optie1);
             designpanel.repaint();
             yhoogte = yhoogte + 71;
@@ -102,7 +102,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (DatabaseServer webservertje : databaseServer){
             webservertje.getPrijs();
             Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
-            optie1.setBounds(0, yhoogte, 140, 61);
+            optie1.setBounds(10, yhoogte, 121, 61);
             designpanel.add(optie1);
             designpanel.repaint();
             yhoogte = yhoogte + 71;
@@ -290,7 +290,7 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                 }
             }
-        } else if(e.getSource() == back) {
+        }else if(e.getSource() == back) {
             setVisible(false);
             JFrame Main = new MainFrame();
         }

@@ -249,4 +249,15 @@ public class Designpanel extends JPanel implements ComponentListener {
     public void addArrayList(ServerDragAndDrop server){
         serversArray_ArrayList.add(server);
     }
+    public void removeArrayList(ServerDragAndDrop server){
+        serversArray_ArrayList.remove(server);
+    }
+
+    public ArrayList<ServerDragAndDrop> getServersArray_ArrayList() {
+        return serversArray_ArrayList;
+    }
+
+    public void setServersArray_ArrayList(ArrayList<ServerDragAndDrop> serversArray_ArrayList) {
+        this.serversArray_ArrayList = serversArray_ArrayList;
+    }
 }
