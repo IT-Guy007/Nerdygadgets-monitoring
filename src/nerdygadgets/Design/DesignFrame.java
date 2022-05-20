@@ -122,12 +122,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
     }
-    public int BerekenBeschikbaarheid(){
-        return 0;
-    }
-    public int BerekenKosten(){
-        return 0;
-    }
 
     public void Optimaliseer(){
 
@@ -288,7 +282,7 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                     }
                 } catch (Exception ex) {
-
+                    System.out.println(ex);
                 }
             }
         }else if(e.getSource() == back) {
