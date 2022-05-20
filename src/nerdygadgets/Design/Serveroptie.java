@@ -27,7 +27,7 @@ public class Serveroptie extends JButton implements ActionListener {
         this.type = type;
         toevoegenafbeelding();
         JLabel tekst = new JLabel();
-        String myString = name + "\n" + availability*100 + "%, " + prijs + "€";
+        String myString = name + "\n" + availability + "%, " + "€" + prijs;
         tekst.setText("<html>" + myString.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
         tekst.setBounds(20,0,121,61);
         add(tekst);
@@ -76,14 +76,17 @@ public class Serveroptie extends JButton implements ActionListener {
         if (type == "webserver") {
 
             ServerDragAndDrop server1 = new WebServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 100, 125);
-            hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server1);
-            hoofdpanel.repaint();
+            server1.setBounds(randx, randy, 125, 140);
+            hoofdpanel.addArrayList(server1);
         }else if(type == "databaseserver"){
             ServerDragAndDrop server1 = new DatabaseServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 100, 125);
-            hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server1);
+            server1.setBounds(randx, randy, 125, 140);
+            hoofdpanel.addArrayList(server1);
+        }
+        for (ServerDragAndDrop server : hoofdpanel.getServersArray_ArrayList()){
+            hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server);
             hoofdpanel.repaint();
         }
     }
+
 }

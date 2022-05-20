@@ -3,6 +3,7 @@ package nerdygadgets.Design.components;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.UUID;
 
 public abstract class ServerDragAndDrop extends JLabel {
     private BufferedImage icon;
@@ -13,13 +14,14 @@ public abstract class ServerDragAndDrop extends JLabel {
     private int x,y;
     private ImageIcon icoon;
     private Color transparent=new Color(1f,0f,0f,0f );
+    private String random_id = UUID.randomUUID().toString();
 
     public ServerDragAndDrop(String naam, double availability, double annualPrice){
         this.naam = naam;
         this.beschikbaarheid = availability;
         this.prijs = annualPrice;
         JLabel label = new JLabel();
-        String myString = "   "+naam + "\n" + availability*100 + "%, " + prijs + "€";
+        String myString = "   "+naam + "\n" + availability + "%, " + prijs + "€";
         label.setText("<html>" + myString.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
 
         if (this instanceof Firewall){
@@ -52,5 +54,9 @@ public abstract class ServerDragAndDrop extends JLabel {
 
     public String getNaam() {
         return naam;
+    }
+
+    public String getRandom_id() {
+        return random_id;
     }
 }

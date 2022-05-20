@@ -4,6 +4,7 @@ import com.google.gson.*;
 import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.WebServer;
+import nerdygadgets.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +15,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
+
 import java.util.Scanner;
 
 
 public class DesignFrame extends JFrame implements ActionListener {
-    private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm;
+    private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm, back;
     private Designpanel designpanel;
 
     private Firewall firewall;
@@ -28,30 +31,34 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int maxServerBacktracking;
     private int[] WSAantalPerSoort = {};
     private int[] DSAantalPerSoort = {};
+
     private int WSAantalTotaal = -1;
     private int DSAantalTotaal = -1;
+
     private double[] WSAvaliablityArray = {};
     private double[] DSAvaliablityArray  = {};
     private double[] WSPrijsPerSoort = {};
     private double[] DSPrijsPerSoort = {};
+
     private double gewensteBeschikbaarheid = -1;
     private double minimaleKosten = Double.MAX_VALUE;
     private int ServerCount;
     private int maxAantalServers;
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
+
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
-        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
-        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
-        WebServer ServerOptie4 = new WebServer("HAL10239",99.99,0.8);
-        WebServer ServerOptie5 = new WebServer("HAL10240",130.4,0.85);
-        WebServer ServerOptie6 = new WebServer("HAL10241",2200,0.9);
+        DatabaseServer ServerOptie1 = new DatabaseServer( "HAL9001DB", 5100, 90);
+        DatabaseServer ServerOptie2 = new DatabaseServer( "HAL9002DB", 7700, 95);
+        DatabaseServer ServerOptie3 = new DatabaseServer( "HAL9003DB", 12200, 98);
+        WebServer ServerOptie4 = new WebServer( "HAL9001W", 2200, 80);
+        WebServer ServerOptie5 = new WebServer( "HAL9002W",  3200, 90);
+        WebServer ServerOptie6 = new WebServer( "HAL9003W",  5100, 95);
         webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
         databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
 
@@ -60,7 +67,13 @@ public class DesignFrame extends JFrame implements ActionListener {
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
-
+        
+        back = new JButton("Back");
+        back.addActionListener(this);
+        back.setSize(2,1);
+        back.setVisible(true);
+        add(back);
+        
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
@@ -77,9 +90,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         designpanel = new Designpanel(this);
         add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
-        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,100,125);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
+        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
+        designpanel.addArrayList(ServerOptie8);
         firewall = ServerOptie8;
 
         int yhoogte = 10;
@@ -113,12 +127,14 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
     }
+
     public int BerekenBeschikbaarheid(){
         return 0;
     }
     public int BerekenKosten(){
         return 0;
     }
+
 
     public void Optimaliseer(){
 
@@ -135,6 +151,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
             DSAantalTotaal++;
         }
+
         WebserverLoop(0, 0);
 
         TekenOptimaliseerd();
@@ -258,7 +275,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.setContentAreaFilled(false);
         naam.setBorderPainted(false);
 
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+path+".png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + path + ".png")));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
@@ -271,14 +288,14 @@ public class DesignFrame extends JFrame implements ActionListener {
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
         // stop weer terug veranderd.
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + active + ".png")));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
         knop.setIcon(newIcon);
 
         Timer timer = new Timer( 200, t -> {
-            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("/resources/"+normal+".png"));
+            ImageIcon icon2 = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + normal + ".png")));
             Image img2 = icon2.getImage();
             Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
             ImageIcon newIcon2 = new ImageIcon(newimg2);
@@ -295,6 +312,12 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
+            dispose();
+            DesignFrame design = new DesignFrame();
+            // center frame (Mustafa)
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension size = toolkit.getScreenSize();
+            design.setLocation(size.width/2 - design.getWidth()/2, size.height/2 - design.getHeight()/2);
         }else if(e.getSource() == JBoptimaliseren){
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
             OptimalisatieFrame frame = new OptimalisatieFrame(this);
@@ -367,9 +390,12 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                     }
                 } catch (Exception ex) {
-
+                    System.out.println(ex);
                 }
             }
+        }else if(e.getSource() == back) {
+            setVisible(false);
+            JFrame Main = new MainFrame();
         }
     }
 
