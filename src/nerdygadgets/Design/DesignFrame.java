@@ -62,12 +62,13 @@ public class DesignFrame extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
         
-        back = new JButton("Back");
-        back.addActionListener(this);
-        back.setSize(2,1);
-        back.setVisible(true);
+//        back = new JButton("Back");
+//        back.addActionListener(this);
+//        back.setSize(2,1);
+//        back.setVisible(true);
+//        add(back);
+        back = create_button(back,"back");
         add(back);
-        
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
@@ -201,6 +202,8 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
+        }else if(e.getSource() == back){
+            activebutton(back,"back-active","back");
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
             dispose();
