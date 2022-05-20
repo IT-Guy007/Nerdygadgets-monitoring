@@ -76,11 +76,11 @@ public class Serveroptie extends JButton implements ActionListener {
         if (type == "webserver") {
 
             ServerDragAndDrop server1 = new WebServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 125, 125);
+            server1.setBounds(randx, randy, 125, 140);
             hoofdpanel.addArrayList(server1);
         }else if(type == "databaseserver"){
             ServerDragAndDrop server1 = new DatabaseServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 125, 125);
+            server1.setBounds(randx, randy, 125, 140);
             hoofdpanel.addArrayList(server1);
         }
         for (ServerDragAndDrop server : hoofdpanel.getServersArray_ArrayList()){

@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -172,7 +173,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.setContentAreaFilled(false);
         naam.setBorderPainted(false);
 
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+path+".png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + path + ".png")));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
@@ -185,14 +186,14 @@ public class DesignFrame extends JFrame implements ActionListener {
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
         // stop weer terug veranderd.
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + active + ".png")));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
         knop.setIcon(newIcon);
 
         Timer timer = new Timer( 200, t -> {
-            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("/resources/"+normal+".png"));
+            ImageIcon icon2 = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + normal + ".png")));
             Image img2 = icon2.getImage();
             Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
             ImageIcon newIcon2 = new ImageIcon(newimg2);
