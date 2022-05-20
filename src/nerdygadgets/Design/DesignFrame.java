@@ -290,6 +290,9 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                 }
             }
+        }else if(e.getSource() == back) {
+            setVisible(false);
+            JFrame Main = new MainFrame();
         }
     }
 
