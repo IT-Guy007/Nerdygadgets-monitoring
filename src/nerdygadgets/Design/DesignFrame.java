@@ -78,7 +78,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(designpanel);
 
         Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
-        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,100,125);
+        ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
         designpanel.addArrayList(ServerOptie8);
         firewall = ServerOptie8;
