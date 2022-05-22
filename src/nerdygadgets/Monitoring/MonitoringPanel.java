@@ -1,7 +1,8 @@
 package nerdygadgets.Monitoring;
 
-import javax.swing.*;
 import nerdygadgets.Design.components.ServerDragAndDrop;
+
+import javax.swing.*;
 
 
 public class MonitoringPanel extends JFrame
@@ -14,11 +15,6 @@ public class MonitoringPanel extends JFrame
     private int databaseUptime;
     private boolean WebsiteOnline;
     private boolean DatabaseOnline;
-    public MonitoringPanel(ServerDragAndDrop server)
-
-    {
-
-    }
 
     public void update()
     {

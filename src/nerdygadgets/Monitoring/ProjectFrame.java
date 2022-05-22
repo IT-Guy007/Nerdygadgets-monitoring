@@ -48,7 +48,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
         delete_project.setVisible(true);
         add(delete_project);
 
-        ArrayList<Project> projects = new ArrayList<Project>();
+        ArrayList<Project> projects;
         projects = getprojects();
         int number_of_projects = 0;
         boolean projects_present = false;
@@ -140,39 +140,6 @@ public class ProjectFrame extends JFrame implements ActionListener {
 
         return output;
     }
-
-    public void deleteProject(String name) {
-        Connection con = null;
-        PreparedStatement p = null;
-
-        String dbhost = "jdbc:mysql://192.168.1.103/application";
-        String user = "group4";
-        String password = "Qwerty1@";
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(dbhost, user, password);
-
-            // SQL command data stored in String datatype
-            String sql = "DELETE FROM project WHERE name = " + name;
-            p = con.prepareStatement(sql);
-            p.executeUpdate();
-
-        } catch (Exception ce) {
-            System.err.println("error in connection");
-            ce.printStackTrace();
-            JLabel error = new JLabel("Error, kan niet verbinden met de server");
-            System.out.println(ce);
-            error.setVisible(true);
-            error.repaint();
-            add(error);
-            create_project.setVisible(false);
-            delete_project.setVisible(false);
-
-        }
-        setVisible(true);
-    }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {

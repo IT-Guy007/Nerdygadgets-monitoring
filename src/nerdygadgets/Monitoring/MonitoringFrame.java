@@ -13,19 +13,24 @@ import java.util.ArrayList;
 public class MonitoringFrame extends JFrame implements ActionListener {
     private int maxiumservercount;
     private boolean isVolscherm = false;
-    Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
+    int projectID = 0;
+    String projectName = null;
 
-    JButton back,five,one,twelve,twentyfour,zeven,thirty;
-    // private paneel MonitoringPanel;
+    JButton back,five,one,twelve,twentyfour,zeven,thirty,refresh,add;
+    ArrayList<Server> servers;
+
     public MonitoringFrame(int projectID) {
-        setTitle("Monitoring van " + getProjectName(projectID));
+        String projectName = getProjectName(projectID);
+        this.projectID = projectID;
+        this.projectName = projectName;
+        setTitle("Monitoring van " + projectName);
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700,500); //Maakt de groote van de gui de helft van de schermgrootte
+        setSize(950,500); //Maakt de groote van de gui de helft van de schermgrootte
         setVisible(true);
 
         //Back button
-        back = new JButton("Cancel");
+        back = new JButton("Terug");
         back.setSize(100,50);
         back.addActionListener(this);
         back.setVisible(true);
@@ -73,7 +78,33 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         thirty.setVisible(true);
         add(thirty);
 
+        //Refresh button
+        refresh = new JButton("Refresh");
+        refresh.setSize(100,50);
+        refresh.addActionListener(this);
+        refresh.setVisible(true);
+        add(refresh);
+
+        //add button
+        add = new JButton("Server toevoegen");
+        add.setSize(100,50);
+        add.addActionListener(this);
+        add.setVisible(true);
+        add(add);
+
+
+        if(servers == null) {
+            JLabel noServers = new JLabel("Geen servers gevonden in het project");
+            noServers.setVisible(true);
+            add(noServers);
+        }
+
         setVisible(true);
+
+    }
+
+    public void charts() {
+        //Code that generates the charts
     }
 
 
@@ -82,6 +113,11 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         if(e.getSource() == back) {
             setVisible(false);
             new ProjectFrame();
+        } else if(e.getSource() == add) {
+            new ServerToevoegen(projectID);
+        } else if(e.getSource() == refresh) {
+            dispose();
+            new MonitoringFrame(projectID);
         }
 
     }
