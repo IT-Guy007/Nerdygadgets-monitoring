@@ -28,7 +28,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
         add(back);
 
         //Refresh
-        refresh = new JButton("refresh");
+        refresh = new JButton("Refresh");
         refresh.addActionListener(this);
         refresh.setSize(2,1);
         refresh.setVisible(true);

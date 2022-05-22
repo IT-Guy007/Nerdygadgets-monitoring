@@ -1,7 +1,5 @@
 package nerdygadgets.Monitoring;
 
-import nerdygadgets.Design.components.ServerDragAndDrop;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,23 +14,75 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     private int maxiumservercount;
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
-    int schermhoogte = schermgrootte.height;
-    int schermbreedte = schermgrootte.width;
+
+    JButton back,five,one,twelve,twentyfour,zeven,thirty;
     // private paneel MonitoringPanel;
     public MonitoringFrame(int projectID) {
         setTitle("Monitoring van " + getProjectName(projectID));
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
+        setSize(700,500); //Maakt de groote van de gui de helft van de schermgrootte
+        setVisible(true);
+
+        //Back button
+        back = new JButton("Cancel");
+        back.setSize(100,50);
+        back.addActionListener(this);
+        back.setVisible(true);
+        add(back);
+
+        //five button
+        five = new JButton("5 minuten");
+        five.setSize(100,50);
+        five.addActionListener(this);
+        five.setVisible(true);
+        add(five);
+
+        //one button
+        one = new JButton("1 uur");
+        one.setSize(100,50);
+        one.addActionListener(this);
+        one.setVisible(true);
+        add(one);
+
+        //twelve button
+        twelve = new JButton("12 uur");
+        twelve.setSize(100,50);
+        twelve.addActionListener(this);
+        twelve.setVisible(true);
+        add(twelve);
+
+        //twentyfour button
+        twentyfour = new JButton("24 uur");
+        twentyfour.setSize(100,50);
+        twentyfour.addActionListener(this);
+        twentyfour.setVisible(true);
+        add(twentyfour);
+
+        //zeven button
+        zeven = new JButton("7 dagen");
+        zeven.setSize(100,50);
+        zeven.addActionListener(this);
+        zeven.setVisible(true);
+        add(zeven);
+
+        //thirty button
+        thirty = new JButton("30 dagen");
+        thirty.setSize(100,50);
+        thirty.addActionListener(this);
+        thirty.setVisible(true);
+        add(thirty);
+
         setVisible(true);
     }
 
-    public MonitoringFrame(ServerDragAndDrop server){
-
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == back) {
+            setVisible(false);
+            new ProjectFrame();
+        }
 
     }
 
