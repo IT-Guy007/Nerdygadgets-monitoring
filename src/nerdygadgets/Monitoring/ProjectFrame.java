@@ -1,19 +1,19 @@
 package nerdygadgets.Monitoring;
 
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import nerdygadgets.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class ProjectFrame extends JFrame implements ActionListener {
-    private ArrayList<String> projects;
-    private JButton back,create_project;
-    int number_of_projects;
+    private JButton back,create_project,delete_project,refresh;
 
     public ProjectFrame() {
         setTitle("Project lijst");
@@ -27,33 +27,51 @@ public class ProjectFrame extends JFrame implements ActionListener {
         back.setVisible(true);
         add(back);
 
+        //Refresh
+        refresh = new JButton("refresh");
+        refresh.addActionListener(this);
+        refresh.setSize(2,1);
+        refresh.setVisible(true);
+        add(refresh);
+
         //create project;
         create_project = new JButton("New project");
-        create_project.setSize(new Dimension(100,50));
+        create_project.setSize(new Dimension(200,50));
         create_project.addActionListener(this);
         create_project.setVisible(true);
         add(create_project);
 
+        //Delete project
+        delete_project = new JButton("Delete project");
+        delete_project.setSize(new Dimension(200,50));
+        delete_project.addActionListener(this);
+        delete_project.setVisible(true);
+        add(delete_project);
+
+        ArrayList<Project> projects = new ArrayList<Project>();
         projects = getprojects();
+        int number_of_projects = 0;
         boolean projects_present = false;
-        int number_of_projects = projects.size();
+        number_of_projects = projects.size();
 
         if(number_of_projects == 0) {
-            setSize(300,100);
+            setSize(450,100);
         } else if (number_of_projects >= 1) {
             int height = ((number_of_projects / 4) * 100) + 100;
-            setSize(400,height);
+            setSize(450,height);
+            projects_present = true;
         }
 
         //Projects
         if(projects_present) {
             for(int i = 0; i != projects.size(); i++) {
-                number_of_projects++;
                 JButton naam;
-                String projectnaam = projects.get(i);
-                naam = new JButton(projectnaam);
-                naam.setSize(100, 50);
+                Project project = projects.get(i);
+                naam = new JButton(project.name);
                 int finalI = i;
+                naam.setSize(200, 100);
+                naam.setVisible(true);
+                add(naam);
                 naam.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -62,23 +80,33 @@ public class ProjectFrame extends JFrame implements ActionListener {
                 });
                 naam.setVisible(true);
             }
+        } else {
+            JLabel none_found = new JLabel("Geen projecten gevonden");
+            none_found.setVisible(true);
+            add(none_found);
+            repaint();
         }
 
         setVisible(true);
     }
 
     //Connection to database and get all projects;
-    public ArrayList<String> getprojects() {
-
-        Connection connection = null;
+    public ArrayList<Project> getprojects() {
+        Connection con = null;
         PreparedStatement p = null;
         ResultSet rs = null;
-        ArrayList<String> output = new ArrayList<String>();
-        try {
-            // Importing and registering drivers
-            Class.forName("com.mysql.cj.jdbc.Driver");
+        int projectID = 0;
+        String name = null;
+        int wanted_availability = 0;
 
-            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.app:3306/application", "group4", "Qwerty1@");
+        ArrayList<Project> output = new ArrayList<Project>();
+        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String user = "group4";
+        String password = "Qwerty1@";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(dbhost, user, password);
 
             // SQL command data stored in String datatype
             String sql = "select * from project";
@@ -87,25 +115,63 @@ public class ProjectFrame extends JFrame implements ActionListener {
 
             // In array zetten;
             while (rs.next()) {
-                output.set(rs.getInt("ID"),rs.getString("naam"));
+                projectID = rs.getInt("projectID");
+                name = rs.getString("name");
+                wanted_availability = rs.getInt("wanted_Availability");
+
+                Project listed = new Project(projectID,name,wanted_availability);
+                output.add(listed);
             }
 
 
-        } catch (CommunicationsException ce) {
+        } catch (Exception ce) {
+            System.err.println("error in connection");
+            ce.printStackTrace();
             JLabel error = new JLabel("Error, kan niet verbinden met de server");
+            System.out.println(ce);
             error.setVisible(true);
             error.repaint();
             add(error);
-
-        } catch (SQLException e) {
-            System.out.println(e);
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            create_project.setVisible(false);
+            delete_project.setVisible(false);
 
         }
 
         return output;
+    }
+
+    public void deleteProject(String name) {
+        Connection con = null;
+        PreparedStatement p = null;
+
+        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String user = "group4";
+        String password = "Qwerty1@";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(dbhost, user, password);
+
+            // SQL command data stored in String datatype
+            String sql = "DELETE FROM project WHERE name = " + name;
+            p = con.prepareStatement(sql);
+            p.executeUpdate();
+
+        } catch (Exception ce) {
+            System.err.println("error in connection");
+            ce.printStackTrace();
+            JLabel error = new JLabel("Error, kan niet verbinden met de server");
+            System.out.println(ce);
+            error.setVisible(true);
+            error.repaint();
+            add(error);
+            create_project.setVisible(false);
+            delete_project.setVisible(false);
+
+        }
+        invalidate();
+        validate();
+        repaint();
     }
 
 
@@ -117,10 +183,26 @@ public class ProjectFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == create_project) {
             try {
                 new CreateProject();
+                repaint();
             } catch(Exception exception) {
                 System.out.println(exception);
             }
+
+        } else if(e.getSource() == refresh) {
+            invalidate();
+            validate();
             repaint();
+
+        } else if(e.getSource() == delete_project) {
+            try {
+                new DeleteProject();
+            } catch (Exception exception) {
+                System.out.println(exception);
+            }
+            invalidate();
+            validate();
+            repaint();
+
         }
 
     }

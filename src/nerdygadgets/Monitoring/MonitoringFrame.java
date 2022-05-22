@@ -43,7 +43,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             // Importing and registering drivers
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.app:3306/application", "group4", "Qwerty1@");
+            Connection con = DriverManager.getConnection("jdbc:mysql:/192.168.1.103:3306/application", "group4", "Qwerty1@");
 
             // SQL command data stored in String datatype
             String sql = "select * from project where ID = " + i;

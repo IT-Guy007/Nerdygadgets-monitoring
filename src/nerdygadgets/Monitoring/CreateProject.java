@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class CreateProject extends JFrame implements ActionListener {
 
     JButton cancel, submit;
-    JLabel title, name;
-    JTextField txt_name;
+    JLabel title, name, availibility;
+    JTextField txt_name,txt_availibility;
     int projectID = 0;
 
     public CreateProject() {
@@ -33,10 +33,15 @@ public class CreateProject extends JFrame implements ActionListener {
         name = new JLabel("Project naam");
         name.setSize(2,1);
         add(name);
-
-        //Inputfield
-        txt_name = new JTextField("",15);
+        txt_name = new JTextField("",12);
         add(txt_name);
+
+        //Availibility
+        availibility = new JLabel("Gewilde beschikbaarheid");
+        availibility.setSize(2,1);
+        add(availibility);
+        txt_availibility = new JTextField("",4);
+        add(txt_availibility);
 
         // Submit
         submit = new JButton("Aanmaken");
@@ -48,26 +53,26 @@ public class CreateProject extends JFrame implements ActionListener {
     }
 
 
-    public void CreateProject(String projectnaam) {
+    public void CreateProject(String projectnaam, int wanted_availability) {
 
-        Connection connection = null;
+        Connection con = null;
         PreparedStatement p = null;
         ResultSet rs = null;
         ArrayList<String> output = new ArrayList<String>();
+        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String user = "group4";
+        String password = "Qwerty1@";
+        projectnaam = "\"" + projectnaam + "\"";
+
         try {
-            // Importing and registering drivers
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql:/windesheim.app:3306/application", "group4", "Qwerty1@");
+            con = DriverManager.getConnection(dbhost, user, password);
 
             // SQL command data stored in String datatype
-            String sql = "Insert Into project values(null," + projectnaam + ")";
+            String sql = "INSERT INTO project VALUES(NULL," + projectnaam + "," + wanted_availability + ")";
+            System.out.println(sql);
             p = con.prepareStatement(sql);
-            rs = p.executeQuery();
-
-            // In array zetten;
-            while (rs.next()) {
-                output.set(rs.getInt("ID"),rs.getString("naam"));
-            }
+            p.executeUpdate();
 
 
         } catch (CommunicationsException ce) {
@@ -83,7 +88,6 @@ public class CreateProject extends JFrame implements ActionListener {
             throw new RuntimeException(e);
 
         }
-
     }
 
 
@@ -93,7 +97,7 @@ public class CreateProject extends JFrame implements ActionListener {
             setVisible(false);
             new ProjectFrame();
         } else if(e.getSource() == submit) {
-            CreateProject(txt_name.getText());
+            CreateProject(txt_name.getText(), Integer.parseInt(txt_availibility.getText()));
             dispose();
         }
     }
