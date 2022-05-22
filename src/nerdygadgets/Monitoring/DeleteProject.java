@@ -20,7 +20,7 @@ public class DeleteProject extends JFrame implements ActionListener {
         setSize(300,200);
         setResizable(false);
 
-        cancel = new JButton();
+        cancel = new JButton("Cancel");
         cancel.setSize(50,30);
         cancel.addActionListener(this);
         cancel.setVisible(true);
@@ -35,11 +35,13 @@ public class DeleteProject extends JFrame implements ActionListener {
         projectname.setVisible(true);
         add(projectname);
 
-        submit = new JButton();
+        submit = new JButton("Verwijderen");
         submit.setSize(50,30);
         submit.addActionListener(this);
         submit.setVisible(true);
         add(submit);
+
+        setVisible(true);
     }
 
     @Override
@@ -61,6 +63,7 @@ public class DeleteProject extends JFrame implements ActionListener {
                     con = DriverManager.getConnection(dbhost, user, password);
 
                     // SQL command data stored in String datatype
+                    name = "\"" + name + "\"";
                     String sql = "DELETE FROM project WHERE name = " + name;
                     p = con.prepareStatement(sql);
                     p.executeUpdate();
@@ -70,6 +73,8 @@ public class DeleteProject extends JFrame implements ActionListener {
                     ce.printStackTrace();
 
                 }
+                setVisible(false);
+
             }
         }
 }

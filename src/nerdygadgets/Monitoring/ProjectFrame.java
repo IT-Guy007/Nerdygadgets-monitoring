@@ -65,20 +65,22 @@ public class ProjectFrame extends JFrame implements ActionListener {
         //Projects
         if(projects_present) {
             for(int i = 0; i != projects.size(); i++) {
-                JButton naam;
+                JButton projectbutton;
                 Project project = projects.get(i);
-                naam = new JButton(project.name);
+                int projectID = project.ProjectID;
+                projectbutton = new JButton(project.name);
                 int finalI = i;
-                naam.setSize(200, 100);
-                naam.setVisible(true);
-                add(naam);
-                naam.addActionListener(new ActionListener() {
+                projectbutton.setSize(200, 100);
+                projectbutton.setVisible(true);
+                add(projectbutton);
+                projectbutton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        JFrame MonitoringFrame = new MonitoringFrame(finalI);
+                        new MonitoringFrame(projectID);
+                        setVisible(false);
                     }
                 });
-                naam.setVisible(true);
+                projectbutton.setVisible(true);
             }
         } else {
             JLabel none_found = new JLabel("Geen projecten gevonden");
@@ -108,7 +110,6 @@ public class ProjectFrame extends JFrame implements ActionListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(dbhost, user, password);
 
-            // SQL command data stored in String datatype
             String sql = "select * from project";
             p = con.prepareStatement(sql);
             rs = p.executeQuery();
@@ -169,9 +170,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
             delete_project.setVisible(false);
 
         }
-        invalidate();
-        validate();
-        repaint();
+        setVisible(true);
     }
 
 
@@ -189,9 +188,8 @@ public class ProjectFrame extends JFrame implements ActionListener {
             }
 
         } else if(e.getSource() == refresh) {
-            invalidate();
-            validate();
-            repaint();
+            dispose();
+            new ProjectFrame();
 
         } else if(e.getSource() == delete_project) {
             try {
@@ -199,10 +197,6 @@ public class ProjectFrame extends JFrame implements ActionListener {
             } catch (Exception exception) {
                 System.out.println(exception);
             }
-            invalidate();
-            validate();
-            repaint();
-
         }
 
     }

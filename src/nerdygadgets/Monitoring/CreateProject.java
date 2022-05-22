@@ -37,7 +37,7 @@ public class CreateProject extends JFrame implements ActionListener {
         add(txt_name);
 
         //Availibility
-        availibility = new JLabel("Gewilde beschikbaarheid");
+        availibility = new JLabel("Gewenste beschikbaarheid");
         availibility.setSize(2,1);
         add(availibility);
         txt_availibility = new JTextField("",4);
@@ -70,7 +70,6 @@ public class CreateProject extends JFrame implements ActionListener {
 
             // SQL command data stored in String datatype
             String sql = "INSERT INTO project VALUES(NULL," + projectnaam + "," + wanted_availability + ")";
-            System.out.println(sql);
             p = con.prepareStatement(sql);
             p.executeUpdate();
 

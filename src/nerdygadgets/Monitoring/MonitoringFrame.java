@@ -1,12 +1,15 @@
 package nerdygadgets.Monitoring;
 
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import nerdygadgets.Design.components.ServerDragAndDrop;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class MonitoringFrame extends JFrame implements ActionListener {
@@ -34,44 +37,37 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     }
 
     public String getProjectName(int i) {
-        Connection connection = null;
+        String name = null;
+        Connection con = null;
         PreparedStatement p = null;
         ResultSet rs = null;
-        ArrayList<String> output = new ArrayList<String>();
-        String output2 = null;
+
+        ArrayList<Project> output = new ArrayList<Project>();
+        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String user = "group4";
+        String password = "Qwerty1@";
+
         try {
-            // Importing and registering drivers
             Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(dbhost, user, password);
 
-            Connection con = DriverManager.getConnection("jdbc:mysql:/192.168.1.103:3306/application", "group4", "Qwerty1@");
-
-            // SQL command data stored in String datatype
-            String sql = "select * from project where ID = " + i;
+            String sql = "select name from project where projectID = " + i;
             p = con.prepareStatement(sql);
             rs = p.executeQuery();
 
             // In array zetten;
             while (rs.next()) {
-                output.set(rs.getInt("ID"),rs.getString("naam"));
+                name = rs.getString("name");
+                return name;
             }
 
 
-        } catch (CommunicationsException ce) {
-            JLabel error = new JLabel("Error, kan niet verbinden met de server");
-            error.setVisible(true);
-            error.repaint();
-            add(error);
-
-        } catch (SQLException e) {
-            System.out.println(e);
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (Exception ce) {
+            System.err.println("error in connection");
+            ce.printStackTrace();
 
         }
 
-        output2 = output.get(0);
-
-        return output2;
+        return name;
     }
 }
