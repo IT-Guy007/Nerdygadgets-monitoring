@@ -5,15 +5,23 @@ import java.util.ArrayList;
 public class ServerLists {
     private ArrayList<ServerDragAndDrop> servers = new ArrayList<>();
 
-    ServerLists() {
-        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
-        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
-        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
-        WebServer ServerOptie4 = new WebServer("HAL10239",99.99,0.8);
-        WebServer ServerOptie5 = new WebServer("HAL10240",130.4,0.85);
-        WebServer ServerOptie6 = new WebServer("HAL10241",2200,0.9);
+    public ServerLists() {
+        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",80,99.99);
+        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",85,130.4);
+        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",90,2200);
+        WebServer ServerOptie4 = new WebServer("HAL10239",80,99.99);
+        WebServer ServerOptie5 = new WebServer("HAL10240",85,130.4);
+        WebServer ServerOptie6 = new WebServer("HAL10241",90,2200);
         servers.add(ServerOptie4);servers.add(ServerOptie5);servers.add(ServerOptie6);
         servers.add(ServerOptie1);servers.add(ServerOptie2); servers.add(ServerOptie3);
+    }
+
+    public String[] generateArray() {
+        String[] serverArray = new String[servers.size()];
+        for (int i = 0; i < servers.size(); i++) {
+            serverArray[i] = servers.get(i).getNaam();
+        }
+        return serverArray;
     }
 
     public ArrayList<ServerDragAndDrop> getServers() {

@@ -1,10 +1,7 @@
 package nerdygadgets.Design;
 
 import com.google.gson.*;
-import nerdygadgets.Design.components.DatabaseServer;
-import nerdygadgets.Design.components.Firewall;
-import nerdygadgets.Design.components.ServerDragAndDrop;
-import nerdygadgets.Design.components.WebServer;
+import nerdygadgets.Design.components.*;
 import nerdygadgets.MainFrame;
 
 import javax.swing.*;
@@ -47,6 +44,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int maxAantalServers;
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
+    ServerLists list;
 
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
@@ -54,14 +52,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        DatabaseServer ServerOptie1 = new DatabaseServer( "HAL9001DB", 5100, 90);
-        DatabaseServer ServerOptie2 = new DatabaseServer( "HAL9002DB", 7700, 95);
-        DatabaseServer ServerOptie3 = new DatabaseServer( "HAL9003DB", 12200, 98);
-        WebServer ServerOptie4 = new WebServer( "HAL9001W", 2200, 80);
-        WebServer ServerOptie5 = new WebServer( "HAL9002W",  3200, 90);
-        WebServer ServerOptie6 = new WebServer( "HAL9003W",  5100, 95);
-        webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
-        databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
+        list = new ServerLists();
 
         setTitle("Nerdygadgets monitoring aplicatie");
 
@@ -333,6 +324,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
+            ServerDialog dialog = new ServerDialog(this, true, list.generateArray(), list.getServers());
         }
         else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
