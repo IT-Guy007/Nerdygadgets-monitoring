@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
     </content>
+    <content url="jar://$USER_HOME$/Downloads/mysql-connector-java-8.0.29.jar!/" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="Java EE 6-Java EE 6" level="project" />
@@ -13,7 +14,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../mysql-connector-java-8.0.29/mysql-connector-java-8.0.29.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/mysql-connector-java-8.0.29.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
