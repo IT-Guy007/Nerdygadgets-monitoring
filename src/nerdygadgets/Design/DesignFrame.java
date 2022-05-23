@@ -11,9 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -57,25 +55,18 @@ public class DesignFrame extends JFrame implements ActionListener {
         webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
         databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
 
-        setTitle("Nerdygadgets monitoring aplicatie");
+        setTitle("Nerdygadgets Monitoring Applicatie");
 
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
-        
-//        back = new JButton("Back");
-//        back.addActionListener(this);
-//        back.setSize(2,1);
-//        back.setVisible(true);
-//        add(back);
+
         back = create_button(back,"back");
         add(back);
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
         add(JBopslaan);
-        JBbestand_openen = create_button(JBbestand_openen, "Legen-veld");
-        add(JBbestand_openen);
         JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren");
         add(JBoptimaliseren);
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
@@ -203,8 +194,49 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
+
+            Gson gson = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .setPrettyPrinting()
+                    .create();
+
+            String fileContent = "[";
+            boolean firstValue = true;
+            for (Component c : designpanel.getComponents()) {
+                if (c instanceof ServerDragAndDrop) {
+                    ServerDragAndDrop ic = (ServerDragAndDrop) c;
+                    if(firstValue){
+                        firstValue = false;
+                    } else {
+                        fileContent += ",\n";
+                    }
+                    fileContent += gson.toJson(ic);
+                }
+            }
+            fileContent += "]";
+
+            // Let user pick a location/name to save the file
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Save your Infrastructure Design File");
+            int userSelection = fileChooser.showSaveDialog(this);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File savePath = fileChooser.getSelectedFile();
+
+                try {
+                    FileWriter file = new FileWriter(savePath.getAbsolutePath());
+
+                    // Save json components array to a file
+                    file.write(fileContent);
+                    file.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
         }else if(e.getSource() == back){
             activebutton(back,"back-active","back");
+            setVisible(false);
+            JFrame Main = new MainFrame();
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
             dispose();
@@ -247,50 +279,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
                 designpanel.SetGrootScherm();
             }
-        }else if(e.getSource() == JBbestand_openen){
-            Gson gson = new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .create();
-
-            // Let user pick a file to open
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Open Infrastructure Design File");
-            int option = fileChooser.showOpenDialog(this);
-            if(option == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                JsonArray array = null;
-                try {
-                    // Create file reader
-                    Scanner reader = new Scanner(file);
-                    JsonParser parser = new JsonParser();
-
-                    // Convert file to a json array
-                    array = (JsonArray) parser.parse(new FileReader(file.getAbsolutePath()));
-                } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                }
-
-                try {
-                    // Loop over the json array to retrieve the infrastructure components
-                    for (Object object : array) {
-                        JsonObject jsonObject = (JsonObject) object;
-
-                        // Convert json component values to usable variables
-                        String name = jsonObject.get("name").getAsString();
-                        String type = jsonObject.get("type").getAsString();
-                        double availability = jsonObject.get("availability").getAsDouble();
-                        double annualPrice = jsonObject.get("annualPrice").getAsDouble();
-                        int panelX = jsonObject.get("panelX").getAsInt();
-                        int panelY = jsonObject.get("panelY").getAsInt();
-
-                    }
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
             }
-        }else if(e.getSource() == back) {
-            setVisible(false);
-            JFrame Main = new MainFrame();
         }
     }
 
