@@ -3,6 +3,7 @@ package nerdygadgets.Design;
 import com.google.gson.*;
 import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
+import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
 import nerdygadgets.MainFrame;
 
@@ -325,4 +326,21 @@ public class DesignFrame extends JFrame implements ActionListener {
         return schermbreedte;
     }
 
+    public int returnyhoogte(String servernaam){
+        int yhoogte = 10;
+        int hoogte = 600;
+        for (WebServer webservertje : webServer){
+            if (webservertje.getNaam().equals(servernaam)){
+                hoogte=yhoogte;
+            }
+            yhoogte = yhoogte + 71;
+        }
+        for (DatabaseServer webservertje : databaseServer){
+            if (webservertje.getNaam().equals(servernaam)){
+                hoogte=yhoogte;
+            }
+            yhoogte = yhoogte + 71;
+        }
+        return hoogte;
+    }
 }
