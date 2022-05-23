@@ -10,6 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
 
 import static java.lang.Math.round;
@@ -148,6 +152,8 @@ public class Serveroptie extends JButton implements ActionListener {
             hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server);
             hoofdpanel.repaint();
         }
+
     }
+
 
 }
