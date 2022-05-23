@@ -110,6 +110,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         // Kijkt of het object dat je wilt verwijderen geen firewall is en haalt vervolgens het object van het scherm, en haalt deze uit de lijst met objecten.
         if(!(server instanceof Firewall)){
             remove(server);
+            removeArrayList(server);
             int counter =0;
             try {
                 for (Component[] coneections : connections_list) {
@@ -248,5 +249,16 @@ public class Designpanel extends JPanel implements ComponentListener {
     }
     public void addArrayList(ServerDragAndDrop server){
         serversArray_ArrayList.add(server);
+    }
+    public void removeArrayList(Component server){
+            serversArray_ArrayList.remove(server);
+    }
+
+    public ArrayList<ServerDragAndDrop> getServersArray_ArrayList() {
+        return serversArray_ArrayList;
+    }
+
+    public void setServersArray_ArrayList(ArrayList<ServerDragAndDrop> serversArray_ArrayList) {
+        this.serversArray_ArrayList = serversArray_ArrayList;
     }
 }

@@ -3,6 +3,7 @@ package nerdygadgets.Design;
 import com.google.gson.*;
 import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
+import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
 import nerdygadgets.MainFrame;
 
@@ -15,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
+
 import java.util.Scanner;
 
 
@@ -29,30 +32,34 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int maxServerBacktracking;
     private int[] WSAantalPerSoort = {};
     private int[] DSAantalPerSoort = {};
-    private int WSAantalTotaal;
-    private int DSAantalTotaal;
+
+    private int WSAantalTotaal = -1;
+    private int DSAantalTotaal = -1;
+
     private double[] WSAvaliablityArray = {};
     private double[] DSAvaliablityArray  = {};
     private double[] WSPrijsPerSoort = {};
     private double[] DSPrijsPerSoort = {};
-    private double gewensteBeschikbaarheid;
-    private double minimaleKosten;
+
+    private double gewensteBeschikbaarheid = -1;
+    private double minimaleKosten = Double.MAX_VALUE;
     private int ServerCount;
     private int maxAantalServers;
-    private int[] WSgeoptimaliseerde;
-    private int[] DSgeoptimaliseerde;
+    private int[] WSgeoptimaliseerde = {};
+    private int[] DSgeoptimaliseerde = {};
+
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
 
     public DesignFrame() {
-        DatabaseServer ServerOptie1 = new DatabaseServer("WD10239",99.99,0.8);
-        DatabaseServer ServerOptie2 = new DatabaseServer("WD10240",130.4,0.85);
-        DatabaseServer ServerOptie3 = new DatabaseServer("WD10241",2200,0.9);
-        WebServer ServerOptie4 = new WebServer("HAL10239",99.99,0.8);
-        WebServer ServerOptie5 = new WebServer("HAL10240",130.4,0.85);
-        WebServer ServerOptie6 = new WebServer("HAL10241",2200,0.9);
+        DatabaseServer ServerOptie1 = new DatabaseServer( "HAL9001DB", 5100, 90);
+        DatabaseServer ServerOptie2 = new DatabaseServer( "HAL9002DB", 7700, 95);
+        DatabaseServer ServerOptie3 = new DatabaseServer( "HAL9003DB", 12200, 98);
+        WebServer ServerOptie4 = new WebServer( "HAL9001W", 2200, 80);
+        WebServer ServerOptie5 = new WebServer( "HAL9002W",  3200, 90);
+        WebServer ServerOptie6 = new WebServer( "HAL9003W",  5100, 95);
         webServer.add(ServerOptie4);webServer.add(ServerOptie5);webServer.add(ServerOptie6);
         databaseServer.add(ServerOptie1);databaseServer.add(ServerOptie2); databaseServer.add(ServerOptie3);
 
@@ -61,14 +68,13 @@ public class DesignFrame extends JFrame implements ActionListener {
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
-
-        //Back button
+        
         back = new JButton("Back");
         back.addActionListener(this);
         back.setSize(2,1);
         back.setVisible(true);
         add(back);
-
+        
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
@@ -85,16 +91,17 @@ public class DesignFrame extends JFrame implements ActionListener {
         designpanel = new Designpanel(this);
         add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall("HAL10241",2200,0.9);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
+        designpanel.addArrayList(ServerOptie8);
         firewall = ServerOptie8;
 
         int yhoogte = 10;
         for (WebServer webservertje : webServer){
             webservertje.getPrijs();
             Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
-            optie1.setBounds(0, yhoogte, 140, 61);
+            optie1.setBounds(10, yhoogte, 121, 61);
             designpanel.add(optie1);
             designpanel.repaint();
             yhoogte = yhoogte + 71;
@@ -102,7 +109,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (DatabaseServer webservertje : databaseServer){
             webservertje.getPrijs();
             Serveroptie optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
-            optie1.setBounds(0, yhoogte, 140, 61);
+            optie1.setBounds(10, yhoogte, 121, 61);
             designpanel.add(optie1);
             designpanel.repaint();
             yhoogte = yhoogte + 71;
@@ -121,12 +128,14 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
     }
+
     public int BerekenBeschikbaarheid(){
         return 0;
     }
     public int BerekenKosten(){
         return 0;
     }
+
 
     public void Optimaliseer(){
 
@@ -143,27 +152,122 @@ public class DesignFrame extends JFrame implements ActionListener {
             DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
             DSAantalTotaal++;
         }
-        WSLoop(0, 0);
 
-        // Draw functie voor optimaal design; * hier *
+        WebserverLoop(0, 0);
+
+        TekenOptimaliseerd();
     }
 
-    private int WSLoop(int WSAantalTotaal, int WebServer){
-        for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
-            WSAantalPerSoort[WebServer] = i;
-            if(WebServer == WSAantalTotaal){
-                // DSLoop (0,0); * functie moet nog geschreven worden *
+
+    private void TekenOptimaliseerd(){
+        designpanel.removeAll();
+
+        firewall = new Firewall(firewall.getNaam(), firewall.getPrijs(), firewall.getBeschikbaarheid(), designpanel.getWidth()/2, designpanel.getHeight()/2);
+        designpanel.add(firewall);
+
+        for (int i = 0; i < WSgeoptimaliseerde.length; i++){
+            for(int j = 0; j < WSgeoptimaliseerde[i]; j++){
+                WebServer WS = webServer.get(i);
+                WebServer WS2 = new WebServer(WS.getNaam(), WS.getPrijs(), WS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
+                designpanel.add(WS2);
             }
+        }
+
+        for (int i = 0; i < DSgeoptimaliseerde.length; i++){
+            for(int j = 0; j < DSgeoptimaliseerde[i]; j++){
+                DatabaseServer DS = databaseServer.get(i);
+                DatabaseServer DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
+                designpanel.add(DS2);
+            }
+        }
+    }
+
+
+    private int WebserverLoop(int AantalWSTotaal, int WebServer){
+        for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+            WSAantalPerSoort[WebServer] = i;
             if(WebServer < WSAantalTotaal){
-                WSLoop(i+WSAantalTotaal, WebServer+1);
+                WebserverLoop(i + AantalWSTotaal, WebServer + 1);
+            }
+            if(WebServer == WSAantalTotaal){
+                DatabaseLoop (0,0);
             }
         }
         return WebServer;
     }
 
+    private int DatabaseLoop(int AantalDBTotaal, int Database) {
+        for (int i = 0; i < maxAantalServers - AantalDBTotaal; i++) {
+            DSAantalPerSoort[Database] = i;
+            if (Database < DSAantalTotaal) ;
+            {
+                DatabaseLoop(i + AantalDBTotaal, Database + 1);
+            }
+            if (Database == DSAantalTotaal) {
+                double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
+                double configPrijs = OptimaliseerBerekenPrijs();
+
+                if (configBeschikbaarheid > gewensteBeschikbaarheid){
+                    if (configPrijs < minimaleKosten) {
+                        DSgeoptimaliseerde = new int[]{};
+                        WSgeoptimaliseerde = new int[]{};
+                        minimaleKosten = configPrijs;
+
+                        for (int j = 0; j < DSAantalPerSoort.length; j++){
+                            DSgeoptimaliseerde = voegIntToe(DSgeoptimaliseerde, DSAantalPerSoort[j]);
+                        }
+                        for (int y = 0; y < WSAantalPerSoort.length; y++){
+                            WSgeoptimaliseerde = voegIntToe(WSgeoptimaliseerde, WSAantalPerSoort[y]);
+                        }
+
+                        return Database;
+                    }
+                }
+            }
+        }
+        return Database;
+    }
+
     public void OptimaliseerHuidig(){
     }
     public void Huidig(){
+
+    }
+
+    private double OptimaliseerBerekenBeschikbaarheid(){
+        double beschikbaarheidFirewall = 1, beschikbaarheidDatabase = 1, beschikbaarheidWebserver = 1;
+
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            beschikbaarheidDatabase *= Math.pow((1 - DSAantalPerSoort[i]), DSAvaliablityArray[i]);
+        }
+        beschikbaarheidWebserver = 1 - beschikbaarheidWebserver;
+
+        for (int i = 0; i < WSAantalPerSoort.length; i++){
+            beschikbaarheidWebserver *= Math.pow((1 - WSAvaliablityArray[i]), WSAantalPerSoort[i]);
+        }
+        beschikbaarheidDatabase = 1 - beschikbaarheidDatabase;
+
+        beschikbaarheidFirewall = Math.pow((1- firewall.getBeschikbaarheid() / 100), 1);
+
+        double beschikbaarheid = beschikbaarheidFirewall * beschikbaarheidDatabase * beschikbaarheidWebserver;
+        return beschikbaarheid;
+    }
+
+    private double OptimaliseerBerekenPrijs(){
+        double prijsFirewall = firewall.getPrijs();
+        double prijsDatabase = 0;
+        double prijsWebserver = 0;
+
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            prijsDatabase += (DSAantalPerSoort[i] * DSPrijsPerSoort[i]);
+        }
+
+        for (int i = 0; i < WSAantalPerSoort.length; i++){
+            prijsWebserver += (WSAantalPerSoort[i] * WSPrijsPerSoort[i]);
+        }
+
+        double prijsTotaal = prijsDatabase + prijsWebserver + prijsFirewall;
+        return prijsTotaal;
 
     }
     public JButton create_button(JButton naam, String path) {
@@ -172,7 +276,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.setContentAreaFilled(false);
         naam.setBorderPainted(false);
 
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+path+".png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + path + ".png")));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
@@ -185,14 +289,14 @@ public class DesignFrame extends JFrame implements ActionListener {
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
         // stop weer terug veranderd.
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + active + ".png")));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
         knop.setIcon(newIcon);
 
         Timer timer = new Timer( 200, t -> {
-            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("/resources/"+normal+".png"));
+            ImageIcon icon2 = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + normal + ".png")));
             Image img2 = icon2.getImage();
             Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
             ImageIcon newIcon2 = new ImageIcon(newimg2);
@@ -287,14 +391,15 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                     }
                 } catch (Exception ex) {
-
+                    System.out.println(ex);
                 }
             }
-        } else if(e.getSource() == back) {
+        }else if(e.getSource() == back) {
             setVisible(false);
             JFrame Main = new MainFrame();
         }
     }
+
 
     static double[] voegDoubleToe (double[] d, double o){
         d = Arrays.copyOf(d, d.length + 1);
@@ -328,4 +433,21 @@ public class DesignFrame extends JFrame implements ActionListener {
         return schermbreedte;
     }
 
+    public int returnyhoogte(String servernaam){
+        int yhoogte = 10;
+        int hoogte = 600;
+        for (WebServer webservertje : webServer){
+            if (webservertje.getNaam().equals(servernaam)){
+                hoogte=yhoogte;
+            }
+            yhoogte = yhoogte + 71;
+        }
+        for (DatabaseServer webservertje : databaseServer){
+            if (webservertje.getNaam().equals(servernaam)){
+                hoogte=yhoogte;
+            }
+            yhoogte = yhoogte + 71;
+        }
+        return hoogte;
+    }
 }
