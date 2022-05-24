@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 import java.sql.*;
 
@@ -46,8 +47,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
+    String save;
 
-    public DesignFrame() {
+    public DesignFrame(String save) {
+        this.save = save;
         DatabaseServer ServerOptie1 = new DatabaseServer( "HAL9001DB", 5100, 90);
         DatabaseServer ServerOptie2 = new DatabaseServer( "HAL9002DB", 7700, 95);
         DatabaseServer ServerOptie3 = new DatabaseServer( "HAL9003DB", 12200, 98);
@@ -104,6 +107,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         setVisible(true);
         setResizable(false);
+        open();
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         // Een manier om afbeeldingen te veranderen van grootte, maar niet optimaal omdat je kwaliteit verliest.
@@ -206,7 +210,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
             dispose();
-            DesignFrame design = new DesignFrame();
+            DesignFrame design = new DesignFrame(null);
             // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
@@ -296,6 +300,56 @@ public class DesignFrame extends JFrame implements ActionListener {
             yhoogte = yhoogte + 71;
         }
         return hoogte;
+    }
+    public void open() {
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "group4", "Qwerty1@");
+            Statement stmt = conn.createStatement();
+            String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
+            ResultSet rset = stmt.executeQuery(uniqueQuery);
+            int maxx;
+            if (designpanel.getFrame().getisVolscherm()){
+                maxx = designpanel.getFrame().getSchermbreedte() -280;
+            }else{
+                maxx = designpanel.getFrame().getSchermbreedte()/36*26;
+            }
+            int minx = 140;
+            int range = maxx - minx + 1;
+            int randx = (int)(Math.random() * range) + minx;
+
+            int maxy;
+            if (designpanel.getFrame().getisVolscherm()){
+                maxy = designpanel.getFrame().getSchermhoogte() -180;
+            }else{
+                maxy = designpanel.getFrame().getSchermhoogte()/41*26;
+            }
+            int miny = 0;
+            int rangey = maxy - miny + 1;
+            int randy = (int)(Math.random() * rangey) + miny;
+
+            while (rset.next()) {
+                if (Objects.equals(rset.getString("type"), "webserver")) {
+
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    server1.setBounds(randx, randy, 125, 125);
+                    designpanel.addArrayList(server1);
+                }else if(Objects.equals(rset.getString("type"), "databaseserver")){
+                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    server1.setBounds(randx, randy, 125, 125);
+                    designpanel.addArrayList(server1);
+                }
+                for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                    designpanel.add(designpanel.getFrame().getFirewall(),server);
+                    designpanel.repaint();
+                }
+            }
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }
 
     public void save(){
