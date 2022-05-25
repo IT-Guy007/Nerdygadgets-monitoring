@@ -10,6 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
 
 import static java.lang.Math.round;
@@ -137,17 +141,19 @@ public class Serveroptie extends JButton implements ActionListener {
         if (type == "webserver") {
 
             ServerDragAndDrop server1 = new WebServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 125, 140);
+            server1.setBounds(randx, randy, 125, 125);
             hoofdpanel.addArrayList(server1);
         }else if(type == "databaseserver"){
             ServerDragAndDrop server1 = new DatabaseServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 125, 140);
+            server1.setBounds(randx, randy, 125, 125);
             hoofdpanel.addArrayList(server1);
         }
         for (ServerDragAndDrop server : hoofdpanel.getServersArray_ArrayList()){
             hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server);
             hoofdpanel.repaint();
         }
+
     }
+
 
 }

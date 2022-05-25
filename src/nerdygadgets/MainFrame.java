@@ -87,7 +87,7 @@ public class MainFrame extends JFrame implements ActionListener {
         if(e.getSource() ==  Nieuw_Ontwerp) {
             setVisible(false);
             //JFrame design = new JFrame();
-            DesignFrame design = new DesignFrame();
+            DesignFrame design = new DesignFrame(null);
             // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
@@ -102,7 +102,15 @@ public class MainFrame extends JFrame implements ActionListener {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
             monitoring.setLocation(size.width/2 - monitoring.getWidth()/2, size.height/2 - monitoring.getHeight()/2);
-        }
+    } else if(e.getSource() == Openen_Ontwerp) {
+            setVisible(false);
+            //JFrame design = new JFrame();
+            DesignFrame design = new DesignFrame("jemoeder"); //TODO Dialoog in elkaar prutsen waar je save naam kan invoegen
+            // center frame (Mustafa)
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension size = toolkit.getScreenSize();
+            design.setLocation(size.width/2 - design.getWidth()/2, size.height/2 - design.getHeight()/2);
+    }
     }
 
 
