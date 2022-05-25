@@ -25,6 +25,8 @@ public class ServerDialog extends JDialog implements ActionListener {
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     ArrayList serverslist;
+    String[] servers;
+    boolean allowChange = true;
 
 
     public ServerDialog(JFrame frame, boolean modal, String[] servers, ArrayList serverslist){
@@ -33,6 +35,7 @@ public class ServerDialog extends JDialog implements ActionListener {
         setTitle("Serveropties wijzigen");
         setLayout(new FlowLayout());
         this.serverslist = serverslist;
+        this.servers = servers;
 
         plusButton = create_button(plusButton, "plusButton");
         opslaanButton = create_button(opslaanButton, "saveButton");
@@ -49,14 +52,38 @@ public class ServerDialog extends JDialog implements ActionListener {
         CBserverList.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                naamField.setText(getArrayServer().getNaam());
-                prijsField.setText(convertDouble(getArrayServer().getPrijs()));
-                uptimeField.setText(convertDouble(getArrayServer().getBeschikbaarheid()));
+                if (allowChange) {
+                    naamField.setText(getArrayServer().getNaam());
+                    prijsField.setText(convertDouble(getArrayServer().getPrijs()));
+                    uptimeField.setText(convertDouble(getArrayServer().getBeschikbaarheid()));
+                }
             }
         });
 
         plusButton.addActionListener(this);
-        opslaanButton.addActionListener(this);
+        opslaanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(e);
+                allowChange = false;
+                int index = CBserverList.getSelectedIndex();
+                double beschikbaarheid = Double.parseDouble(uptimeField.getText());
+                double prijs = Double.parseDouble(prijsField.getText());
+                String naam = naamField.getText();
+                ServerDragAndDrop tempServer = (ServerDragAndDrop) serverslist.get(index);
+                tempServer.setNaam(naam);
+                tempServer.setBeschikbaarheid(beschikbaarheid);
+                tempServer.setPrijs(prijs);
+                serverslist.set(index, tempServer);
+                servers[index] = naam;
+                for (String s :
+                        servers) {
+                    CBserverList.removeItemAt(0);
+                    CBserverList.addItem(s);
+                }
+                allowChange = true;
+            }
+        });
         cancelButton.addActionListener(this);
         add(CBserverList);
         add(plusButton);
@@ -129,7 +156,6 @@ public class ServerDialog extends JDialog implements ActionListener {
 
     public String convertDouble(double da) {
         Double d = da;
-        d = getArrayServer().getPrijs();
         String text = ""+d;
         return text;
     }
@@ -137,6 +163,14 @@ public class ServerDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == plusButton) {
+
+        } else if (e.getSource() == opslaanButton) {
+
+
+        } else if (e.getSource() == cancelButton) {
+
+        }
 
     }
 }

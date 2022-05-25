@@ -60,4 +60,16 @@ public abstract class ServerDragAndDrop extends JLabel {
     public String getRandom_id() {
         return random_id;
     }
+
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public void setBeschikbaarheid(double beschikbaarheid) {
+        this.beschikbaarheid = beschikbaarheid;
+    }
+
+    public void setPrijs(double prijs) {
+        this.prijs = prijs;
+    }
 }

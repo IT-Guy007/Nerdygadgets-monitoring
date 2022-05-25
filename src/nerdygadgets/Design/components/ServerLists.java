@@ -12,8 +12,9 @@ public class ServerLists {
         WebServer ServerOptie4 = new WebServer("HAL10239",80,99.99);
         WebServer ServerOptie5 = new WebServer("HAL10240",85,130.4);
         WebServer ServerOptie6 = new WebServer("HAL10241",90,2200);
-        servers.add(ServerOptie4);servers.add(ServerOptie5);servers.add(ServerOptie6);
         servers.add(ServerOptie1);servers.add(ServerOptie2); servers.add(ServerOptie3);
+        servers.add(ServerOptie4);servers.add(ServerOptie5);servers.add(ServerOptie6);
+
     }
 
     public String[] generateArray() {
