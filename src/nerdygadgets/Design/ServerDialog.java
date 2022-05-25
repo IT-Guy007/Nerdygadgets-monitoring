@@ -31,7 +31,7 @@ public class ServerDialog extends JDialog implements ActionListener {
 
     public ServerDialog(JFrame frame, boolean modal, String[] servers, ArrayList serverslist){
         super(frame, modal);
-        setSize(400,600);
+        setSize(200,600);
         setTitle("Serveropties wijzigen");
         setLayout(new FlowLayout());
         this.serverslist = serverslist;
@@ -44,10 +44,10 @@ public class ServerDialog extends JDialog implements ActionListener {
         CBserverList.setSelectedIndex(0);
         naamField = new JTextField(getArrayServer().getNaam(), 10);
 
-        prijsField = new JTextField(convertDouble(getArrayServer().getPrijs()));
+        prijsField = new JTextField(convertDouble(getArrayServer().getPrijs()), 5);
         prijsLabel = new JLabel("Prijs per maand: ");
 
-        uptimeField = new JTextField(convertDouble(getArrayServer().getBeschikbaarheid()));
+        uptimeField = new JTextField(convertDouble(getArrayServer().getBeschikbaarheid()),5);
         uptimeLabel = new JLabel("Beschkibaarheid");
         CBserverList.addItemListener(new ItemListener() {
             @Override
@@ -60,11 +60,15 @@ public class ServerDialog extends JDialog implements ActionListener {
             }
         });
 
-        plusButton.addActionListener(this);
+        plusButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         opslaanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(e);
                 allowChange = false;
                 int index = CBserverList.getSelectedIndex();
                 double beschikbaarheid = Double.parseDouble(uptimeField.getText());
@@ -84,7 +88,12 @@ public class ServerDialog extends JDialog implements ActionListener {
                 allowChange = true;
             }
         });
-        cancelButton.addActionListener(this);
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         add(CBserverList);
         add(plusButton);
         add(naamField);
@@ -160,17 +169,8 @@ public class ServerDialog extends JDialog implements ActionListener {
         return text;
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == plusButton) {
-
-        } else if (e.getSource() == opslaanButton) {
-
-
-        } else if (e.getSource() == cancelButton) {
-
-        }
 
     }
 }

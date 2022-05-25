@@ -63,9 +63,9 @@ public class Serveroptie extends JButton implements ActionListener {
             public void mouseDragged(MouseEvent e) {
                 if (counter==0){
                     if (type=="databaseserver"){
-                        server1 = new DatabaseServer(naam, prijs, beschikbaarheid);
+                        server1 = new DatabaseServer(naam, beschikbaarheid,prijs);
                     }else{
-                        server1 = new WebServer(naam, prijs, beschikbaarheid);
+                        server1 = new WebServer(naam, beschikbaarheid,prijs);
                     }
                     server1.setBounds(10, hoofdpanel.getFrame().returnyhoogte(name), 125, 140);
                     server1.setLocation(10, e.getY());
