@@ -413,26 +413,29 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int minx = 140;
             int range = maxx - minx + 1;
-            int randx = (int)(Math.random() * range) + minx;
+
 
             int maxy;
             if (designpanel.getFrame().getisVolscherm()){
-                maxy = designpanel.getFrame().getSchermhoogte() -180;
+                maxy = designpanel.getFrame().getSchermhoogte() -(designpanel.getFrame().getSchermhoogte()/3);
             }else{
                 maxy = designpanel.getFrame().getSchermhoogte()/41*26;
             }
             int miny = 0;
             int rangey = maxy - miny + 1;
-            int randy = (int)(Math.random() * rangey) + miny;
+
 
             while (rset.next()) {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
-
-                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    int randx = (int)(Math.random() * range) + minx;
+                    int randy = (int)(Math.random() * rangey) + miny;
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"),rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }else if(Objects.equals(rset.getString("type"), "databaseserver")){
-                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    int randx = (int)(Math.random() * range) + minx;
+                    int randy = (int)(Math.random() * rangey) + miny;
+                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }
