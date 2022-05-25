@@ -48,6 +48,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
 
 
+
     public DesignFrame(String save) {
         this.save = save;
         list = new ServerLists();
@@ -113,6 +114,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
 
         }
+        WSLoop(0, 0);
 
         WebserverLoop(0, 0);
 
@@ -142,12 +144,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
     private int WebserverLoop(int AantalWSTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+
             WSAantalPerSoort[WebServer] = i;
-            if(WebServer < WSAantalTotaal){
-                WebserverLoop(i + AantalWSTotaal, WebServer + 1);
-            }
             if(WebServer == WSAantalTotaal){
-                DatabaseLoop (0,0);
+                // DSLoop (0,0); * functie moet nog geschreven worden *
             }
         }
         return WebServer;
@@ -179,9 +179,10 @@ public class DesignFrame extends JFrame implements ActionListener {
                         return Database;
                     }
                 }
+
             }
         }
-        return Database;
+        return WebServer;
     }
     private double OptimaliseerBerekenBeschikbaarheid(){
         double beschikbaarheidFirewall = 1, beschikbaarheidDatabase = 1, beschikbaarheidWebserver = 1;
@@ -396,6 +397,97 @@ public class DesignFrame extends JFrame implements ActionListener {
             yhoogte = yhoogte + 71;
         }
         return hoogte;
+    }
+    public void open() {
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "group4", "Qwerty1@");
+            Statement stmt = conn.createStatement();
+            String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
+            ResultSet rset = stmt.executeQuery(uniqueQuery);
+            int maxx;
+            if (designpanel.getFrame().getisVolscherm()){
+                maxx = designpanel.getFrame().getSchermbreedte() -280;
+            }else{
+                maxx = designpanel.getFrame().getSchermbreedte()/36*26;
+            }
+            int minx = 140;
+            int range = maxx - minx + 1;
+            int randx = (int)(Math.random() * range) + minx;
+
+            int maxy;
+            if (designpanel.getFrame().getisVolscherm()){
+                maxy = designpanel.getFrame().getSchermhoogte() -180;
+            }else{
+                maxy = designpanel.getFrame().getSchermhoogte()/41*26;
+            }
+            int miny = 0;
+            int rangey = maxy - miny + 1;
+            int randy = (int)(Math.random() * rangey) + miny;
+
+            while (rset.next()) {
+                if (Objects.equals(rset.getString("type"), "webserver")) {
+
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    server1.setBounds(randx, randy, 125, 125);
+                    designpanel.addArrayList(server1);
+                }else if(Objects.equals(rset.getString("type"), "databaseserver")){
+                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    server1.setBounds(randx, randy, 125, 125);
+                    designpanel.addArrayList(server1);
+                }
+                for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                    designpanel.add(designpanel.getFrame().getFirewall(),server);
+                    designpanel.repaint();
+                }
+            }
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void save(){
+        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
+        boolean unique = true;
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "group4", "Qwerty1@");
+            Statement stmt = conn.createStatement();
+            String uniqueQuery = "SELECT setupId from serverSetups";
+            ResultSet rset = stmt.executeQuery(uniqueQuery);
+
+            while(rset.next()) {
+                if (rset.getString("setupID").equals(setupID)) {
+                    unique = false;
+                }
+            }
+            if (unique) {
+                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                        if (server instanceof WebServer) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        } else if (server instanceof  DatabaseServer) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        } else if (server instanceof  Firewall) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        }
+
+                    }
+                } else {System.out.println("niet uniek");}
+
+
+
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }
     public void open() {
         try {
