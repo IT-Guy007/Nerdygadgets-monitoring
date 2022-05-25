@@ -182,7 +182,7 @@ public class DesignFrame extends JFrame implements ActionListener {
 
             }
         }
-        return WebServer;
+        return Database;
     }
     private double OptimaliseerBerekenBeschikbaarheid(){
         double beschikbaarheidFirewall = 1, beschikbaarheidDatabase = 1, beschikbaarheidWebserver = 1;
@@ -401,7 +401,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void open() {
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
@@ -414,7 +414,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int minx = 140;
             int range = maxx - minx + 1;
-            int randx = (int)(Math.random() * range) + minx;
 
             int maxy;
             if (designpanel.getFrame().getisVolscherm()){
@@ -424,7 +423,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int miny = 0;
             int rangey = maxy - miny + 1;
-            int randy = (int)(Math.random() * rangey) + miny;
 
             while (rset.next()) {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
@@ -453,11 +451,11 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     public void save(){
-        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
+        String setupID = "jevader"; //TODO Via dialoog ff hier een unique "filename meegeven"
         boolean unique = true;
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT setupId from serverSetups";
