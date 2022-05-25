@@ -1,5 +1,6 @@
 package nerdygadgets.Design;
 
+
 import com.google.gson.*;
 import nerdygadgets.Design.components.*;
 import nerdygadgets.MainFrame;
@@ -8,14 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-
 import java.util.Scanner;
+import java.sql.*;
 
 
 public class DesignFrame extends JFrame implements ActionListener {
@@ -29,49 +28,42 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int maxServerBacktracking;
     private int[] WSAantalPerSoort = {};
     private int[] DSAantalPerSoort = {};
-
-    private int WSAantalTotaal = -1;
-    private int DSAantalTotaal = -1;
-
+    private int WSAantalTotaal;
+    private int DSAantalTotaal;
     private double[] WSAvaliablityArray = {};
     private double[] DSAvaliablityArray  = {};
     private double[] WSPrijsPerSoort = {};
     private double[] DSPrijsPerSoort = {};
-
-    private double gewensteBeschikbaarheid = -1;
-    private double minimaleKosten = Double.MAX_VALUE;
+    private double gewensteBeschikbaarheid;
+    private double minimaleKosten;
     private int ServerCount;
     private int maxAantalServers;
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
     ServerLists list;
-
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
+    String save;
 
-    public DesignFrame() {
+
+    public DesignFrame(String save) {
+        this.save = save;
         list = new ServerLists();
 
-        setTitle("Nerdygadgets monitoring aplicatie");
+        setTitle("Nerdygadgets Monitoring Applicatie");
 
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(schermbreedte/30*26,schermhoogte/30*26); //Maakt de groote van de gui de helft van de schermgrootte
-        
-        back = new JButton("Back");
-        back.addActionListener(this);
-        back.setSize(2,1);
-        back.setVisible(true);
+
+        back = create_button(back,"back");
         add(back);
-        
         JBnieuw_ontwerp = create_button(JBnieuw_ontwerp,"nieuw-ontwerp-button");
         add(JBnieuw_ontwerp);
         JBopslaan = create_button(JBopslaan, "Opslaan");
         add(JBopslaan);
-        JBbestand_openen = create_button(JBbestand_openen, "Legen-veld");
-        add(JBbestand_openen);
         JBoptimaliseren = create_button(JBoptimaliseren, "Optimaliseren");
         add(JBoptimaliseren);
         JBserveropties_wijzigen = create_button(JBserveropties_wijzigen, "Serveropties-wijzigen");
@@ -107,6 +99,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         setVisible(true);
         setResizable(false);
+        open();
     }
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         // Een manier om afbeeldingen te veranderen van grootte, maar niet optimaal omdat je kwaliteit verliest.
@@ -119,14 +112,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
         return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
     }
-
-    public int BerekenBeschikbaarheid(){
-        return 0;
-    }
-    public int BerekenKosten(){
-        return 0;
-    }
-
 
     public void Optimaliseer(){
 
@@ -143,122 +128,27 @@ public class DesignFrame extends JFrame implements ActionListener {
             DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
             DSAantalTotaal++;
         }
+        WSLoop(0, 0);
 
-        WebserverLoop(0, 0);
-
-        TekenOptimaliseerd();
+        // Draw functie voor optimaal design; * hier *
     }
 
-
-    private void TekenOptimaliseerd(){
-        designpanel.removeAll();
-
-        firewall = new Firewall(firewall.getNaam(), firewall.getPrijs(), firewall.getBeschikbaarheid(), designpanel.getWidth()/2, designpanel.getHeight()/2);
-        designpanel.add(firewall);
-
-        for (int i = 0; i < WSgeoptimaliseerde.length; i++){
-            for(int j = 0; j < WSgeoptimaliseerde[i]; j++){
-                WebServer WS = webServer.get(i);
-                WebServer WS2 = new WebServer(WS.getNaam(), WS.getPrijs(), WS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
-                designpanel.add(WS2);
-            }
-        }
-
-        for (int i = 0; i < DSgeoptimaliseerde.length; i++){
-            for(int j = 0; j < DSgeoptimaliseerde[i]; j++){
-                DatabaseServer DS = databaseServer.get(i);
-                DatabaseServer DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
-                designpanel.add(DS2);
-            }
-        }
-    }
-
-
-    private int WebserverLoop(int AantalWSTotaal, int WebServer){
-        for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+    private int WSLoop(int WSAantalTotaal, int WebServer){
+        for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
             WSAantalPerSoort[WebServer] = i;
-            if(WebServer < WSAantalTotaal){
-                WebserverLoop(i + AantalWSTotaal, WebServer + 1);
-            }
             if(WebServer == WSAantalTotaal){
-                DatabaseLoop (0,0);
+                // DSLoop (0,0); * functie moet nog geschreven worden *
+            }
+            if(WebServer < WSAantalTotaal){
+                WSLoop(i+WSAantalTotaal, WebServer+1);
             }
         }
         return WebServer;
     }
 
-    private int DatabaseLoop(int AantalDBTotaal, int Database) {
-        for (int i = 0; i < maxAantalServers - AantalDBTotaal; i++) {
-            DSAantalPerSoort[Database] = i;
-            if (Database < DSAantalTotaal) ;
-            {
-                DatabaseLoop(i + AantalDBTotaal, Database + 1);
-            }
-            if (Database == DSAantalTotaal) {
-                double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
-                double configPrijs = OptimaliseerBerekenPrijs();
-
-                if (configBeschikbaarheid > gewensteBeschikbaarheid){
-                    if (configPrijs < minimaleKosten) {
-                        DSgeoptimaliseerde = new int[]{};
-                        WSgeoptimaliseerde = new int[]{};
-                        minimaleKosten = configPrijs;
-
-                        for (int j = 0; j < DSAantalPerSoort.length; j++){
-                            DSgeoptimaliseerde = voegIntToe(DSgeoptimaliseerde, DSAantalPerSoort[j]);
-                        }
-                        for (int y = 0; y < WSAantalPerSoort.length; y++){
-                            WSgeoptimaliseerde = voegIntToe(WSgeoptimaliseerde, WSAantalPerSoort[y]);
-                        }
-
-                        return Database;
-                    }
-                }
-            }
-        }
-        return Database;
-    }
-
     public void OptimaliseerHuidig(){
     }
     public void Huidig(){
-
-    }
-
-    private double OptimaliseerBerekenBeschikbaarheid(){
-        double beschikbaarheidFirewall = 1, beschikbaarheidDatabase = 1, beschikbaarheidWebserver = 1;
-
-        for (int i = 0; i < DSAantalPerSoort.length; i++){
-            beschikbaarheidDatabase *= Math.pow((1 - DSAantalPerSoort[i]), DSAvaliablityArray[i]);
-        }
-        beschikbaarheidWebserver = 1 - beschikbaarheidWebserver;
-
-        for (int i = 0; i < WSAantalPerSoort.length; i++){
-            beschikbaarheidWebserver *= Math.pow((1 - WSAvaliablityArray[i]), WSAantalPerSoort[i]);
-        }
-        beschikbaarheidDatabase = 1 - beschikbaarheidDatabase;
-
-        beschikbaarheidFirewall = Math.pow((1- firewall.getBeschikbaarheid() / 100), 1);
-
-        double beschikbaarheid = beschikbaarheidFirewall * beschikbaarheidDatabase * beschikbaarheidWebserver;
-        return beschikbaarheid;
-    }
-
-    private double OptimaliseerBerekenPrijs(){
-        double prijsFirewall = firewall.getPrijs();
-        double prijsDatabase = 0;
-        double prijsWebserver = 0;
-
-        for (int i = 0; i < DSAantalPerSoort.length; i++){
-            prijsDatabase += (DSAantalPerSoort[i] * DSPrijsPerSoort[i]);
-        }
-
-        for (int i = 0; i < WSAantalPerSoort.length; i++){
-            prijsWebserver += (WSAantalPerSoort[i] * WSPrijsPerSoort[i]);
-        }
-
-        double prijsTotaal = prijsDatabase + prijsWebserver + prijsFirewall;
-        return prijsTotaal;
 
     }
     public JButton create_button(JButton naam, String path) {
@@ -267,7 +157,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.setContentAreaFilled(false);
         naam.setBorderPainted(false);
 
-        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + path + ".png")));
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+path+".png"));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
@@ -280,14 +170,14 @@ public class DesignFrame extends JFrame implements ActionListener {
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
         // stop weer terug veranderd.
-        ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + active + ".png")));
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
         ImageIcon newIcon = new ImageIcon(newimg);
         knop.setIcon(newIcon);
 
         Timer timer = new Timer( 200, t -> {
-            ImageIcon icon2 = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/" + normal + ".png")));
+            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("/resources/"+normal+".png"));
             Image img2 = icon2.getImage();
             Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
             ImageIcon newIcon2 = new ImageIcon(newimg2);
@@ -302,10 +192,17 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
+            save();
+
+
+        }else if(e.getSource() == back){
+            activebutton(back,"back-active","back");
+            setVisible(false);
+            JFrame Main = new MainFrame();
         }else if(e.getSource() == JBnieuw_ontwerp){
             activebutton(JBnieuw_ontwerp,"nieuw-ontwerp-button-active","nieuw-ontwerp-button");
             dispose();
-            DesignFrame design = new DesignFrame();
+            DesignFrame design = new DesignFrame(null);
             // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
@@ -345,53 +242,8 @@ public class DesignFrame extends JFrame implements ActionListener {
                 JBvolscherm.setIcon(scaleImage(new ImageIcon(this.getClass().getResource("/resources/smallbutton.png")), schermbreedte/15, schermhoogte/20));
                 designpanel.SetGrootScherm();
             }
-        }else if(e.getSource() == JBbestand_openen){
-            Gson gson = new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .create();
-
-            // Let user pick a file to open
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Open Infrastructure Design File");
-            int option = fileChooser.showOpenDialog(this);
-            if(option == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                JsonArray array = null;
-                try {
-                    // Create file reader
-                    Scanner reader = new Scanner(file);
-                    JsonParser parser = new JsonParser();
-
-                    // Convert file to a json array
-                    array = (JsonArray) parser.parse(new FileReader(file.getAbsolutePath()));
-                } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                }
-
-                try {
-                    // Loop over the json array to retrieve the infrastructure components
-                    for (Object object : array) {
-                        JsonObject jsonObject = (JsonObject) object;
-
-                        // Convert json component values to usable variables
-                        String name = jsonObject.get("name").getAsString();
-                        String type = jsonObject.get("type").getAsString();
-                        double availability = jsonObject.get("availability").getAsDouble();
-                        double annualPrice = jsonObject.get("annualPrice").getAsDouble();
-                        int panelX = jsonObject.get("panelX").getAsInt();
-                        int panelY = jsonObject.get("panelY").getAsInt();
-
-                    }
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
             }
-        }else if(e.getSource() == back) {
-            setVisible(false);
-            JFrame Main = new MainFrame();
         }
-    }
-
 
     static double[] voegDoubleToe (double[] d, double o){
         d = Arrays.copyOf(d, d.length + 1);
@@ -441,5 +293,96 @@ public class DesignFrame extends JFrame implements ActionListener {
             yhoogte = yhoogte + 71;
         }
         return hoogte;
+    }
+    public void open() {
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "group4", "Qwerty1@");
+            Statement stmt = conn.createStatement();
+            String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
+            ResultSet rset = stmt.executeQuery(uniqueQuery);
+            int maxx;
+            if (designpanel.getFrame().getisVolscherm()){
+                maxx = designpanel.getFrame().getSchermbreedte() -280;
+            }else{
+                maxx = designpanel.getFrame().getSchermbreedte()/36*26;
+            }
+            int minx = 140;
+            int range = maxx - minx + 1;
+            int randx = (int)(Math.random() * range) + minx;
+
+            int maxy;
+            if (designpanel.getFrame().getisVolscherm()){
+                maxy = designpanel.getFrame().getSchermhoogte() -180;
+            }else{
+                maxy = designpanel.getFrame().getSchermhoogte()/41*26;
+            }
+            int miny = 0;
+            int rangey = maxy - miny + 1;
+            int randy = (int)(Math.random() * rangey) + miny;
+
+            while (rset.next()) {
+                if (Objects.equals(rset.getString("type"), "webserver")) {
+
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    server1.setBounds(randx, randy, 125, 125);
+                    designpanel.addArrayList(server1);
+                }else if(Objects.equals(rset.getString("type"), "databaseserver")){
+                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    server1.setBounds(randx, randy, 125, 125);
+                    designpanel.addArrayList(server1);
+                }
+                for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                    designpanel.add(designpanel.getFrame().getFirewall(),server);
+                    designpanel.repaint();
+                }
+            }
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void save(){
+        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
+        boolean unique = true;
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "group4", "Qwerty1@");
+            Statement stmt = conn.createStatement();
+            String uniqueQuery = "SELECT setupId from serverSetups";
+            ResultSet rset = stmt.executeQuery(uniqueQuery);
+
+            while(rset.next()) {
+                if (rset.getString("setupID").equals(setupID)) {
+                    unique = false;
+                }
+            }
+            if (unique) {
+                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                        if (server instanceof WebServer) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        } else if (server instanceof  DatabaseServer) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        } else if (server instanceof  Firewall) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        }
+
+                    }
+                } else {System.out.println("niet uniek");}
+
+
+
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }
 }

@@ -5,7 +5,7 @@ import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
-
+import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -13,6 +13,10 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -261,4 +265,5 @@ public class Designpanel extends JPanel implements ComponentListener {
     public void setServersArray_ArrayList(ArrayList<ServerDragAndDrop> serversArray_ArrayList) {
         this.serversArray_ArrayList = serversArray_ArrayList;
     }
+
 }
