@@ -414,7 +414,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int minx = 140;
             int range = maxx - minx + 1;
-            int randx = (int)(Math.random() * range) + minx;
 
             int maxy;
             if (designpanel.getFrame().getisVolscherm()){
@@ -424,7 +423,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int miny = 0;
             int rangey = maxy - miny + 1;
-            int randy = (int)(Math.random() * rangey) + miny;
 
             while (rset.next()) {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
