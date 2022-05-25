@@ -39,14 +39,13 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
     ServerLists list;
-    Serveroptie optie1;
-    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
-
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     String save;
+    Serveroptie optie1;
+    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
 
 
     public DesignFrame(String save) {
@@ -75,7 +74,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         designpanel = new Designpanel(this);
         add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 99.998, 4000);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
         designpanel.addArrayList(ServerOptie8);
@@ -100,7 +99,6 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     public void Optimaliseer(){
-
         for (ServerDragAndDrop server: list.getServers()){
             if (server instanceof WebServer) {
                 WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
@@ -115,14 +113,11 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
 
         }
-        WSLoop(0, 0);
 
         WebserverLoop(0, 0);
 
         TekenOptimaliseerd();
     }
-
-
     private void TekenOptimaliseerd(){
         designpanel.removeAll();
 
@@ -143,6 +138,107 @@ public class DesignFrame extends JFrame implements ActionListener {
                 ServerDragAndDrop DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
                 designpanel.add(DS2);
             }
+        }
+    }
+    private int WebserverLoop(int AantalWSTotaal, int WebServer){
+        for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+            WSAantalPerSoort[WebServer] = i;
+            if(WebServer < WSAantalTotaal){
+                WebserverLoop(i + AantalWSTotaal, WebServer + 1);
+            }
+            if(WebServer == WSAantalTotaal){
+                DatabaseLoop (0,0);
+            }
+        }
+        return WebServer;
+    }
+    private int DatabaseLoop(int AantalDBTotaal, int Database) {
+        for (int i = 0; i < maxAantalServers - AantalDBTotaal; i++) {
+            DSAantalPerSoort[Database] = i;
+            if (Database < DSAantalTotaal) ;
+            {
+                DatabaseLoop(i + AantalDBTotaal, Database + 1);
+            }
+            if (Database == DSAantalTotaal) {
+                double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
+                double configPrijs = OptimaliseerBerekenPrijs();
+
+                if (configBeschikbaarheid > gewensteBeschikbaarheid){
+                    if (configPrijs < minimaleKosten) {
+                        DSgeoptimaliseerde = new int[]{};
+                        WSgeoptimaliseerde = new int[]{};
+                        minimaleKosten = configPrijs;
+
+                        for (int j = 0; j < DSAantalPerSoort.length; j++){
+                            DSgeoptimaliseerde = voegIntToe(DSgeoptimaliseerde, DSAantalPerSoort[j]);
+                        }
+                        for (int y = 0; y < WSAantalPerSoort.length; y++){
+                            WSgeoptimaliseerde = voegIntToe(WSgeoptimaliseerde, WSAantalPerSoort[y]);
+                        }
+
+                        return Database;
+                    }
+                }
+            }
+        }
+        return Database;
+    }
+    private double OptimaliseerBerekenBeschikbaarheid(){
+        double beschikbaarheidFirewall = 1, beschikbaarheidDatabase = 1, beschikbaarheidWebserver = 1;
+
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            beschikbaarheidDatabase *= Math.pow((1 - DSAantalPerSoort[i]), DSAvaliablityArray[i]);
+        }
+        beschikbaarheidWebserver = 1 - beschikbaarheidWebserver;
+
+        for (int i = 0; i < WSAantalPerSoort.length; i++){
+            beschikbaarheidWebserver *= Math.pow((1 - WSAvaliablityArray[i]), WSAantalPerSoort[i]);
+        }
+        beschikbaarheidDatabase = 1 - beschikbaarheidDatabase;
+
+        beschikbaarheidFirewall = Math.pow((1- firewall.getBeschikbaarheid() / 100), 1);
+
+        double beschikbaarheid = beschikbaarheidFirewall * beschikbaarheidDatabase * beschikbaarheidWebserver;
+        return beschikbaarheid;
+    }
+    private double OptimaliseerBerekenPrijs(){
+        double prijsFirewall = firewall.getPrijs();
+        double prijsDatabase = 0;
+        double prijsWebserver = 0;
+
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            prijsDatabase += (DSAantalPerSoort[i] * DSPrijsPerSoort[i]);
+        }
+
+        for (int i = 0; i < WSAantalPerSoort.length; i++){
+            prijsWebserver += (WSAantalPerSoort[i] * WSPrijsPerSoort[i]);
+        }
+
+        double prijsTotaal = prijsDatabase + prijsWebserver + prijsFirewall;
+        return prijsTotaal;
+
+    }
+    public void generateSeverOpties() {
+        int yhoogte = 10;
+        for (ServerDragAndDrop webservertje : list.getServers()){
+            if (webservertje instanceof WebServer) {
+                webservertje.getPrijs();
+                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1.setBounds(10, yhoogte, 121, 61);
+                tempServerOpties.add(optie1);
+                designpanel.add(optie1);
+                designpanel.repaint();
+                yhoogte = yhoogte + 71;
+            } else if (webservertje instanceof DatabaseServer) {
+                webservertje.getPrijs();
+                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1.setBounds(10, yhoogte, 121, 61);
+                tempServerOpties.add(optie1);
+                designpanel.add(optie1);
+                designpanel.repaint();
+                yhoogte = yhoogte + 71;
+            }
+
         }
     }
 
@@ -179,39 +275,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.addActionListener(this);
         return naam;
     }
-
-    public void generateSeverOpties() {
-        int yhoogte = 10;
-        for (ServerDragAndDrop webservertje : list.getServers()){
-            if (webservertje instanceof WebServer) {
-                webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
-                optie1.setBounds(10, yhoogte, 121, 61);
-                tempServerOpties.add(optie1);
-                designpanel.add(optie1);
-                designpanel.repaint();
-                yhoogte = yhoogte + 71;
-            } else if (webservertje instanceof DatabaseServer) {
-                webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
-                optie1.setBounds(10, yhoogte, 121, 61);
-                tempServerOpties.add(optie1);
-                designpanel.add(optie1);
-                designpanel.repaint();
-                yhoogte = yhoogte + 71;
-            }
-
-        }
-    }
-
-    public void removesServerOpties() {
-        for (Serveroptie s :
-                tempServerOpties) {
-            designpanel.remove(s);
-        }
-
-    }
-
     public void activebutton(JButton knop, String active, String normal){
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
@@ -268,10 +331,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
             ServerDialog dialog = new ServerDialog(this, true, list.generateArray(), list.getServers());
-            System.out.println("test");
-            removesServerOpties();
-            generateSeverOpties();
-            designpanel.repaint();
         }
         else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
