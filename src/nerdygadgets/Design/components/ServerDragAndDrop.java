@@ -9,7 +9,8 @@ public abstract class ServerDragAndDrop extends JLabel {
     private BufferedImage icon;
     private JPanel hoofdpanel;
     private String naam, type;
-    private double beschikbaarheid, prijs;
+    private double beschikbaarheid;
+    private double prijs;
     private volatile int screenx =0,screeny =0, myx =0,myy =0;
     private int x,y;
     private ImageIcon icoon;
@@ -58,5 +59,17 @@ public abstract class ServerDragAndDrop extends JLabel {
 
     public String getRandom_id() {
         return random_id;
+    }
+
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public void setBeschikbaarheid(double beschikbaarheid) {
+        this.beschikbaarheid = beschikbaarheid;
+    }
+
+    public void setPrijs(double prijs) {
+        this.prijs = prijs;
     }
 }
