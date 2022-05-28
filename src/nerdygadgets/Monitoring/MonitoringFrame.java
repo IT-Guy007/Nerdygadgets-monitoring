@@ -15,22 +15,26 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     String projectName = null;
 
     JButton back,five,one,twelve,twentyfour,zeven,thirty,refresh,add;
-    ArrayList<Server> servers;
 
     public MonitoringFrame(int projectID) {
+        ArrayList<Integer> servers = servers_in_project(projectID);
+        int amount_of_servers = servers.size();
         String projectName = getProjectName(projectID);
         this.projectID = projectID;
         this.projectName = projectName;
         setTitle("Monitoring van " + projectName);
-        setLayout(new GridLayout(9,5));
+        GridBagLayout gridbag = new GridBagLayout();
+        setLayout(gridbag);
         GridBagConstraints layout = new GridBagConstraints();
-        layout.weightx = 1;
-        layout.weighty = 1;
+        layout.fill = GridBagConstraints.HORIZONTAL;
+
+        layout.weightx = 1.0;
+        layout.weighty = 1.0;
         layout.gridwidth = 1;
         layout.gridheight = 1;
+        layout.insets.set(0, 0, 0, 0);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(950,500);
-        layout.fill = GridBagConstraints.HORIZONTAL;
 
         //Back button
         back = new JButton("Terug");
@@ -109,23 +113,25 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         add.setSize(100,50);
         add.addActionListener(this);
         add.setVisible(true);
+        layout.gridwidth = 2;
         layout.gridx = 8;
         layout.gridy = 0;
-        add(add,layout);
+
+        add(add);
 
 
         layout.fill = GridBagConstraints.HORIZONTAL;
+        layout.gridwidth = 1;
 
 
-        if(servers == null) {
+        if(servers.size() == 0) {
             JLabel noServers = new JLabel("Geen servers gevonden in het project");
-            layout.gridx = 3;
-            layout.gridy = 2;
-            layout.gridwidth = 4;
+            layout.gridx = 4;
+            layout.gridy = 1;
+            layout.gridwidth = 3;
             noServers.setVisible(true);
             add(noServers,layout);
-
-            for(int i = 0; i != 5; i++) {
+            for(int i = 0; i != 4; i++) {
                 JLabel spacer = new JLabel();
                 layout.gridy = (i + 1);
                 add(spacer,layout);
@@ -156,6 +162,8 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             String dbhost = "jdbc:mysql://192.168.1.103/application";
             String user = "group4";
             String password = "Qwerty1@";
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(dbhost, user, password);
 
             String sql = "select server_PresentID from project_Has_Servers where projectID = " + projectID;
             p = con.prepareStatement(sql);
@@ -165,7 +173,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 servers_in_project.add(rs.getInt("serverPresentID"));
             }
         } catch(Exception exception) {
-            System.out.println(exception);
+            System.out.println("No servers found in project");
         }
 
         return servers_in_project;
