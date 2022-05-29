@@ -159,16 +159,18 @@ public class ServerToevoegen extends JFrame implements ActionListener {
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
 
-                sql = "select server_OnlineID from server_Present order by server_OnlineID DESC limit 1";
+                sql = "select server_PresentID from server_Present order by server_PresentID DESC limit 1";
+                System.out.println(sql);
                 p = con.prepareStatement(sql);
                 rs = p.executeQuery();
 
                 while (rs.next()) {
-                    int id = rs.getInt("serverID");
+                    int id = rs.getInt("server_PresentID");
                     this.id = id;
                 }
 
                 sql = "INSERT INTO project_Has_Servers values(" + projectID + "," + id + ")";
+                System.out.println(sql);
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
 

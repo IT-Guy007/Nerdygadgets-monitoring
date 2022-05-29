@@ -125,19 +125,21 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
 
         if(servers.size() == 0) {
+            System.out.println("No servers in project found, showing different screen.");
             JLabel noServers = new JLabel("Geen servers gevonden in het project");
             layout.gridx = 4;
             layout.gridy = 1;
             layout.gridwidth = 3;
             noServers.setVisible(true);
             add(noServers,layout);
-            for(int i = 0; i != 4; i++) {
+            for(int i = 0; i != 6; i++) {
                 JLabel spacer = new JLabel();
                 layout.gridy = (i + 1);
                 add(spacer,layout);
             }
         } else {
             //Code that generates the serverlist
+            System.out.println("Found servers in project.");
             ArrayList<Integer> servers_in_project = servers_in_project(projectID);
             layout.gridx = 1;
             layout.gridwidth = 3;
@@ -186,6 +188,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             setVisible(false);
             new ProjectFrame();
         } else if(e.getSource() == add) {
+            System.out.println("Showing add server pane");
             new ServerToevoegen(projectID);
         } else if(e.getSource() == refresh) {
             dispose();
