@@ -30,7 +30,7 @@ public class ServerStats extends JFrame implements ActionListener {
         layout.gridwidth = 1;
         layout.gridheight = 1;
         layout.insets.set(0,0,0,0);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(950,500);
 
         //five button

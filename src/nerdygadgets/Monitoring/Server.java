@@ -21,6 +21,7 @@ public class Server {
         this.storage = storage;
         this.server_kind2 = server_kind;
         this.ipadress = ipadress;
+        this.up = up;
     }
 
     public Server(int serverID, String ipadress, int port) {

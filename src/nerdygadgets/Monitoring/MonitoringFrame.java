@@ -13,11 +13,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+@SuppressWarnings("resource")
 public class MonitoringFrame extends JFrame implements ActionListener {
-    int projectID = 0;
-    String projectName = null;
+    int projectID;
+    String projectName;
 
-    JButton back,five,one,twelve,twentyfour,zeven,thirty,refresh,add;
+    JButton back,refresh,add;
 
     public MonitoringFrame(int projectID) {
         ArrayList<Integer> servers = servers_in_project(projectID);
@@ -31,6 +32,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         setLayout(gridbag);
         GridBagConstraints layout = new GridBagConstraints();
         layout.fill = GridBagConstraints.HORIZONTAL;
+        getContentPane().setBackground(Color.white);
 
         layout.weightx = 1.0;
         layout.weighty = 1.0;
@@ -42,8 +44,8 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
         //Back button
         layout.gridx = 0; layout.gridy = 0; back = new JButton("Terug"); back.setSize(100,50);back.addActionListener(this);back.setVisible(true); add(back,layout);
-        layout.gridx = 11; layout.gridy = 0; refresh = new JButton("Refresh"); refresh.setSize(100,50);refresh.addActionListener(this);refresh.setVisible(true); add(refresh,layout);
-        layout.gridx = 12; layout.gridy = 0; add = new JButton("Server toevoegen"); add.setSize(100,50);add.addActionListener(this);add.setVisible(true); add(add,layout);
+        layout.gridx = 12; layout.gridy = 0; refresh = new JButton("Refresh"); refresh.setSize(100,50);refresh.addActionListener(this);refresh.setVisible(true); add(refresh,layout);
+        layout.gridx = 13; layout.gridy = 0; add = new JButton("Server toevoegen"); add.setSize(100,50);add.addActionListener(this);add.setVisible(true); add(add,layout);
 
         layout.fill = GridBagConstraints.HORIZONTAL;
         layout.gridwidth = 1;
@@ -51,7 +53,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         if(servers.size() == 0) {
             System.out.println("No servers in project found, showing different screen.");
             JLabel noServers = new JLabel("Geen servers gevonden in het project");
-            layout.gridx = 4;
+            layout.gridx = 5;
             layout.gridy = 1;
             layout.gridwidth = 3;
             noServers.setVisible(true);
@@ -63,7 +65,6 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             }
         } else {
             //Columns
-            layout.gridwidth = 1;
             layout.gridy = 1;
 
             //ServerID
@@ -72,21 +73,24 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             layout.gridx = 1; JLabel servernaam = new JLabel("Servernaam"); servernaam.setVisible(true); add(servernaam,layout);
             //Server is up
             layout.gridx = 2; JLabel up = new JLabel("Server is up"); up.setVisible(true); layout.gridwidth = 2;add(up,layout); layout.gridwidth = 1;
-            //Server price
-            layout.gridx = 4; JLabel prijs = new JLabel("Prijs"); prijs.setVisible(true); add(prijs,layout);
             //Server availability
-            layout.gridx =5; JLabel beschikbaarheid = new JLabel("Beschikbaarheid"); beschikbaarheid.setVisible(true); add(beschikbaarheid,layout);
+            layout.gridx = 4; JLabel beschikbaarheid = new JLabel("Gewenste"); beschikbaarheid.setVisible(true); add(beschikbaarheid,layout);
+            //Server actual availability
+            layout.gridx = 5; JLabel eig_beschikbaarheid = new JLabel("Actuele"); eig_beschikbaarheid.setVisible(true); add(eig_beschikbaarheid,layout);
+            //Server price
+            layout.gridx = 6; JLabel prijs = new JLabel("Prijs"); prijs.setVisible(true); add(prijs,layout);
             //Serverport
-            layout.gridx = 6; JLabel serverport = new JLabel("Serverport"); serverport.setVisible(true); add(serverport,layout);
+            layout.gridx = 7; JLabel serverport = new JLabel("Serverport"); serverport.setVisible(true); add(serverport,layout);
             //Server kind
-            layout.gridx = 7; JLabel serversoort = new JLabel("Serversoort"); serversoort.setVisible(true); add(serversoort,layout);
+            layout.gridx = 8; JLabel serversoort = new JLabel("Serversoort"); serversoort.setVisible(true); add(serversoort,layout);
             //Server ipadress
-            layout.gridx = 8; JLabel ipadress = new JLabel("Ipaddress"); ipadress.setVisible(true); layout.gridwidth = 2;add(ipadress,layout); layout.gridwidth = 1;
+            layout.gridx = 9; JLabel ipadress = new JLabel("Ipadres"); ipadress.setVisible(true); layout.gridwidth = 2;add(ipadress,layout); layout.gridwidth = 1;
             //Server storage
-            layout.gridx = 10; JLabel storage = new JLabel("Opslag"); storage.setVisible(true); add(storage,layout);
+            layout.gridx = 11; JLabel storage = new JLabel("Opslag"); storage.setVisible(true); add(storage,layout);
 
 
             //Code that generates the serverlist
+            JLabel lbl_up;
             for (int i = 0; i != servers.size(); i++) {
                 int serverID = servers.get(i);
                 Server server = getServerInfo(serverID);
@@ -95,27 +99,25 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 //ServerName
                 layout.gridx = 1; layout.gridy = (i + 2); JLabel lbl_servername = new JLabel(server.name);lbl_servername.setVisible(true);add(lbl_servername, layout);
                 //Is up
-                layout.gridx = 2; layout.gridy = (i + 2); JLabel lbl_up = new JLabel(Boolean.toString(server.up));lbl_up.setVisible(true);if(server.up){lbl_up.setForeground(Color.green);} else {lbl_up.setForeground(Color.red);}layout.gridwidth = 2;add(lbl_up, layout); layout.gridwidth = 1;
-                //Price
-                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_price = new JLabel(Integer.toString(server.price));lbl_price.setVisible(true);add(lbl_price, layout);
+                layout.gridx = 2; layout.gridy = (i + 2); if(server.up) {lbl_up = new JLabel("True");} else {lbl_up = new JLabel("False");} lbl_up.setVisible(true);if(server.up){lbl_up.setForeground(Color.green);} else {lbl_up.setForeground(Color.red);}layout.gridwidth = 2;add(lbl_up, layout); layout.gridwidth = 1;
                 //Availability
-                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel("      " + (server.availability));lbl_availability.setVisible(true);add(lbl_availability, layout);
+                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel(Double.toString(server.availability));lbl_availability.setVisible(true);add(lbl_availability, layout);
+                //Actual  Availability
+                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_eig_availability = new JLabel(Double.toString(server.availability));lbl_eig_availability.setVisible(true);add(lbl_eig_availability, layout);
+                //Price
+                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_price = new JLabel(Integer.toString(server.price));lbl_price.setVisible(true);add(lbl_price, layout);
                 //Port
-                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
+                layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
                 //Serverkind
-                layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.server_kind2);lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
+                layout.gridx = 8; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.server_kind2);lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
                 //Ipaddress
-                layout.gridx = 8; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.ipadress);lbl_ip.setVisible(true);layout.gridwidth = 2;add(lbl_ip, layout); layout.gridwidth = 1;
+                layout.gridx = 9; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.ipadress);lbl_ip.setVisible(true);layout.gridwidth = 2;add(lbl_ip, layout); layout.gridwidth = 1;
                 //Storage
-                layout.gridx = 10; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(Integer.toString(server.storage));lbl_storage.setVisible(true);add(lbl_storage, layout);
+                layout.gridx = 11; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(Integer.toString(server.storage));lbl_storage.setVisible(true);add(lbl_storage, layout);
                 //Analytics
-                layout.gridx = 11; layout.gridy = (i + 2); JButton analytics = new JButton("Analytics"); analytics.setVisible(true); add(analytics,layout); analytics.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {new ServerStats(serverID,projectID);}});
+                layout.gridx = 12; layout.gridy = (i + 2); JButton analytics = new JButton("Analytics"); analytics.setVisible(true); add(analytics,layout); analytics.addActionListener(e -> new ServerStats(serverID,projectID));
                 // Delete
-                layout.gridx = 12; layout.gridy = (i + 2); JButton delete = new JButton("Delete"); delete.setVisible(true); add(delete,layout); delete.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {deleteServerOfProject(serverID);dispose(); new MonitoringFrame(projectID);}});
+                layout.gridx = 13; layout.gridy = (i + 2); JButton delete = new JButton("Delete"); delete.setVisible(true); add(delete,layout); delete.addActionListener(e -> {deleteServerOfProject(serverID);dispose(); new MonitoringFrame(projectID);});
             }
 
             if(amount_of_servers <= 5) {
@@ -137,9 +139,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         ArrayList<Integer> servers_in_project = new ArrayList<>();
 
         try {
-            Connection con = null;
-            PreparedStatement p = null;
-            ResultSet rs = null;
+            Connection con;
+            PreparedStatement p;
+            ResultSet rs;
             String dbhost = "jdbc:mysql://192.168.1.103/application";
             String user = "group4";
             String password = "Qwerty1@";
@@ -180,11 +182,10 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
     public String getProjectName(int i) {
         String name = null;
-        Connection con = null;
-        PreparedStatement p = null;
-        ResultSet rs = null;
+        Connection con;
+        PreparedStatement p;
+        ResultSet rs;
 
-        ArrayList<Project> output = new ArrayList<Project>();
         String dbhost = "jdbc:mysql://192.168.1.103/application";
         String user = "group4";
         String password = "Qwerty1@";
@@ -216,9 +217,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
     public Server getServerInfo(int serverPresentID) {
 
-        Connection con = null;
-        PreparedStatement p = null;
-        ResultSet rs = null;
+        Connection con;
+        PreparedStatement p;
+        ResultSet rs;
 
         int serverID;
         String name;
@@ -257,8 +258,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 ipaddress = rs.getString("ipaddress");
                 up = rs.getBoolean("up");
 
-                Server server = new Server(serverID,name,price,availability,serverport,storage,server_kind,ipaddress, up);
-                return server;
+                return new Server(serverID,name,price,availability,serverport,storage,server_kind,ipaddress, up);
             }
         } catch (Exception ce) {
             System.err.println("error");
@@ -270,8 +270,8 @@ public class MonitoringFrame extends JFrame implements ActionListener {
     }
 
     public void deleteServerOfProject(int server_PresentID) {
-        Connection con = null;
-        PreparedStatement p = null;
+        Connection con;
+        PreparedStatement p;
         String dbhost = "jdbc:mysql://192.168.1.103/application";
         String user = "group4";
         String password = "Qwerty1@";
@@ -295,15 +295,15 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         } catch (SQLException e) {
             System.out.println(e);
 
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException ignored) {
         }
     }
 
     public static void updateUptimeServer(int server_PresentID, boolean up) {
         Connection con = null;
-        PreparedStatement p = null;
-        ResultSet rs = null;
-        String sql = null;
+        PreparedStatement p;
+        ResultSet rs;
+        String sql;
 
         String dbhost = "jdbc:mysql://192.168.1.103/application";
         String user = "group4";
@@ -341,7 +341,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 sql = "update server_Present set up = 0, up_Since = null where server_PresentID = " + server_PresentID;
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
-            } catch(Exception e) {
+            } catch(Exception ignored) {
             }
         }
     }
@@ -351,9 +351,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         //Get projects
         ArrayList<Project> projects = new ArrayList<Project>();
 
-        Connection con = null;
-        PreparedStatement p = null;
-        ResultSet rs = null;
+        Connection con;
+        PreparedStatement p;
+        ResultSet rs;
         String dbhost = "jdbc:mysql://192.168.1.103/application";
         String user = "group4";
         String password = "Qwerty1@";
@@ -380,14 +380,10 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             System.out.println();
         }
 
-        for(int i = 0; i < projects.size(); i++) {
-            Project project = projects.get(i);
+        for (Project project : projects) {
             ArrayList<Server> servers = new ArrayList();
 
             try {
-                con = null;
-                p = null;
-                rs = null;
 
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 con = DriverManager.getConnection(dbhost, user, password);
@@ -417,10 +413,10 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 int serverID = server.serverID;
                 String ipadress = server.ipadress;
                 int port = server.port;
-                boolean isup = false;
-                if (ipadress != null && ipadress != "null" && ipadress != "NULL" && ipadress != "") {
+                boolean isup;
+                if (ipadress != null && !ipadress.equals("null") && !ipadress.equals("NULL") && !ipadress.equals("")) {
                     System.out.print("Checking if " + ipadress + " is online");
-                    try  {
+                    try {
                         Socket socket = new Socket();
                         socket.connect(new InetSocketAddress(ipadress, port), 300);
                         isup = true;
@@ -429,7 +425,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                         System.out.println(" False");
                         isup = false;
                     }
-                    updateUptimeServer(serverID,isup);
+                    updateUptimeServer(serverID, isup);
                 }
 
             }
