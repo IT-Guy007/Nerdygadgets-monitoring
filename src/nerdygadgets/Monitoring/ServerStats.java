@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 public class ServerStats extends JFrame implements ActionListener {
     int serverPresentID;
     int projectID;
-    JButton back,five,one,twelve,twentyfour,zeven,thirty,refresh,add;
+    JButton back,five,one,twelve,twentyfour,zeven,thirty,refresh;
 
 
     public ServerStats(int server_PresentID, int projectID) {
@@ -32,6 +32,7 @@ public class ServerStats extends JFrame implements ActionListener {
         layout.insets.set(0,0,0,0);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(950,500);
+        getContentPane().setBackground(Color.white);
 
         //five button
         layout.gridx = 1; layout.gridy = 0; five = new JButton("5 minuten");five.setSize(100,50);five.addActionListener(this);five.setVisible(true);;add(five,layout);
@@ -66,6 +67,7 @@ public class ServerStats extends JFrame implements ActionListener {
         String server_kind;
         String ipaddress;
         boolean up;
+        double actual;
 
         String dbhost = "jdbc:mysql://192.168.1.103/application";
         String user = "group4";
@@ -75,10 +77,11 @@ public class ServerStats extends JFrame implements ActionListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(dbhost, user, password);
 
-            String sql = "select s.serverID as serverID,s.name as name,s.price as price,s.availability as availability,s.port as port,s.storage_Total as storage,sk.name as serverkind,s.ipaddress as ipaddress, sp.up as up from servers as s\n" +
+            String sql = "select s.serverID as serverID,s.name as name,s.price as price,s.availability as availability,s.port as port,s.storage_Total as storage,sk.name as serverkind,s.ipaddress as ipaddress, sp.up as up, AVG(uc.up) as actual from servers as s\n" +
                     "join server_Present sp on s.serverID = sp.serverID\n" +
                     "join server_Kind sk on sk.server_KindID = s.server_KindID\n" +
-                    "where server_PresentID = " + serverPresentID;
+                    "join uptime_Check uc on sp.server_PresentID = uc.server_PresentID\n" +
+                    "where sp.server_PresentID = " + serverPresentID;
             p = con.prepareStatement(sql);
             rs = p.executeQuery();
 
@@ -93,9 +96,9 @@ public class ServerStats extends JFrame implements ActionListener {
                 server_kind = rs.getString("serverkind");
                 ipaddress = rs.getString("ipaddress");
                 up = rs.getBoolean("up");
+                actual = rs.getDouble("actual");
 
-                Server server = new Server(serverID,name,price,availability,serverport,storage,server_kind,ipaddress,up);
-                return server;
+                return new Server(serverID,name,price,availability,serverport,storage,server_kind,ipaddress,up,actual);
             }
         } catch (Exception ce) {
             System.err.println("error");

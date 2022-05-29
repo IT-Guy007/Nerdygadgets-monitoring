@@ -5,6 +5,7 @@ public class Server {
     String name;
     int price;
     double availability;
+    double actual_availability;
     int port;
     int storage;
     int server_kind;
@@ -12,7 +13,7 @@ public class Server {
     String ipadress;
     boolean up;
 
-    public Server(int serverID, String name, int price, double availability, int port, int storage, String server_kind, String ipadress, boolean up) {
+    public Server(int serverID, String name, int price, double availability, int port, int storage, String server_kind, String ipadress, boolean up, double actual_availability) {
         this.serverID = serverID;
         this.name = name;
         this.price = price;
@@ -22,6 +23,7 @@ public class Server {
         this.server_kind2 = server_kind;
         this.ipadress = ipadress;
         this.up = up;
+        this.actual_availability = actual_availability;
     }
 
     public Server(int serverID, String ipadress, int port) {

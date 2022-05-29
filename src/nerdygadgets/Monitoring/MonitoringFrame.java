@@ -101,11 +101,11 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 //Is up
                 layout.gridx = 2; layout.gridy = (i + 2); if(server.up) {lbl_up = new JLabel("True");} else {lbl_up = new JLabel("False");} lbl_up.setVisible(true);if(server.up){lbl_up.setForeground(Color.green);} else {lbl_up.setForeground(Color.red);}layout.gridwidth = 2;add(lbl_up, layout); layout.gridwidth = 1;
                 //Availability
-                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel(Double.toString(server.availability));lbl_availability.setVisible(true);add(lbl_availability, layout);
+                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel((server.availability)+ "%");lbl_availability.setVisible(true);add(lbl_availability, layout);
                 //Actual  Availability
-                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_eig_availability = new JLabel(Double.toString(server.availability));lbl_eig_availability.setVisible(true);add(lbl_eig_availability, layout);
+                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_eig_availability = new JLabel((String.format("%.2f",(server.actual_availability) * 100) + "%"));lbl_eig_availability.setVisible(true);if((server.actual_availability * 100) >= server.availability){lbl_eig_availability.setForeground(Color.green);} else {lbl_eig_availability.setForeground(Color.red);}add(lbl_eig_availability, layout);
                 //Price
-                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_price = new JLabel(Integer.toString(server.price));lbl_price.setVisible(true);add(lbl_price, layout);
+                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_price = new JLabel("€" + (server.price));lbl_price.setVisible(true);add(lbl_price, layout);
                 //Port
                 layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
                 //Serverkind
@@ -230,6 +230,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         String server_kind;
         String ipaddress;
         boolean up;
+        double actual;
 
         String dbhost = "jdbc:mysql://192.168.1.103/application";
         String user = "group4";
@@ -239,10 +240,11 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(dbhost, user, password);
 
-            String sql = "select s.serverID as serverID,s.name as name,s.price as price,s.availability as availability,s.port as port,s.storage_Total as storage,sk.name as serverkind,s.ipaddress as ipaddress, sp.up as up from servers as s\n" +
-                         "join server_Present sp on s.serverID = sp.serverID\n" +
-                         "join server_Kind sk on sk.server_KindID = s.server_KindID\n" +
-                         "where server_PresentID = " + serverPresentID;
+            String sql = "select s.serverID as serverID,s.name as name,s.price as price,s.availability as availability,s.port as port,s.storage_Total as storage,sk.name as serverkind,s.ipaddress as ipaddress, sp.up as up, AVG(uc.up) as actual from servers as s\n" +
+                    "join server_Present sp on s.serverID = sp.serverID\n" +
+                    "join server_Kind sk on sk.server_KindID = s.server_KindID\n" +
+                    "join uptime_Check uc on sp.server_PresentID = uc.server_PresentID\n" +
+                    "where sp.server_PresentID = " + serverPresentID;
             p = con.prepareStatement(sql);
             rs = p.executeQuery();
 
@@ -257,8 +259,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 server_kind = rs.getString("serverkind");
                 ipaddress = rs.getString("ipaddress");
                 up = rs.getBoolean("up");
+                actual = rs.getDouble("actual");
 
-                return new Server(serverID,name,price,availability,serverport,storage,server_kind,ipaddress, up);
+                return new Server(serverID,name,price,availability,serverport,storage,server_kind,ipaddress,up,actual);
             }
         } catch (Exception ce) {
             System.err.println("error");
