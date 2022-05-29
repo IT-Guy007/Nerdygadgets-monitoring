@@ -1,13 +1,12 @@
 package nerdygadgets.Monitoring;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class MonitoringFrame extends JFrame implements ActionListener {
@@ -102,11 +101,16 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 layout.gridx = 0; layout.gridy = (i + 2); JLabel lbl_servername = new JLabel(server.name);lbl_servername.setVisible(true);add(lbl_servername, layout);
                 layout.gridx = 1; layout.gridy = (i + 2); JLabel lbl_price = new JLabel(Integer.toString(server.price));lbl_price.setVisible(true);add(lbl_price, layout);
                 layout.gridx = 2; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel(Double.toString(server.availability));lbl_availability.setVisible(true);add(lbl_availability, layout);
-                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
-                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(Integer.toString(server.storage));lbl_storage.setVisible(true);add(lbl_storage, layout);
-                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.ipadress);lbl_ip.setVisible(true);add(lbl_ip, layout);
-                layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.server_kind2);lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
-                layout.gridx = 8; layout.gridy = (i + 2); JButton button = new JButton("Analytics"); button.setVisible(true); add(button,layout); button.addActionListener(new ServerStats(serverID));
+                layout.gridx = 3; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
+                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(Integer.toString(server.storage));lbl_storage.setVisible(true);add(lbl_storage, layout);
+                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.ipadress);lbl_ip.setVisible(true);add(lbl_ip, layout);
+                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.server_kind2);lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
+                layout.gridx = 7; layout.gridy = (i + 2); JButton analytics = new JButton("Analytics"); analytics.setVisible(true); add(analytics,layout); analytics.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {new ServerStats(serverID);}});
+                layout.gridx = 8; layout.gridy = (i + 2); JButton delete = new JButton("Delete"); delete.setVisible(true); add(delete,layout); delete.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {deleteServerOfProject(serverID);dispose(); new MonitoringFrame(projectID);}});
             }
 
             if(amount_of_servers <= 3) {
@@ -254,5 +258,35 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         }
 
         return null;
+    }
+
+    public void deleteServerOfProject(int server_PresentID) {
+        Connection con = null;
+        PreparedStatement p = null;
+        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String user = "group4";
+        String password = "Qwerty1@";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(dbhost, user, password);
+
+            // SQL command data stored in String datatype
+            String sql = "delete from project_Has_Servers where server_PresentID = " + server_PresentID;
+            p = con.prepareStatement(sql);
+            p.executeUpdate();
+
+
+        } catch (CommunicationsException ce) {
+            JLabel error = new JLabel("Error, kan niet verbinden met de server");
+            error.setVisible(true);
+            error.repaint();
+            add(error);
+
+        } catch (SQLException e) {
+            System.out.println(e);
+
+            } catch (ClassNotFoundException e) {
+        }
     }
 }
