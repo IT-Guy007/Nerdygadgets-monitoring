@@ -42,7 +42,8 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
         //Back button
         layout.gridx = 0; layout.gridy = 0; back = new JButton("Terug"); back.setSize(100,50);back.addActionListener(this);back.setVisible(true); add(back,layout);
-        layout.gridx = 12; layout.gridy = 0; refresh = new JButton("Refresh"); refresh.setSize(100,50);refresh.addActionListener(this);refresh.setVisible(true); add(refresh,layout);
+        layout.gridx = 11; layout.gridy = 0; refresh = new JButton("Refresh"); refresh.setSize(100,50);refresh.addActionListener(this);refresh.setVisible(true); add(refresh,layout);
+        layout.gridx = 12; layout.gridy = 0; add = new JButton("Server toevoegen"); add.setSize(100,50);add.addActionListener(this);add.setVisible(true); add(add,layout);
 
         layout.fill = GridBagConstraints.HORIZONTAL;
         layout.gridwidth = 1;
@@ -89,26 +90,36 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             for (int i = 0; i != servers.size(); i++) {
                 int serverID = servers.get(i);
                 Server server = getServerInfo(serverID);
-                //Servername
+                //ServerID
                 layout.gridx = 0; layout.gridy = (i + 2); JLabel lbl_ID = new JLabel("    " + (server.serverID));lbl_ID.setVisible(true);add(lbl_ID, layout);
+                //ServerName
                 layout.gridx = 1; layout.gridy = (i + 2); JLabel lbl_servername = new JLabel(server.name);lbl_servername.setVisible(true);add(lbl_servername, layout);
+                //Is up
                 layout.gridx = 2; layout.gridy = (i + 2); JLabel lbl_up = new JLabel(Boolean.toString(server.up));lbl_up.setVisible(true);if(server.up){lbl_up.setForeground(Color.green);} else {lbl_up.setForeground(Color.red);}layout.gridwidth = 2;add(lbl_up, layout); layout.gridwidth = 1;
+                //Price
                 layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_price = new JLabel(Integer.toString(server.price));lbl_price.setVisible(true);add(lbl_price, layout);
+                //Availability
                 layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel("      " + (server.availability));lbl_availability.setVisible(true);add(lbl_availability, layout);
+                //Port
                 layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
+                //Serverkind
                 layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.server_kind2);lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
+                //Ipaddress
                 layout.gridx = 8; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.ipadress);lbl_ip.setVisible(true);layout.gridwidth = 2;add(lbl_ip, layout); layout.gridwidth = 1;
+                //Storage
                 layout.gridx = 10; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(Integer.toString(server.storage));lbl_storage.setVisible(true);add(lbl_storage, layout);
+                //Analytics
                 layout.gridx = 11; layout.gridy = (i + 2); JButton analytics = new JButton("Analytics"); analytics.setVisible(true); add(analytics,layout); analytics.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {new ServerStats(serverID,projectID);}});
+                // Delete
                 layout.gridx = 12; layout.gridy = (i + 2); JButton delete = new JButton("Delete"); delete.setVisible(true); add(delete,layout); delete.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {deleteServerOfProject(serverID);dispose(); new MonitoringFrame(projectID);}});
             }
 
-            if(amount_of_servers <= 3) {
-                for(int i = 0;i != 3; i++){
+            if(amount_of_servers <= 5) {
+                for(int i = 0;i != 5; i++){
                     JLabel servername = new JLabel();
                     layout.gridx = i;
                     layout.gridy = (i + 2 + amount_of_servers);
@@ -423,10 +434,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
             }
 
-            System.out.println("Update completed");
-            System.out.println();
         }
-
+        System.out.println("Update completed");
+        System.out.println();
 
     }
 }

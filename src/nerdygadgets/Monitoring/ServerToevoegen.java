@@ -155,7 +155,8 @@ public class ServerToevoegen extends JFrame implements ActionListener {
                     this.id = id;
                 }
 
-                sql = "INSERT INTO server_Present values(null," + id +",null,null,null)";
+                sql = "INSERT INTO server_Present values(null," + id +",null,null,null,0)";
+                System.out.println(sql);
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
 

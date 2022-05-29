@@ -47,10 +47,6 @@ public class ServerStats extends JFrame implements ActionListener {
         layout.gridx = 6; layout.gridy = 0; thirty = new JButton("30 dagen");thirty.setSize(100,50);thirty.addActionListener(this);thirty.setVisible(true);add(thirty,layout);
         //Refresh button
         layout.gridx = 7; layout.gridy = 0; refresh = new JButton("Refresh");refresh.setSize(100,50);refresh.addActionListener(this);refresh.setVisible(true);add(refresh,layout);
-        //add button
-        layout.gridx = 8; layout.gridy = 0; add = new JButton("Server toevoegen");add.setSize(100,50);add.addActionListener(this);add.setVisible(true);layout.gridwidth = 2;;add(add);
-
-
 
         setVisible(true);
     }
