@@ -39,16 +39,15 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
     ServerLists list;
-    Serveroptie optie1;
-    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
+    ServerOptie optie1;
+    ArrayList<ServerOptie> tempServerOpties = new ArrayList<>();
 
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     String save;
-    ServerOptie optie1;
-    ArrayList<ServerOptie> tempServerOpties = new ArrayList<>();
+
 
 
 
@@ -103,31 +102,18 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     public void Optimaliseer(){
-        for (ServerDragAndDrop server: list.getServers()){
+        for (ServerDragAndDrop server: list.getServers()) {
             if (server instanceof WebServer) {
-                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
+                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid() / 100);
                 WSPrijsPerSoort = voegDoubleToe(WSPrijsPerSoort, server.getPrijs());
-                WSAantalPerSoort = voegIntToe(WSAantalPerSoort,0);
+                WSAantalPerSoort = voegIntToe(WSAantalPerSoort, 0);
                 WSAantalTotaal++;
             } else if (server instanceof DatabaseServer) {
-                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid()/100);
+                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid() / 100);
                 DSPrijsPerSoort = voegDoubleToe(DSPrijsPerSoort, server.getPrijs());
-                DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
+                DSAantalPerSoort = voegIntToe(DSAantalPerSoort, 0);
                 DSAantalTotaal++;
             }
-        for (ServerDragAndDrop server: list.getServers()){
-            if (server instanceof WebServer) {
-                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
-                WSPrijsPerSoort = voegDoubleToe(WSPrijsPerSoort, server.getPrijs());
-                WSAantalPerSoort = voegIntToe(WSAantalPerSoort,0);
-                WSAantalTotaal++;
-            } else if (server instanceof DatabaseServer) {
-                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid()/100);
-                DSPrijsPerSoort = voegDoubleToe(DSPrijsPerSoort, server.getPrijs());
-                DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
-                DSAantalTotaal++;
-            }
-
         }
 
         WebserverLoop(0, 0);
@@ -156,6 +142,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 ServerDragAndDrop DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
                 designpanel.add(DS2);
             }
+        }
         
     }
     private int WebserverLoop(int AantalWSTotaal, int WebServer){
@@ -237,10 +224,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
     public void generateSeverOpties() {
         int yhoogte = 10;
-        for (ServerDragAndDrop webservertje : list.getServers()){
+        for (ServerDragAndDrop webservertje : list.getServers()) {
             if (webservertje instanceof WebServer) {
                 webservertje.getPrijs();
-                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "webserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
@@ -248,13 +235,15 @@ public class DesignFrame extends JFrame implements ActionListener {
                 yhoogte = yhoogte + 71;
             } else if (webservertje instanceof DatabaseServer) {
                 webservertje.getPrijs();
-                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "databaseserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
                 designpanel.repaint();
                 yhoogte = yhoogte + 71;
             }
+        }
+    }
 
     private int WSLoop(int WSAantalTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
@@ -290,32 +279,9 @@ public class DesignFrame extends JFrame implements ActionListener {
         return naam;
     }
 
-    public void generateSeverOpties() {
-        int yhoogte = 10;
-        for (ServerDragAndDrop webservertje : list.getServers()){
-            if (webservertje instanceof WebServer) {
-                webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
-                optie1.setBounds(10, yhoogte, 121, 61);
-                tempServerOpties.add(optie1);
-                designpanel.add(optie1);
-                designpanel.repaint();
-                yhoogte = yhoogte + 71;
-            } else if (webservertje instanceof DatabaseServer) {
-                webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
-                optie1.setBounds(10, yhoogte, 121, 61);
-                tempServerOpties.add(optie1);
-                designpanel.add(optie1);
-                designpanel.repaint();
-                yhoogte = yhoogte + 71;
-            }
-
-        }
-    }
 
     public void removesServerOpties() {
-        for (Serveroptie s :
+        for (ServerOptie s :
                 tempServerOpties) {
             designpanel.remove(s);
         }

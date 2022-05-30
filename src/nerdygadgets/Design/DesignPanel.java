@@ -215,7 +215,7 @@ public class DesignPanel extends JPanel implements ComponentListener {
         for (ServerDragAndDrop server : serversArray_ArrayList) {
             totalePrijs += server.getPrijs();
         }
-        return removeTrailingZeros(totalePrijs);
+        return removeTrailingZeros(Math.round(totalePrijs * 100.0) / 100.0);
     }
     public int countDBServers(){
         // Deze functie kijkt hoeveel databaseservers er zijn.
