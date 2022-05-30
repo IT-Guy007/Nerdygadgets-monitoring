@@ -19,7 +19,7 @@ import java.sql.*;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm, back;
-    private Designpanel designpanel;
+    private DesignPanel designpanel;
 
     private Firewall firewall;
 
@@ -44,8 +44,8 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     String save;
-    Serveroptie optie1;
-    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
+    ServerOptie optie1;
+    ArrayList<ServerOptie> tempServerOpties = new ArrayList<>();
 
 
     public DesignFrame(String save) {
@@ -71,7 +71,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        designpanel = new Designpanel(this);
+        designpanel = new DesignPanel(this);
         add(designpanel);
 
         Firewall ServerOptie8 = new Firewall( "pfSense", 99.998, 4000);
@@ -223,7 +223,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (ServerDragAndDrop webservertje : list.getServers()){
             if (webservertje instanceof WebServer) {
                 webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
@@ -231,7 +231,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 yhoogte = yhoogte + 71;
             } else if (webservertje instanceof DatabaseServer) {
                 webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
