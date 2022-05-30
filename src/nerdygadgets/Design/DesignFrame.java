@@ -1,25 +1,25 @@
 package nerdygadgets.Design;
 
 
+import com.google.gson.*;
 import nerdygadgets.Design.components.*;
 import nerdygadgets.MainFrame;
-import nerdygadgets.Design.OpslaanDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Scanner;
 import java.sql.*;
-
-
 
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm, back;
-    private Designpanel designpanel;
+    private DesignPanel designpanel;
 
     private Firewall firewall;
 
@@ -39,17 +39,19 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
     ServerLists list;
+    ServerOptie optie1;
+    ArrayList<ServerOptie> tempServerOpties = new ArrayList<>();
+
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     String save;
-    Serveroptie optie1;
-    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
+
+
 
 
     public DesignFrame(String save) {
-
         this.save = save;
         list = new ServerLists();
 
@@ -72,7 +74,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        designpanel = new Designpanel(this);
+        designpanel = new DesignPanel(this);
         add(designpanel);
 
         Firewall ServerOptie8 = new Firewall( "pfSense", 99.998, 4000);
@@ -100,25 +102,26 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     public void Optimaliseer(){
-        for (ServerDragAndDrop server: list.getServers()){
+        for (ServerDragAndDrop server: list.getServers()) {
             if (server instanceof WebServer) {
-                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
+                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid() / 100);
                 WSPrijsPerSoort = voegDoubleToe(WSPrijsPerSoort, server.getPrijs());
-                WSAantalPerSoort = voegIntToe(WSAantalPerSoort,0);
+                WSAantalPerSoort = voegIntToe(WSAantalPerSoort, 0);
                 WSAantalTotaal++;
             } else if (server instanceof DatabaseServer) {
-                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid()/100);
+                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid() / 100);
                 DSPrijsPerSoort = voegDoubleToe(DSPrijsPerSoort, server.getPrijs());
-                DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
+                DSAantalPerSoort = voegIntToe(DSAantalPerSoort, 0);
                 DSAantalTotaal++;
             }
-
         }
 
         WebserverLoop(0, 0);
 
         TekenOptimaliseerd();
     }
+
+
     private void TekenOptimaliseerd(){
         designpanel.removeAll();
 
@@ -140,15 +143,14 @@ public class DesignFrame extends JFrame implements ActionListener {
                 designpanel.add(DS2);
             }
         }
+        
     }
     private int WebserverLoop(int AantalWSTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+
             WSAantalPerSoort[WebServer] = i;
-            if(WebServer < WSAantalTotaal){
-                WebserverLoop(i + AantalWSTotaal, WebServer + 1);
-            }
             if(WebServer == WSAantalTotaal){
-                DatabaseLoop (0,0);
+                // DSLoop (0,0); * functie moet nog geschreven worden *
             }
         }
         return WebServer;
@@ -180,6 +182,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                         return Database;
                     }
                 }
+
             }
         }
         return Database;
@@ -221,10 +224,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
     public void generateSeverOpties() {
         int yhoogte = 10;
-        for (ServerDragAndDrop webservertje : list.getServers()){
+        for (ServerDragAndDrop webservertje : list.getServers()) {
             if (webservertje instanceof WebServer) {
                 webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "webserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
@@ -232,14 +235,13 @@ public class DesignFrame extends JFrame implements ActionListener {
                 yhoogte = yhoogte + 71;
             } else if (webservertje instanceof DatabaseServer) {
                 webservertje.getPrijs();
-                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "databaseserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
                 designpanel.repaint();
                 yhoogte = yhoogte + 71;
             }
-
         }
     }
 
@@ -276,6 +278,16 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.addActionListener(this);
         return naam;
     }
+
+
+    public void removesServerOpties() {
+        for (ServerOptie s :
+                tempServerOpties) {
+            designpanel.remove(s);
+        }
+
+    }
+
     public void activebutton(JButton knop, String active, String normal){
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
@@ -302,9 +314,8 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
-//            save();
+            save();
 
-            new OpslaanDialog(designpanel);
 
         }else if(e.getSource() == back){
             activebutton(back,"back-active","back");
@@ -333,6 +344,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
             ServerDialog dialog = new ServerDialog(this, true, list.generateArray(), list.getServers());
+            System.out.println("test");
+            removesServerOpties();
+            generateSeverOpties();
+            designpanel.repaint();
         }
         else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
@@ -402,7 +417,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void open() {
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
@@ -415,26 +430,27 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int minx = 140;
             int range = maxx - minx + 1;
-            int randx = (int)(Math.random() * range) + minx;
 
             int maxy;
             if (designpanel.getFrame().getisVolscherm()){
-                maxy = designpanel.getFrame().getSchermhoogte() -180;
+                maxy = designpanel.getFrame().getSchermhoogte() -(designpanel.getFrame().getSchermhoogte()/3);
             }else{
                 maxy = designpanel.getFrame().getSchermhoogte()/41*26;
             }
             int miny = 0;
             int rangey = maxy - miny + 1;
-            int randy = (int)(Math.random() * rangey) + miny;
 
             while (rset.next()) {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
-
-                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    int randx = (int)(Math.random() * range) + minx;
+                    int randy = (int)(Math.random() * rangey) + miny;
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }else if(Objects.equals(rset.getString("type"), "databaseserver")){
-                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    int randx = (int)(Math.random() * range) + minx;
+                    int randy = (int)(Math.random() * rangey) + miny;
+                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }
@@ -450,45 +466,44 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
     }
 
-//    public void save(){
-////        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
-//        String setupID = tekstveld.getText(); //TODO Via dialoog ff hier een unique "filename meegeven"
-//        boolean unique = true;
-//        try {
-//            Connection conn = DriverManager.getConnection(
-//                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
-//                    "group4", "Qwerty1@");
-//            Statement stmt = conn.createStatement();
-//            String uniqueQuery = "SELECT setupId from serverSetups";
-//            ResultSet rset = stmt.executeQuery(uniqueQuery);
-//
-//            while(rset.next()) {
-//                if (rset.getString("setupID").equals(setupID)) {
-//                    unique = false;
-//                }
-//            }
-//            if (unique) {
-//                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
-//                        if (server instanceof WebServer) {
-//                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
-//                            stmt.executeUpdate(query);
-//                        } else if (server instanceof  DatabaseServer) {
-//                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
-//                            stmt.executeUpdate(query);
-//                        } else if (server instanceof  Firewall) {
-//                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
-//                            stmt.executeUpdate(query);
-//                        }
-//
-//                    }
-//                } else {System.out.println("niet uniek");}
-//
-//
-//
-//
-//
-//        } catch (SQLException ex) {
-//            System.out.println(ex);
-//        }
-//    }
+    public void save(){
+        String setupID = "jevader"; //TODO Via dialoog ff hier een unique "filename meegeven"
+        boolean unique = true;
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://192.168.1.103:3306/application",
+                    "group4", "Qwerty1@");
+            Statement stmt = conn.createStatement();
+            String uniqueQuery = "SELECT setupId from serverSetups";
+            ResultSet rset = stmt.executeQuery(uniqueQuery);
+
+            while(rset.next()) {
+                if (rset.getString("setupID").equals(setupID)) {
+                    unique = false;
+                }
+            }
+            if (unique) {
+                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                        if (server instanceof WebServer) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        } else if (server instanceof  DatabaseServer) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        } else if (server instanceof  Firewall) {
+                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+                            stmt.executeUpdate(query);
+                        }
+
+                    }
+                } else {System.out.println("niet uniek");}
+
+
+
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
 }

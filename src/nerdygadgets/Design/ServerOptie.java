@@ -18,15 +18,15 @@ import java.util.Objects;
 
 import static java.lang.Math.round;
 
-public class Serveroptie extends JButton implements ActionListener {
-    private Designpanel hoofdpanel;
+public class ServerOptie extends JButton implements ActionListener {
+    private DesignPanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
     private ImageIcon icon;
     private int x,y,width,height;
     private Color transparent=new Color(1f,0f,0f,0f );
 
-    public Serveroptie(Designpanel parentPanel, String name, double availability, double annualPrice, String type){
+    public ServerOptie(DesignPanel parentPanel, String name, double availability, double annualPrice, String type){
 
         this.beschikbaarheid = availability;
         this.hoofdpanel = parentPanel;
@@ -95,6 +95,11 @@ public class Serveroptie extends JButton implements ActionListener {
                 repaintParentPanel();
             }
             public void mouseReleased(MouseEvent mld) {
+                //int screenX = mld.getXOnScreen();
+                //int screenY = mld.getYOnScreen();
+                //if (screenX<140){
+                //    parentPanel.remove(server1);
+                //}
                 counter=0;
             }
         };

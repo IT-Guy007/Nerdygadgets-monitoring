@@ -24,7 +24,7 @@ import java.util.List;
 
 import static java.lang.Math.round;
 
-public class Designpanel extends JPanel implements ComponentListener {
+public class DesignPanel extends JPanel implements ComponentListener {
     private final DesignFrame frame_DesignFrame;
     private final Dimension schermgrootte_Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     private final int schermhoogte_int = schermgrootte_Dimension.height;
@@ -33,7 +33,7 @@ public class Designpanel extends JPanel implements ComponentListener {
 
     private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
 
-    public Designpanel(DesignFrame frame) {
+    public DesignPanel(DesignFrame frame) {
         // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
         connections_list = new ArrayList<>();
         this.frame_DesignFrame = frame;
@@ -62,7 +62,7 @@ public class Designpanel extends JPanel implements ComponentListener {
                         suicide(component, screenY, screenX);
 
                 }else{
-                    if (component != Designpanel.this && component != null) {
+                    if (component != DesignPanel.this && component != null) {
                         dragComponent = component;
                         Point clickPoint = e.getPoint();
                         int deltaX = clickPoint.x - dragComponent.getX();
@@ -86,7 +86,7 @@ public class Designpanel extends JPanel implements ComponentListener {
                     yDelta = mouseY - 0;
                 }
                 if (frame.getisVolscherm()){
-                    if (xDelta >=140 &&yDelta >= 0 && xDelta <= schermbreedte_int -280 && yDelta <= schermhoogte_int-180){
+                    if (xDelta >=140 &&yDelta >= 0 && xDelta <= schermbreedte_int -(schermbreedte_int/5.8) && yDelta <= schermhoogte_int-180){
                         dragComponent.setLocation(xDelta, yDelta);
                     }
                 }else{
@@ -129,7 +129,35 @@ public class Designpanel extends JPanel implements ComponentListener {
                     }
                 }
             }catch (Exception e){
-                System.out.println("Error in loop");
+                System.out.println("Error in loop 1");
+                try {
+                    for (Component[] coneections : connections_list) {
+                        try {
+                            if (server.getBounds().equals(coneections[1].getBounds())) {
+                                connections_list.remove(counter);
+                            }
+                            counter++;
+                        } catch (Exception c) {
+                            System.out.println("test");
+                        }
+                    }
+                }catch (Exception b){
+                    System.out.println("Error in loop 2");
+                    try {
+                        for (Component[] coneections : connections_list) {
+                            try {
+                                if (server.getBounds().equals(coneections[1].getBounds())) {
+                                    connections_list.remove(counter);
+                                }
+                                counter++;
+                            } catch (Exception c) {
+                                System.out.println("test");
+                            }
+                        }
+                    }catch (Exception g){
+                        System.out.println("Error in loop 3");
+                    }
+                }
             }
             repaint();
         }
@@ -138,7 +166,6 @@ public class Designpanel extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
             if (connection[1] instanceof WebServer || connection[1] instanceof DatabaseServer|| connection[1] instanceof Firewall){
@@ -189,7 +216,7 @@ public class Designpanel extends JPanel implements ComponentListener {
         for (ServerDragAndDrop server : serversArray_ArrayList) {
             totalePrijs += server.getPrijs();
         }
-        return removeTrailingZeros(totalePrijs);
+        return removeTrailingZeros(Math.round(totalePrijs * 100.0) / 100.0);
     }
     public int countDBServers(){
         // Deze functie kijkt hoeveel databaseservers er zijn.
