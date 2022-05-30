@@ -17,13 +17,13 @@ import java.util.ArrayList;
 
 public class OpslaanDialog extends JDialog implements ActionListener {
 
-    private Designpanel designpanel;
+    private DesignPanel designpanel;
     private DesignFrame designFrame;
 
-    JButton opslaan = new JButton("Sla op");
+    JButton opslaan = new JButton("Opslaan");
     JTextField tekstveld = new JTextField(15);
 
-    public OpslaanDialog(Designpanel designpanel){
+    public OpslaanDialog(DesignPanel designpanel){
 
         this.designpanel = designpanel;
 
