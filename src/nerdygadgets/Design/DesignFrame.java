@@ -39,6 +39,9 @@ public class DesignFrame extends JFrame implements ActionListener {
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
     ServerLists list;
+    Serveroptie optie1;
+    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
+
     private boolean isVolscherm = false;
     Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
     int schermhoogte = schermgrootte.height;
@@ -112,14 +115,27 @@ public class DesignFrame extends JFrame implements ActionListener {
                 DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
                 DSAantalTotaal++;
             }
+        for (ServerDragAndDrop server: list.getServers()){
+            if (server instanceof WebServer) {
+                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
+                WSPrijsPerSoort = voegDoubleToe(WSPrijsPerSoort, server.getPrijs());
+                WSAantalPerSoort = voegIntToe(WSAantalPerSoort,0);
+                WSAantalTotaal++;
+            } else if (server instanceof DatabaseServer) {
+                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid()/100);
+                DSPrijsPerSoort = voegDoubleToe(DSPrijsPerSoort, server.getPrijs());
+                DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
+                DSAantalTotaal++;
+            }
 
         }
-        WSLoop(0, 0);
 
         WebserverLoop(0, 0);
 
         TekenOptimaliseerd();
     }
+
+
     private void TekenOptimaliseerd(){
         designpanel.removeAll();
 
@@ -140,7 +156,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 ServerDragAndDrop DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
                 designpanel.add(DS2);
             }
-        }
+        
     }
     private int WebserverLoop(int AantalWSTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
@@ -240,9 +256,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                 yhoogte = yhoogte + 71;
             }
 
-        }
-    }
-
     private int WSLoop(int WSAantalTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
             WSAantalPerSoort[WebServer] = i;
@@ -276,6 +289,39 @@ public class DesignFrame extends JFrame implements ActionListener {
         naam.addActionListener(this);
         return naam;
     }
+
+    public void generateSeverOpties() {
+        int yhoogte = 10;
+        for (ServerDragAndDrop webservertje : list.getServers()){
+            if (webservertje instanceof WebServer) {
+                webservertje.getPrijs();
+                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1.setBounds(10, yhoogte, 121, 61);
+                tempServerOpties.add(optie1);
+                designpanel.add(optie1);
+                designpanel.repaint();
+                yhoogte = yhoogte + 71;
+            } else if (webservertje instanceof DatabaseServer) {
+                webservertje.getPrijs();
+                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1.setBounds(10, yhoogte, 121, 61);
+                tempServerOpties.add(optie1);
+                designpanel.add(optie1);
+                designpanel.repaint();
+                yhoogte = yhoogte + 71;
+            }
+
+        }
+    }
+
+    public void removesServerOpties() {
+        for (Serveroptie s :
+                tempServerOpties) {
+            designpanel.remove(s);
+        }
+
+    }
+
     public void activebutton(JButton knop, String active, String normal){
 
         // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
@@ -332,6 +378,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         }else if(e.getSource() == JBserveropties_wijzigen){
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
             ServerDialog dialog = new ServerDialog(this, true, list.generateArray(), list.getServers());
+            System.out.println("test");
+            removesServerOpties();
+            generateSeverOpties();
+            designpanel.repaint();
         }
         else if (e.getSource() == JBvolscherm) {
             if(isVolscherm) {
