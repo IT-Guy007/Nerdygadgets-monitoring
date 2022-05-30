@@ -8,9 +8,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
 
-public class Serveroptie extends JButton implements ActionListener {
+import static java.lang.Math.round;
+
+public class ServerOptie extends JButton implements ActionListener {
     private Designpanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
@@ -35,6 +43,68 @@ public class Serveroptie extends JButton implements ActionListener {
         setBorderPainted(false);
         setVisible(true);
         addActionListener(this);
+        MouseAdapter ma = new MouseAdapter() {
+            private Component dragComponent;
+            private Point offset;
+            int counter =0;
+            ServerDragAndDrop server1 = null;
+            public void mousePressed(MouseEvent e) {
+                // Deze functie zorgt ervoor dat als je op een knop rechtermuis klikt, deze word aangeroepen om te verdwijnen
+                Component component = getComponentAt(e.getPoint());
+                if(e.getButton() == MouseEvent.BUTTON3){}else{
+                    dragComponent = component;
+                    Point clickPoint = e.getPoint();
+                    int deltaX = clickPoint.x - dragComponent.getX();
+                    int deltaY = clickPoint.y - dragComponent.getY();
+                    offset = new Point(deltaX, deltaY);
+                }
+            }
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (counter==0){
+                    if (type=="databaseserver"){
+                        server1 = new DatabaseServer(naam, beschikbaarheid,prijs);
+                    }else{
+                        server1 = new WebServer(naam, beschikbaarheid,prijs);
+                    }
+                    server1.setBounds(10, hoofdpanel.getFrame().returnyhoogte(name), 125, 140);
+                    server1.setLocation(10, e.getY());
+                    hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server1);
+                    hoofdpanel.addArrayList(server1);
+                }
+                counter++;
+                int mouseX = e.getX();
+                int mouseY = e.getY();
+                int screenX = e.getXOnScreen();
+                int screenY = e.getYOnScreen();
+                int xDelta;
+                int yDelta;
+                try {
+                    if (!hoofdpanel.getFrame().getisVolscherm()) {
+                        xDelta = (int) (screenX - offset.x - Math.round(0.06463541666666666666666666666667 * hoofdpanel.getFrame().getSchermbreedte()));//- 130;
+                        yDelta = (int) (screenY - offset.y - Math.round(0.28935185185185185185185185185185 * hoofdpanel.getFrame().getSchermhoogte()));// -250;
+                    }else{
+                        xDelta = screenX - offset.x;
+                        yDelta = (int) (screenY - offset.y - Math.round(0.22935185185185185185185185185185 * hoofdpanel.getFrame().getSchermhoogte()));
+                    }
+                }catch (Exception FE){
+                    xDelta = mouseX - 0;
+                    yDelta = mouseY - 0;
+                }
+                server1.setLocation(xDelta,yDelta);
+                repaintParentPanel();
+            }
+            public void mouseReleased(MouseEvent mld) {
+                //int screenX = mld.getXOnScreen();
+                //int screenY = mld.getYOnScreen();
+                //if (screenX<140){
+                //    parentPanel.remove(server1);
+                //}
+                counter=0;
+            }
+        };
+        addMouseListener(ma);
+        addMouseMotionListener(ma);
         repaintParentPanel();
     }
     public void toevoegenafbeelding(){

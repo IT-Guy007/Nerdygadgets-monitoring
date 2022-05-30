@@ -19,14 +19,14 @@ import java.util.Objects;
 import static java.lang.Math.round;
 
 public class ServerOptie extends JButton implements ActionListener {
-    private DesignPanel hoofdpanel;
+    private Designpanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
     private ImageIcon icon;
     private int x,y,width,height;
     private Color transparent=new Color(1f,0f,0f,0f );
 
-    public ServerOptie(DesignPanel parentPanel, String name, double availability, double annualPrice, String type){
+    public Serveroptie(Designpanel parentPanel, String name, double availability, double annualPrice, String type){
 
         this.beschikbaarheid = availability;
         this.hoofdpanel = parentPanel;
@@ -146,19 +146,17 @@ public class ServerOptie extends JButton implements ActionListener {
         if (type == "webserver") {
 
             ServerDragAndDrop server1 = new WebServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 125, 125);
+            server1.setBounds(randx, randy, 125, 140);
             hoofdpanel.addArrayList(server1);
         }else if(type == "databaseserver"){
             ServerDragAndDrop server1 = new DatabaseServer(naam, prijs, beschikbaarheid);
-            server1.setBounds(randx, randy, 125, 125);
+            server1.setBounds(randx, randy, 125, 140);
             hoofdpanel.addArrayList(server1);
         }
         for (ServerDragAndDrop server : hoofdpanel.getServersArray_ArrayList()){
             hoofdpanel.add(hoofdpanel.getFrame().getFirewall(),server);
             hoofdpanel.repaint();
         }
-
     }
-
 
 }
