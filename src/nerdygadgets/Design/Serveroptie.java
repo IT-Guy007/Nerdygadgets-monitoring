@@ -95,6 +95,11 @@ public class Serveroptie extends JButton implements ActionListener {
                 repaintParentPanel();
             }
             public void mouseReleased(MouseEvent mld) {
+                //int screenX = mld.getXOnScreen();
+                //int screenY = mld.getYOnScreen();
+                //if (screenX<140){
+                //    parentPanel.remove(server1);
+                //}
                 counter=0;
             }
         };

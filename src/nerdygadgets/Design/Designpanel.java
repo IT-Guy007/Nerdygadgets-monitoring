@@ -85,7 +85,7 @@ public class Designpanel extends JPanel implements ComponentListener {
                     yDelta = mouseY - 0;
                 }
                 if (frame.getisVolscherm()){
-                    if (xDelta >=140 &&yDelta >= 0 && xDelta <= schermbreedte_int -280 && yDelta <= schermhoogte_int-180){
+                    if (xDelta >=140 &&yDelta >= 0 && xDelta <= schermbreedte_int -(schermbreedte_int/5.8) && yDelta <= schermhoogte_int-180){
                         dragComponent.setLocation(xDelta, yDelta);
                     }
                 }else{

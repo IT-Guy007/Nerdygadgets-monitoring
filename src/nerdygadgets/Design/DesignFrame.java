@@ -444,8 +444,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                     designpanel.repaint();
                 }
             }
-
-
         } catch (SQLException ex) {
             System.out.println(ex);
         }
@@ -482,11 +480,6 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                     }
                 } else {System.out.println("niet uniek");}
-
-
-
-
-
         } catch (SQLException ex) {
             System.out.println(ex);
         }
