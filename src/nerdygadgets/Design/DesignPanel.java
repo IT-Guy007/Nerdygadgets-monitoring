@@ -165,7 +165,6 @@ public class DesignPanel extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
             if (connection[1] instanceof WebServer || connection[1] instanceof DatabaseServer|| connection[1] instanceof Firewall){

@@ -19,7 +19,7 @@ import java.sql.*;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm, back;
-    private DesignPanel designpanel;
+    private Designpanel designpanel;
 
     private Firewall firewall;
 
@@ -44,8 +44,9 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     String save;
-    ServerOptie optie1;
-    ArrayList<ServerOptie> tempServerOpties = new ArrayList<>();
+    Serveroptie optie1;
+    ArrayList<Serveroptie> tempServerOpties = new ArrayList<>();
+
 
 
     public DesignFrame(String save) {
@@ -71,7 +72,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        designpanel = new DesignPanel(this);
+        designpanel = new Designpanel(this);
         add(designpanel);
 
         Firewall ServerOptie8 = new Firewall( "pfSense", 99.998, 4000);
@@ -113,6 +114,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
 
         }
+        WSLoop(0, 0);
 
         WebserverLoop(0, 0);
 
@@ -142,12 +144,10 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
     private int WebserverLoop(int AantalWSTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+
             WSAantalPerSoort[WebServer] = i;
-            if(WebServer < WSAantalTotaal){
-                WebserverLoop(i + AantalWSTotaal, WebServer + 1);
-            }
             if(WebServer == WSAantalTotaal){
-                DatabaseLoop (0,0);
+                // DSLoop (0,0); * functie moet nog geschreven worden *
             }
         }
         return WebServer;
@@ -179,6 +179,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                         return Database;
                     }
                 }
+
             }
         }
         return Database;
@@ -223,7 +224,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (ServerDragAndDrop webservertje : list.getServers()){
             if (webservertje instanceof WebServer) {
                 webservertje.getPrijs();
-                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
@@ -231,7 +232,7 @@ public class DesignFrame extends JFrame implements ActionListener {
                 yhoogte = yhoogte + 71;
             } else if (webservertje instanceof DatabaseServer) {
                 webservertje.getPrijs();
-                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1 = new Serveroptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
                 optie1.setBounds(10, yhoogte, 121, 61);
                 tempServerOpties.add(optie1);
                 designpanel.add(optie1);
@@ -400,7 +401,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void open() {
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
@@ -414,7 +415,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             int minx = 140;
             int range = maxx - minx + 1;
 
-
             int maxy;
             if (designpanel.getFrame().getisVolscherm()){
                 maxy = designpanel.getFrame().getSchermhoogte() -(designpanel.getFrame().getSchermhoogte()/3);
@@ -424,12 +424,11 @@ public class DesignFrame extends JFrame implements ActionListener {
             int miny = 0;
             int rangey = maxy - miny + 1;
 
-
             while (rset.next()) {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
                     int randx = (int)(Math.random() * range) + minx;
                     int randy = (int)(Math.random() * rangey) + miny;
-                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"),rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }else if(Objects.equals(rset.getString("type"), "databaseserver")){
@@ -444,17 +443,19 @@ public class DesignFrame extends JFrame implements ActionListener {
                     designpanel.repaint();
                 }
             }
+
+
         } catch (SQLException ex) {
             System.out.println(ex);
         }
     }
 
     public void save(){
-        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
+        String setupID = "jevader"; //TODO Via dialoog ff hier een unique "filename meegeven"
         boolean unique = true;
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT setupId from serverSetups";
@@ -480,6 +481,11 @@ public class DesignFrame extends JFrame implements ActionListener {
 
                     }
                 } else {System.out.println("niet uniek");}
+
+
+
+
+
         } catch (SQLException ex) {
             System.out.println(ex);
         }
