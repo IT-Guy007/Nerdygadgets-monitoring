@@ -1,6 +1,7 @@
 package nerdygadgets;
 
 import nerdygadgets.Design.DesignFrame;
+import nerdygadgets.Design.openDialog;
 import nerdygadgets.Monitoring.ProjectFrame;
 
 import javax.swing.*;
@@ -87,7 +88,7 @@ public class MainFrame extends JFrame implements ActionListener {
         if(e.getSource() ==  Nieuw_Ontwerp) {
             setVisible(false);
             //JFrame design = new JFrame();
-            DesignFrame design = new DesignFrame();
+            DesignFrame design = new DesignFrame(null);
             // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
@@ -102,6 +103,12 @@ public class MainFrame extends JFrame implements ActionListener {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
             monitoring.setLocation(size.width/2 - monitoring.getWidth()/2, size.height/2 - monitoring.getHeight()/2);
+    } else if(e.getSource() == Openen_Ontwerp) {
+            setVisible(false);
+            openDialog dialog = new openDialog();
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension size = toolkit.getScreenSize();
+            dialog.setLocation(size.width/2 - dialog.getWidth()/2, size.height/2 - dialog.getHeight()/2);
         }
     }
 
