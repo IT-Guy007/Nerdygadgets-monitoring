@@ -19,7 +19,7 @@ import java.sql.*;
 
 public class DesignFrame extends JFrame implements ActionListener {
     private JButton JBopslaan,JBnieuw_ontwerp,JBbestand_openen,JBoptimaliseren,JBserveropties_wijzigen, JBvolscherm, back;
-    private Designpanel designpanel;
+    private DesignPanel designpanel;
 
     private Firewall firewall;
 
@@ -47,6 +47,9 @@ public class DesignFrame extends JFrame implements ActionListener {
     int schermhoogte = schermgrootte.height;
     int schermbreedte = schermgrootte.width;
     String save;
+    ServerOptie optie1;
+    ArrayList<ServerOptie> tempServerOpties = new ArrayList<>();
+
 
 
     public DesignFrame(String save) {
@@ -72,10 +75,10 @@ public class DesignFrame extends JFrame implements ActionListener {
         JBvolscherm = create_button(JBvolscherm, "enlargebutton");
         add(JBvolscherm);
 
-        designpanel = new Designpanel(this);
+        designpanel = new DesignPanel(this);
         add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 99.998, 4000);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
         designpanel.addArrayList(ServerOptie8);
@@ -100,7 +103,18 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     public void Optimaliseer(){
-
+        for (ServerDragAndDrop server: list.getServers()){
+            if (server instanceof WebServer) {
+                WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
+                WSPrijsPerSoort = voegDoubleToe(WSPrijsPerSoort, server.getPrijs());
+                WSAantalPerSoort = voegIntToe(WSAantalPerSoort,0);
+                WSAantalTotaal++;
+            } else if (server instanceof DatabaseServer) {
+                DSAvaliablityArray = voegDoubleToe(DSAvaliablityArray, server.getBeschikbaarheid()/100);
+                DSPrijsPerSoort = voegDoubleToe(DSPrijsPerSoort, server.getPrijs());
+                DSAantalPerSoort = voegIntToe(DSAantalPerSoort,0);
+                DSAantalTotaal++;
+            }
         for (ServerDragAndDrop server: list.getServers()){
             if (server instanceof WebServer) {
                 WSAvaliablityArray = voegDoubleToe(WSAvaliablityArray, server.getBeschikbaarheid()/100);
@@ -115,7 +129,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
 
         }
-        WSLoop(0, 0);
 
         WebserverLoop(0, 0);
 
@@ -143,8 +156,105 @@ public class DesignFrame extends JFrame implements ActionListener {
                 ServerDragAndDrop DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
                 designpanel.add(DS2);
             }
-        }
+        
     }
+    private int WebserverLoop(int AantalWSTotaal, int WebServer){
+        for (int i = 0; i < maxAantalServers - AantalWSTotaal; i++){
+
+            WSAantalPerSoort[WebServer] = i;
+            if(WebServer == WSAantalTotaal){
+                // DSLoop (0,0); * functie moet nog geschreven worden *
+            }
+        }
+        return WebServer;
+    }
+    private int DatabaseLoop(int AantalDBTotaal, int Database) {
+        for (int i = 0; i < maxAantalServers - AantalDBTotaal; i++) {
+            DSAantalPerSoort[Database] = i;
+            if (Database < DSAantalTotaal) ;
+            {
+                DatabaseLoop(i + AantalDBTotaal, Database + 1);
+            }
+            if (Database == DSAantalTotaal) {
+                double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
+                double configPrijs = OptimaliseerBerekenPrijs();
+
+                if (configBeschikbaarheid > gewensteBeschikbaarheid){
+                    if (configPrijs < minimaleKosten) {
+                        DSgeoptimaliseerde = new int[]{};
+                        WSgeoptimaliseerde = new int[]{};
+                        minimaleKosten = configPrijs;
+
+                        for (int j = 0; j < DSAantalPerSoort.length; j++){
+                            DSgeoptimaliseerde = voegIntToe(DSgeoptimaliseerde, DSAantalPerSoort[j]);
+                        }
+                        for (int y = 0; y < WSAantalPerSoort.length; y++){
+                            WSgeoptimaliseerde = voegIntToe(WSgeoptimaliseerde, WSAantalPerSoort[y]);
+                        }
+
+                        return Database;
+                    }
+                }
+
+            }
+        }
+        return Database;
+    }
+    private double OptimaliseerBerekenBeschikbaarheid(){
+        double beschikbaarheidFirewall = 1, beschikbaarheidDatabase = 1, beschikbaarheidWebserver = 1;
+
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            beschikbaarheidDatabase *= Math.pow((1 - DSAantalPerSoort[i]), DSAvaliablityArray[i]);
+        }
+        beschikbaarheidWebserver = 1 - beschikbaarheidWebserver;
+
+        for (int i = 0; i < WSAantalPerSoort.length; i++){
+            beschikbaarheidWebserver *= Math.pow((1 - WSAvaliablityArray[i]), WSAantalPerSoort[i]);
+        }
+        beschikbaarheidDatabase = 1 - beschikbaarheidDatabase;
+
+        beschikbaarheidFirewall = Math.pow((1- firewall.getBeschikbaarheid() / 100), 1);
+
+        double beschikbaarheid = beschikbaarheidFirewall * beschikbaarheidDatabase * beschikbaarheidWebserver;
+        return beschikbaarheid;
+    }
+    private double OptimaliseerBerekenPrijs(){
+        double prijsFirewall = firewall.getPrijs();
+        double prijsDatabase = 0;
+        double prijsWebserver = 0;
+
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            prijsDatabase += (DSAantalPerSoort[i] * DSPrijsPerSoort[i]);
+        }
+
+        for (int i = 0; i < WSAantalPerSoort.length; i++){
+            prijsWebserver += (WSAantalPerSoort[i] * WSPrijsPerSoort[i]);
+        }
+
+        double prijsTotaal = prijsDatabase + prijsWebserver + prijsFirewall;
+        return prijsTotaal;
+
+    }
+    public void generateSeverOpties() {
+        int yhoogte = 10;
+        for (ServerDragAndDrop webservertje : list.getServers()){
+            if (webservertje instanceof WebServer) {
+                webservertje.getPrijs();
+                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"webserver");
+                optie1.setBounds(10, yhoogte, 121, 61);
+                tempServerOpties.add(optie1);
+                designpanel.add(optie1);
+                designpanel.repaint();
+                yhoogte = yhoogte + 71;
+            } else if (webservertje instanceof DatabaseServer) {
+                webservertje.getPrijs();
+                optie1 = new ServerOptie(designpanel,webservertje.getNaam(),webservertje.getBeschikbaarheid(),webservertje.getPrijs(),"databaseserver");
+                optie1.setBounds(10, yhoogte, 121, 61);
+                tempServerOpties.add(optie1);
+                designpanel.add(optie1);
+                designpanel.repaint();
+                yhoogte = yhoogte + 71;
+            }
 
     private int WSLoop(int WSAantalTotaal, int WebServer){
         for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
@@ -341,7 +451,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void open() {
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
@@ -354,26 +464,27 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
             int minx = 140;
             int range = maxx - minx + 1;
-            int randx = (int)(Math.random() * range) + minx;
 
             int maxy;
             if (designpanel.getFrame().getisVolscherm()){
-                maxy = designpanel.getFrame().getSchermhoogte() -180;
+                maxy = designpanel.getFrame().getSchermhoogte() -(designpanel.getFrame().getSchermhoogte()/3);
             }else{
                 maxy = designpanel.getFrame().getSchermhoogte()/41*26;
             }
             int miny = 0;
             int rangey = maxy - miny + 1;
-            int randy = (int)(Math.random() * rangey) + miny;
 
             while (rset.next()) {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
-
-                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    int randx = (int)(Math.random() * range) + minx;
+                    int randy = (int)(Math.random() * rangey) + miny;
+                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }else if(Objects.equals(rset.getString("type"), "databaseserver")){
-                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("prijs"), rset.getDouble("beschikbaarheid"));
+                    int randx = (int)(Math.random() * range) + minx;
+                    int randy = (int)(Math.random() * rangey) + miny;
+                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }
@@ -390,11 +501,11 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     public void save(){
-        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
+        String setupID = "jevader"; //TODO Via dialoog ff hier een unique "filename meegeven"
         boolean unique = true;
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+                    "jdbc:mysql://192.168.1.103:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT setupId from serverSetups";
