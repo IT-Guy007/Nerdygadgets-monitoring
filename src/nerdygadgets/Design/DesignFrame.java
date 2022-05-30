@@ -1,20 +1,20 @@
 package nerdygadgets.Design;
 
 
-import com.google.gson.*;
 import nerdygadgets.Design.components.*;
 import nerdygadgets.MainFrame;
+import nerdygadgets.Design.OpslaanDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Scanner;
 import java.sql.*;
+
+
 
 
 public class DesignFrame extends JFrame implements ActionListener {
@@ -49,6 +49,7 @@ public class DesignFrame extends JFrame implements ActionListener {
 
 
     public DesignFrame(String save) {
+
         this.save = save;
         list = new ServerLists();
 
@@ -301,8 +302,9 @@ public class DesignFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBopslaan) {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
-            save();
+//            save();
 
+            new OpslaanDialog(designpanel);
 
         }else if(e.getSource() == back){
             activebutton(back,"back-active","back");
@@ -448,44 +450,45 @@ public class DesignFrame extends JFrame implements ActionListener {
         }
     }
 
-    public void save(){
-        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
-        boolean unique = true;
-        try {
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
-                    "group4", "Qwerty1@");
-            Statement stmt = conn.createStatement();
-            String uniqueQuery = "SELECT setupId from serverSetups";
-            ResultSet rset = stmt.executeQuery(uniqueQuery);
-
-            while(rset.next()) {
-                if (rset.getString("setupID").equals(setupID)) {
-                    unique = false;
-                }
-            }
-            if (unique) {
-                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
-                        if (server instanceof WebServer) {
-                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
-                            stmt.executeUpdate(query);
-                        } else if (server instanceof  DatabaseServer) {
-                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
-                            stmt.executeUpdate(query);
-                        } else if (server instanceof  Firewall) {
-                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
-                            stmt.executeUpdate(query);
-                        }
-
-                    }
-                } else {System.out.println("niet uniek");}
-
-
-
-
-
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-    }
+//    public void save(){
+////        String setupID = "jemoeder"; //TODO Via dialoog ff hier een unique "filename meegeven"
+//        String setupID = tekstveld.getText(); //TODO Via dialoog ff hier een unique "filename meegeven"
+//        boolean unique = true;
+//        try {
+//            Connection conn = DriverManager.getConnection(
+//                    "jdbc:mysql://192.168.1.103:3306/nerdygadgets",
+//                    "group4", "Qwerty1@");
+//            Statement stmt = conn.createStatement();
+//            String uniqueQuery = "SELECT setupId from serverSetups";
+//            ResultSet rset = stmt.executeQuery(uniqueQuery);
+//
+//            while(rset.next()) {
+//                if (rset.getString("setupID").equals(setupID)) {
+//                    unique = false;
+//                }
+//            }
+//            if (unique) {
+//                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+//                        if (server instanceof WebServer) {
+//                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+//                            stmt.executeUpdate(query);
+//                        } else if (server instanceof  DatabaseServer) {
+//                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+//                            stmt.executeUpdate(query);
+//                        } else if (server instanceof  Firewall) {
+//                            String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
+//                            stmt.executeUpdate(query);
+//                        }
+//
+//                    }
+//                } else {System.out.println("niet uniek");}
+//
+//
+//
+//
+//
+//        } catch (SQLException ex) {
+//            System.out.println(ex);
+//        }
+//    }
 }

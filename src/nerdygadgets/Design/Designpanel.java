@@ -5,6 +5,7 @@ import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
+import nerdygadgets.Design.OpslaanDialog;
 import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
