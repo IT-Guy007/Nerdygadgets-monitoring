@@ -23,7 +23,6 @@ public class DesignFrame extends JFrame implements ActionListener {
 
     private Firewall firewall;
 
-    private int maxServerBacktracking;
     private int[] WSAantalPerSoort = {};
     private int[] DSAantalPerSoort = {};
     private int WSAantalTotaal = -1;
@@ -34,9 +33,7 @@ public class DesignFrame extends JFrame implements ActionListener {
     private double[] DSPrijsPerSoort = {};
     private double gewensteBeschikbaarheid = -1;
     private double minimaleKosten = Double.MAX_VALUE;
-    private int ServerCount;
     private int maxAantalServers;
-    private int aantalSetupTotaal = 0;
     private String serverSetup;
     private int[] WSgeoptimaliseerde = {};
     private int[] DSgeoptimaliseerde = {};
@@ -109,10 +106,8 @@ public class DesignFrame extends JFrame implements ActionListener {
 
 
     public void Optimaliseer(double gewensteBeschikbaarheid){
-        designpanel.removeAll();
         optimaliseerReset();
         this.gewensteBeschikbaarheid = gewensteBeschikbaarheid;
-
 
         for (ServerDragAndDrop server: list.getServers()) {
             if (server instanceof WebServer) {
@@ -167,6 +162,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             if (WebServer == WSAantalTotaal){
                 DatabaseLoop(0 , 0);
             }
+
             teller++;
         }
         return WebServer;
@@ -176,7 +172,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         while (teller < maxAantalServers - AantalDBTotaal) {
             DSAantalPerSoort[Database] = teller;
             teller++;
-
             if (Database < DSAantalTotaal)
             {
                 DatabaseLoop(teller+AantalDBTotaal, Database+1);
@@ -184,7 +179,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             if (Database == DSAantalTotaal) {
                 double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
                 double configPrijs = OptimaliseerBerekenPrijs();
-                aantalSetupTotaal++;
 
                 if (configBeschikbaarheid > gewensteBeschikbaarheid){
                     if (configPrijs < minimaleKosten) {
@@ -218,26 +212,22 @@ public class DesignFrame extends JFrame implements ActionListener {
     }
 
     private double OptimaliseerBerekenBeschikbaarheid(){
-        double beschikbaarheidFirewall = 1;
+        double beschikbaarheidFirewall = 0.9999800000000001;
         double beschikbaarheidDatabase = 1;
         double beschikbaarheidWebserver = 1;
-
-        for (int i = 0; i < DSAantalPerSoort.length; i++){
-            beschikbaarheidDatabase *= Math.pow((1 - DSAvaliablityArray[i]), DSAantalPerSoort[i]);
-        }
 
         for (int i = 0; i < WSAantalPerSoort.length; i++){
             beschikbaarheidWebserver *= Math.pow((1 - WSAvaliablityArray[i]), WSAantalPerSoort[i]);
         }
-        beschikbaarheidWebserver = 1 - beschikbaarheidWebserver;
-        beschikbaarheidDatabase = 1 - beschikbaarheidDatabase;
+        beschikbaarheidWebserver = 1-beschikbaarheidWebserver;
 
-        beschikbaarheidFirewall = 1 - Math.pow((1- firewall.getBeschikbaarheid() / 100), 1);
+        for (int i = 0; i < DSAantalPerSoort.length; i++){
+            beschikbaarheidDatabase *= Math.pow((1 - DSAvaliablityArray[i]), DSAantalPerSoort[i]);
+        }
+        beschikbaarheidDatabase = 1-beschikbaarheidDatabase;
 
         double beschikbaarheid = beschikbaarheidFirewall * beschikbaarheidDatabase * beschikbaarheidWebserver;
-
         return beschikbaarheid;
-
     }
     private double OptimaliseerBerekenPrijs(){
         double prijsFirewall = firewall.getPrijs();
@@ -254,7 +244,6 @@ public class DesignFrame extends JFrame implements ActionListener {
 
         double prijsTotaal = prijsDatabase + prijsWebserver + prijsFirewall;
         return prijsTotaal;
-
     }
 
 
@@ -288,19 +277,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                 }
             }
         }
-    }
-
-    private int WSLoop(int WSAantalTotaal, int WebServer){
-        for (int i = 0; i < maxAantalServers - WSAantalTotaal; i++){
-            WSAantalPerSoort[WebServer] = i;
-            if(WebServer == WSAantalTotaal){
-                // DSLoop (0,0); * functie moet nog geschreven worden *
-            }
-            if(WebServer < WSAantalTotaal){
-                WSLoop(i+WSAantalTotaal, WebServer+1);
-            }
-        }
-        return WebServer;
     }
 
     public void Huidig(){
@@ -376,7 +352,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBoptimaliseren,"Optimaliseren-active","Optimaliseren");
             OptimalisatieFrame frame = new OptimalisatieFrame(this);
             if(frame.isGo()){
-                this.gewensteBeschikbaarheid = frame.getBeschikbaarheid_Double();
+                gewensteBeschikbaarheid = frame.getBeschikbaarheid_Double();
                 if(frame.serverlimiet()){
                     this.maxAantalServers = frame.getServerlimiet_Int();
                 } else {
@@ -454,7 +430,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         WSAantalTotaal = -1;
         DSAantalTotaal = -1;
         minimaleKosten = Double.MAX_VALUE;
-        aantalSetupTotaal = 0;
     }
 
     public int getSchermbreedte() {

@@ -170,8 +170,8 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
 
         else if (e.getSource() == JBannuleer)
         {
+            setGo(false);
             setVisible(false);
-            return;
         }
     }
 }
