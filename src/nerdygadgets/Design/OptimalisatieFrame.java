@@ -13,7 +13,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
     private JCheckBox JCserverlimiet;
     private double beschikbaarheid_Double;
     private int serverlimiet_Int;
-    private int standaardaantalserver_Int = 5;
+    private int standaardaantalserver_Int = 10;
     private boolean go = false;
 
     // Nodig om frame op een percentage van schermgrootte te zetten

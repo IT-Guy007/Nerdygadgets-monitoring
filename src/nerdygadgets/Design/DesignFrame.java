@@ -55,7 +55,7 @@ public class DesignFrame extends JFrame implements ActionListener {
 
     public DesignFrame(String save) {
         this.save = save;
-        list = new ServerLists();
+        list = new ServerLists(this);
 
 
         setTitle("Nerdygadgets Monitoring Applicatie");
@@ -79,7 +79,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         add(JBvolscherm);
 
         designpanel = new DesignPanel(this);
-        add(designpanel);
+        //add(designpanel);
 
         Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
@@ -109,6 +109,7 @@ public class DesignFrame extends JFrame implements ActionListener {
 
 
     public void Optimaliseer(double gewensteBeschikbaarheid){
+        designpanel.removeAll();
         optimaliseerReset();
         this.gewensteBeschikbaarheid = gewensteBeschikbaarheid;
 
@@ -126,9 +127,9 @@ public class DesignFrame extends JFrame implements ActionListener {
                 DSAantalTotaal++;
             }
         }
-
         WebserverLoop(0, 0);
 
+        System.out.println(serverSetup);
         TekenOptimaliseerd();
     }
 
@@ -174,15 +175,9 @@ public class DesignFrame extends JFrame implements ActionListener {
         int teller = 0;
         while (teller < maxAantalServers - AantalDBTotaal) {
             DSAantalPerSoort[Database] = teller;
-            DSAantalPerSoort[0] = 2;
-            DSAantalPerSoort[1] = 1;
-            DSAantalPerSoort[2] = 0;
-
-            WSAantalPerSoort[0] = 1;
-            WSAantalPerSoort[1] = 0;
-            WSAantalPerSoort[2] = 2;
             teller++;
-            if (Database < DSAantalTotaal) ;
+
+            if (Database < DSAantalTotaal)
             {
                 DatabaseLoop(teller+AantalDBTotaal, Database+1);
             }
@@ -197,8 +192,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                         WSgeoptimaliseerde = new int[]{};
                         minimaleKosten = configPrijs;
                         serverSetup = "Fw: 1 | Wb: ";
-
-
                         for (int y = 0; y < WSAantalPerSoort.length; y++){
                             if (y == 0){
                                 serverSetup += WSAantalPerSoort[y];
@@ -266,24 +259,33 @@ public class DesignFrame extends JFrame implements ActionListener {
 
 
     public void generateSeverOpties() {
-        int yhoogte = 10;
-        for (ServerDragAndDrop webservertje : list.getServers()) {
-            if (webservertje instanceof WebServer) {
-                webservertje.getPrijs();
-                optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "webserver");
-                optie1.setBounds(10, yhoogte, 121, 61);
-                tempServerOpties.add(optie1);
-                designpanel.add(optie1);
-                designpanel.repaint();
-                yhoogte = yhoogte + 71;
-            } else if (webservertje instanceof DatabaseServer) {
-                webservertje.getPrijs();
-                optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "databaseserver");
-                optie1.setBounds(10, yhoogte, 121, 61);
-                tempServerOpties.add(optie1);
-                designpanel.add(optie1);
-                designpanel.repaint();
-                yhoogte = yhoogte + 71;
+        int yhoogte = 10;//10
+        for (int x=0; x< 1;x++) {
+            for (ServerDragAndDrop webservertje : list.getServers()) {
+                if (webservertje instanceof WebServer) {
+                    webservertje.getPrijs();
+                    optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "webserver");
+                    optie1.setBounds(10, yhoogte, 121, 61);
+
+                    int id = optie1.getId();
+                    webservertje.setId(id);
+
+                    tempServerOpties.add(optie1);
+                    designpanel.add(optie1);
+                    designpanel.repaint();
+                    yhoogte = yhoogte + 71;
+                } else if (webservertje instanceof DatabaseServer) {
+                    webservertje.getPrijs();
+                    optie1 = new ServerOptie(designpanel, webservertje.getNaam(), webservertje.getBeschikbaarheid(), webservertje.getPrijs(), "databaseserver");
+                    optie1.setBounds(10, yhoogte, 121, 61);
+                    tempServerOpties.add(optie1);
+                    designpanel.add(optie1);
+                    designpanel.repaint();
+
+                    int id = optie1.getId();
+                    webservertje.setId(id);
+                    yhoogte = yhoogte + 71;
+                }
             }
         }
     }
@@ -387,6 +389,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
             ServerDialog dialog = new ServerDialog(this, true, list.generateArray(), list.getServers());
             System.out.println("test");
+            list.setServers(dialog.serverslist);
             removesServerOpties();
             generateSeverOpties();
             designpanel.repaint();
@@ -499,13 +502,13 @@ public class DesignFrame extends JFrame implements ActionListener {
                 if (Objects.equals(rset.getString("type"), "webserver")) {
                     int randx = (int)(Math.random() * range) + minx;
                     int randy = (int)(Math.random() * rangey) + miny;
-                    ServerDragAndDrop server1 = new WebServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
+                    ServerDragAndDrop server1 = new WebServer((int)Math.floor(Math.random()*(10000-0+1)+0),rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }else if(Objects.equals(rset.getString("type"), "databaseserver")){
                     int randx = (int)(Math.random() * range) + minx;
                     int randy = (int)(Math.random() * rangey) + miny;
-                    ServerDragAndDrop server1 = new DatabaseServer(rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
+                    ServerDragAndDrop server1 = new DatabaseServer((int)Math.floor(Math.random()*(10000-0+1)+0),rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
                     server1.setBounds(randx, randy, 125, 125);
                     designpanel.addArrayList(server1);
                 }
@@ -560,5 +563,13 @@ public class DesignFrame extends JFrame implements ActionListener {
         } catch (SQLException ex) {
             System.out.println(ex);
         }
+    }
+
+    public ServerLists getList() {
+        return list;
+    }
+
+    public ArrayList<ServerOptie> getTempServerOpties() {
+        return tempServerOpties;
     }
 }
