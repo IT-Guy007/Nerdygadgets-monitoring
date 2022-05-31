@@ -15,13 +15,22 @@ import java.awt.event.*;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+
 public class OpslaanDialog extends JDialog implements ActionListener {
 
     private DesignPanel designpanel;
     private DesignFrame designFrame;
 
+    private Timer timer;
+
     JButton opslaan = new JButton("Opslaan");
     JTextField tekstveld = new JTextField(15);
+//    JLabel success = new JLabel("Uw design is succesvol opgeslagen.");
+//    JLabel failed = new JLabel("Voer een unieke naam in!");
+    JLabel success = new JLabel("Uw design is succesvol opgeslagen!");
+    JLabel failed = new JLabel("Voer een unieke naam in!");
 
     public OpslaanDialog(DesignPanel designpanel){
 
@@ -31,7 +40,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
         JDialog OpslaanDialog = new JDialog();
         OpslaanDialog.setTitle("Sla project op");
 
-        OpslaanDialog.setSize(300,100);
+        OpslaanDialog.setSize(300,130);
         OpslaanDialog.setLayout(new FlowLayout());
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -41,6 +50,13 @@ public class OpslaanDialog extends JDialog implements ActionListener {
         opslaan.addActionListener(this);
         OpslaanDialog.add(tekstveld);
         OpslaanDialog.add(opslaan);
+        OpslaanDialog.add(failed);
+        OpslaanDialog.add(success);
+
+        failed.setForeground(Color.red);
+
+        failed.setVisible(false);
+        success.setVisible(false);
 
         OpslaanDialog.setVisible(true);
     }
@@ -56,7 +72,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
 
     }
 
-    public void save(){
+    public void save() {
 
         String setupID = tekstveld.getText(); //TODO Via dialoog ff hier een unique "filename meegeven"
         boolean unique = true;
@@ -68,34 +84,43 @@ public class OpslaanDialog extends JDialog implements ActionListener {
             String uniqueQuery = "SELECT setupId from serverSetups";
             ResultSet rset = stmt.executeQuery(uniqueQuery);
 
-            while(rset.next()) {
+            while (rset.next()) {
                 if (rset.getString("setupID").equals(setupID)) {
                     unique = false;
                 }
             }
+//            if (unique && tekstveld.getText() != "") {
             if (unique) {
-                for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+                failed.setVisible(false);
+                success.setVisible(true);
+
+                for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()) {
                     if (server instanceof WebServer) {
                         String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "webserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
                         stmt.executeUpdate(query);
-                    } else if (server instanceof  DatabaseServer) {
+                    } else if (server instanceof DatabaseServer) {
                         String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "databaseserver" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
                         stmt.executeUpdate(query);
-                    } else if (server instanceof  Firewall) {
+                    } else if (server instanceof Firewall) {
                         String query = "INSERT INTO serverSetups(name, type, beschikbaarheid, prijs, setupId) VALUES ('" + server.getNaam() + "', '" + "firewall" + "', " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ", +'" + setupID + "');";
                         stmt.executeUpdate(query);
                     }
 
+                    if (!(unique)){
+                        success.setVisible(false);
+                    }
+
                 }
-            } else {System.out.println("niet uniek");}
+            } else {
+                    success.setVisible(false);
+                    failed.setVisible(true);
 
-
-
+            }
 
 
         } catch (SQLException ex) {
             System.out.println(ex);
+
         }
     }
-
 }
