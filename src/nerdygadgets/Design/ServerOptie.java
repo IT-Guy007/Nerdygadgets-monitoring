@@ -179,4 +179,8 @@ public class ServerOptie extends JButton implements ActionListener {
     public int getId() {
         return this.id;
     }
+
+    public String getType() {
+        return type;
+    }
 }
