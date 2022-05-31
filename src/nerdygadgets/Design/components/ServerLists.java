@@ -57,4 +57,10 @@ public class ServerLists {
     public ArrayList<ServerDragAndDrop> getServers() {
         return servers;
     }
+
+    public void setServers(ArrayList<ServerDragAndDrop> servers) {
+        this.servers = servers;
+    }
 }
+
+

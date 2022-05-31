@@ -116,8 +116,6 @@ public class DesignFrame extends JFrame implements ActionListener {
             }
         }
 
-        WebserverLoop(0, 0);
-
         TekenOptimaliseerd();
     }
 
