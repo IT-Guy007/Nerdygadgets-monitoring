@@ -1,8 +1,6 @@
 package nerdygadgets.Design;
 
-import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.ServerDragAndDrop;
-import nerdygadgets.Design.components.WebServer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +14,6 @@ public class ServerDialog extends JDialog implements ActionListener {
 
     JComboBox CBserverList;
     JButton plusButton;
-    JRadioButton radioWeb;
-    JRadioButton radioDb;
     JTextField naamField;
     JTextField prijsField;
     JLabel prijsLabel;
@@ -31,8 +27,6 @@ public class ServerDialog extends JDialog implements ActionListener {
     ArrayList serverslist;
     String[] servers;
     boolean allowChange = true;
-    int serverCountWeb = 0;
-    int serverCountDb = 0;
 
 
     public ServerDialog(JFrame frame, boolean modal, String[] servers, ArrayList serverslist){
@@ -44,12 +38,6 @@ public class ServerDialog extends JDialog implements ActionListener {
         this.servers = servers;
 
         plusButton = create_button(plusButton, "plusButton");
-        radioWeb = new JRadioButton("Webserver", true);
-        radioDb = new JRadioButton("Databaseserver");
-        radioWeb.setBounds(75,50,100,30);
-        radioDb.setBounds(75,100,100,30);
-        ButtonGroup radioButtons = new ButtonGroup();
-        radioButtons.add(radioWeb); radioButtons.add(radioDb);
         opslaanButton = create_button(opslaanButton, "saveButton");
         cancelButton = create_button(cancelButton, "cancelButton");
         CBserverList = new JComboBox(servers);
@@ -75,15 +63,6 @@ public class ServerDialog extends JDialog implements ActionListener {
         plusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (radioWeb.isSelected()) {
-                    String serverName = "Webserver [" + serverCountWeb + "]";
-                    ServerDragAndDrop tempServer = new WebServer(0, serverName, 50, 50);
-                    serverslist.add(tempServer);
-                } else if (radioDb.isSelected()) {
-                    String serverName = "Databaseserver [" + serverCountWeb + "]";
-                    ServerDragAndDrop tempServer = new DatabaseServer(0, serverName, 50, 50);
-                    serverslist.add(tempServer);
-                }
 
             }
         });
@@ -117,8 +96,6 @@ public class ServerDialog extends JDialog implements ActionListener {
         });
         add(CBserverList);
         add(plusButton);
-        add(radioWeb);
-        add(radioDb);
         add(naamField);
         add(prijsLabel);
         add(prijsField);

@@ -5,11 +5,13 @@ import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
-
-import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,30 +23,26 @@ import java.util.List;
 
 import static java.lang.Math.round;
 
-public class DesignPanel extends JPanel implements ComponentListener{
+public class DesignPanel extends JPanel implements ComponentListener {
     private final DesignFrame frame_DesignFrame;
     private final Dimension schermgrootte_Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     private final int schermhoogte_int = schermgrootte_Dimension.height;
     private final int schermbreedte_int = schermgrootte_Dimension.width;
     private final List<Component[]> connections_list;
-    private static int x=0;
 
     private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
 
     public DesignPanel(DesignFrame frame) {
         // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
-        JScrollPane schrollscherm = new JScrollPane(this,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        frame.add(schrollscherm);
-        schrollscherm.setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
-
-            connections_list = new ArrayList<>();
+        connections_list = new ArrayList<>();
         this.frame_DesignFrame = frame;
         this.frame_DesignFrame.addComponentListener(this);
+
         setResponsiveSize();
         setBackground(Color.white);
         setLayout(null);
         repaint();
-        //setVisible(true);
+        setVisible(true);
         //test();
 
         MouseAdapter ma = new MouseAdapter() {
@@ -102,7 +100,6 @@ public class DesignPanel extends JPanel implements ComponentListener{
         addMouseMotionListener(ma);
         repaint();
     }
-
     public void add(Component parent, Component child) {
         // Deze functie voegt de firewall toe als parent en zorgt dat het andere attribuut een child is, zodat deze er altijd overheen gaat.
         if (parent.getParent() != this) {
@@ -167,43 +164,6 @@ public class DesignPanel extends JPanel implements ComponentListener{
     @Override
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
-        for (ServerDragAndDrop webservertje : frame_DesignFrame.getList().getServers()) {
-            /*
-            for (ServerDragAndDrop item: serversArray_ArrayList){
-                System.out.println("item id = " + item.getId());
-                System.out.println("webservertje id = " + webservertje.getId());
-                if (item.getId() == webservertje.getId() ){
-                    item.setNaam(webservertje.getNaam());
-                    item.setText();
-                }
-            }
-
-             */
-            String naam = webservertje.getNaam();
-            double prijs = webservertje.getPrijs();
-            double beschikbaarheid = webservertje.getBeschikbaarheid();
-            if (webservertje instanceof WebServer) {
-                for (ServerDragAndDrop item: serversArray_ArrayList){
-                    if (item.getPrijs() == webservertje.getPrijs() || item.getNaam().equals(webservertje.getNaam()) || item.getBeschikbaarheid() == webservertje.getBeschikbaarheid() && item instanceof WebServer){
-                        item.setNaam(naam);
-                        item.setPrijs(prijs);
-                        item.setBeschikbaarheid(beschikbaarheid);
-                        item.setText();
-                    }
-                }
-            } else if (webservertje instanceof DatabaseServer) {
-                for (ServerDragAndDrop item: serversArray_ArrayList){
-                    if (item.getPrijs() == webservertje.getPrijs() || item.getNaam().equals(webservertje.getNaam()) || item.getBeschikbaarheid() == webservertje.getBeschikbaarheid() && item instanceof DatabaseServer){
-                        item.setNaam(naam);
-                        item.setPrijs(prijs);
-                        item.setBeschikbaarheid(beschikbaarheid);
-                        item.setText();
-                    }
-                }
-            }
-
-
-        }
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
@@ -218,21 +178,20 @@ public class DesignPanel extends JPanel implements ComponentListener{
         g.drawLine(140,0,140,getHeight());
         g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics metrics = g.getFontMetrics();
-            g.setColor(Color.black);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,getHeight());
-            g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5-50, 20);
-            g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5-50, 40);
-            g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5-50, 60);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,75, schermgrootte_Dimension.width, 75);
-            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5-50, 90);
-            g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5-50, 110);
+        g.setColor(Color.black);
+        g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,getHeight());
+        g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5, 20);
+        g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5, 40);
+        g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5, 60);
+        g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10,75, schermgrootte_Dimension.width, 75);
+        g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5, 90);
+        g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5, 110);
     }
     @Override
     public void componentResized(ComponentEvent e) {SetKleinScherm();}
     public void setResponsiveSize() {
         //Deze functie ze de responsive size van het panel
-        //setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, frame_DesignFrame.getHeight() - 100));
-        setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, 3000));
+        setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, frame_DesignFrame.getHeight() - 100));
     }
 
     @Override
@@ -249,10 +208,6 @@ public class DesignPanel extends JPanel implements ComponentListener{
     @Override
     public void componentHidden(ComponentEvent e) {
         // Deze fucntie is nodig voor de Componentlistener
-    }
-    @Override
-    public Dimension getPreferredSize(){
-        return new Dimension(frame_DesignFrame.getWidth(),2000);
     }
     public String berekenTotalePrijs() {
         // Deze fucntie berekend de totale prijs per maand van het actuele design.

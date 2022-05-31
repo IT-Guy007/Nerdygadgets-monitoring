@@ -8,7 +8,5 @@ public class Firewall extends ServerDragAndDrop {
     public Firewall(String naam, double prijs, double beschikbaarheid) {
         super(naam, beschikbaarheid, prijs);
 
-    public Firewall(String naam, double beschikbaarheid, double prijs) {
-        super(0,naam, beschikbaarheid, prijs);
     }
 }

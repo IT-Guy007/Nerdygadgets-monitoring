@@ -9,8 +9,8 @@ public class DatabaseServer extends ServerDragAndDrop {
         super(naam, beschikbaarheid, prijs, panelx,panely);
     }
 
-    public DatabaseServer(int id,String naam, double beschikbaarheid, double prijs){
-        super(id, naam, beschikbaarheid, prijs);
+    public DatabaseServer( String naam, double beschikbaarheid, double prijs){
+        super( naam, beschikbaarheid, prijs);
 
     }
 

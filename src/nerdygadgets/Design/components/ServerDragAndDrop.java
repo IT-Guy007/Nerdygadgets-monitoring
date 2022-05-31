@@ -16,19 +16,14 @@ public abstract class ServerDragAndDrop extends JLabel {
     private ImageIcon icoon;
     private Color transparent=new Color(1f,0f,0f,0f );
     private String random_id = UUID.randomUUID().toString();
-    private JLabel label;
-    private int id=0;
 
-    public ServerDragAndDrop(int id,String naam, double availability, double annualPrice){
-
-        this.id=id;
-
+    public ServerDragAndDrop(String naam, double availability, double annualPrice){
         this.naam = naam;
         this.beschikbaarheid = availability;
         this.prijs = annualPrice;
-        label = new JLabel();
-        setText();
-
+        JLabel label = new JLabel();
+        String myString = "   "+naam + "\n" + availability + "%, " + prijs + "€";
+        label.setText("<html>" + myString.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
 
         if (this instanceof Firewall){
             icoon = new ImageIcon(this.getClass().getResource("/resources/firewall.png"));
@@ -77,17 +72,4 @@ public abstract class ServerDragAndDrop extends JLabel {
     public void setPrijs(double prijs) {
         this.prijs = prijs;
     }
-    public void setText(){
-        String myString = "   "+naam + "\n" + beschikbaarheid + "%, " + prijs + "€";
-        label.setText("<html>" + myString.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
 }

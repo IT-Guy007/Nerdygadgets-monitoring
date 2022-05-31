@@ -6,9 +6,8 @@ public class WebServer extends ServerDragAndDrop {
         super( naam, prijs, beschikbaarheid, panelx,panely);
     }
 
-
-    public WebServer(int id,String naam, double beschikbaarheid, double prijs){
-        super(id, naam, beschikbaarheid, prijs);
+    public WebServer(String naam, double prijs, double beschikbaarheid){
+        super( naam, beschikbaarheid, prijs);
 
     }
 }
