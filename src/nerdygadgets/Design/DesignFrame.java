@@ -182,6 +182,10 @@ public class DesignFrame extends JFrame implements ActionListener {
             WSAantalPerSoort[1] = 0;
             WSAantalPerSoort[2] = 2;
             teller++;
+            if (Database < DSAantalTotaal) ;
+            {
+                DatabaseLoop(teller+AantalDBTotaal, Database+1);
+            }
             if (Database == DSAantalTotaal) {
                 double configBeschikbaarheid = OptimaliseerBerekenBeschikbaarheid();
                 double configPrijs = OptimaliseerBerekenPrijs();
@@ -216,10 +220,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                     return Database;
                 }
             }
-            if (Database < DSAantalTotaal) ;
-            {
-                DatabaseLoop(teller+AantalDBTotaal, Database+1);
-            }
         }
         return Database;
     }
@@ -232,7 +232,6 @@ public class DesignFrame extends JFrame implements ActionListener {
         for (int i = 0; i < DSAantalPerSoort.length; i++){
             beschikbaarheidDatabase *= Math.pow((1 - DSAvaliablityArray[i]), DSAantalPerSoort[i]);
         }
-
 
         for (int i = 0; i < WSAantalPerSoort.length; i++){
             beschikbaarheidWebserver *= Math.pow((1 - WSAvaliablityArray[i]), WSAantalPerSoort[i]);
