@@ -14,10 +14,31 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/mysql-connector-java-8.0.29.jar!/" />
+          <root url="jar://$MODULE_DIR$/../mysql-connector-java-8.0.29.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/jfreechart-1.0.19/jfreechart-1.0.19/experimental" />
+          <root url="file://$USER_HOME$/Downloads/jfreechart-1.0.19/jfreechart-1.0.19/source" />
+          <root url="file://$USER_HOME$/Downloads/jfreechart-1.0.19/jfreechart-1.0.19/swt" />
+          <root url="file://$USER_HOME$/Downloads/jfreechart-1.0.19/jfreechart-1.0.19/tests" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="JFreechart">
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/jfreechart-fx-master.zip!/jfreechart-fx-master/src/main/java" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>
