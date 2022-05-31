@@ -40,7 +40,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
         JDialog OpslaanDialog = new JDialog();
         OpslaanDialog.setTitle("Sla project op");
 
-        OpslaanDialog.setSize(300,130);
+        OpslaanDialog.setSize(300,100);
         OpslaanDialog.setLayout(new FlowLayout());
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
