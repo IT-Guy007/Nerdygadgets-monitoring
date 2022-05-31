@@ -28,12 +28,13 @@ public class DesignPanel extends JPanel implements ComponentListener{
     private final int schermbreedte_int = schermgrootte_Dimension.width;
     private final List<Component[]> connections_list;
     private static int x=0;
+    private JScrollPane schrollscherm;
 
     private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
 
     public DesignPanel(DesignFrame frame) {
         // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
-        JScrollPane schrollscherm = new JScrollPane(this,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        schrollscherm = new JScrollPane(this,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         frame.add(schrollscherm);
         schrollscherm.setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
 
@@ -310,11 +311,13 @@ public class DesignPanel extends JPanel implements ComponentListener{
     public void SetGrootScherm() {
         // Deze functie vergroot het panel zodat dit ook in fullscreen werkt
         setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
+        schrollscherm.setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
         repaint();
     }
     public void SetKleinScherm(){
         // Deze fucntie verkleind het panel zodat deze ook in normale omstandigheden werkt.
         setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
+        schrollscherm.setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
         repaint();
     }
 
