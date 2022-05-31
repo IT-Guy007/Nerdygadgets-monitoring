@@ -115,7 +115,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                 DSAantalTotaal++;
             }
         }
-
         WebserverLoop(0, 0);
 
         TekenOptimaliseerd();
@@ -354,6 +353,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBserveropties_wijzigen,"Serveropties-wijzigen-active","Serveropties-wijzigen");
             ServerDialog dialog = new ServerDialog(this, true, list.generateArray(), list.getServers());
             System.out.println("test");
+            list.setServers(dialog.serverslist);
             removesServerOpties();
             generateSeverOpties();
             designpanel.repaint();
