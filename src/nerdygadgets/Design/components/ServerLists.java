@@ -57,4 +57,31 @@ public class ServerLists {
     public ArrayList<ServerDragAndDrop> getServers() {
         return servers;
     }
+
+    public void setServers(ArrayList<ServerDragAndDrop> servers) {
+        this.servers = servers;
+    }
+
+    public int countWebServers() {
+        int webCount = 0;
+        for (ServerDragAndDrop s : servers) {
+            if (s instanceof WebServer) {
+                webCount++;
+            }
+        }
+        return webCount;
+    }
+
+    public int countDbServers() {
+        int dbCount = 0;
+        for (ServerDragAndDrop s : servers) {
+            if (s instanceof DatabaseServer) {
+                dbCount++;
+            }
+        }
+        return dbCount;
+    }
+
 }
+
+

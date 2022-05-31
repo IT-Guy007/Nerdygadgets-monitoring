@@ -115,7 +115,6 @@ public class DesignFrame extends JFrame implements ActionListener {
                 DSAantalTotaal++;
             }
         }
-
         WebserverLoop(0, 0);
 
         TekenOptimaliseerd();
