@@ -25,8 +25,14 @@ public class ServerOptie extends JButton implements ActionListener {
     private ImageIcon icon;
     private int x,y,width,height;
     private Color transparent=new Color(1f,0f,0f,0f );
+    private int id;
 
     public ServerOptie(DesignPanel parentPanel, String name, double availability, double annualPrice, String type){
+        int min = 0;
+        int max = 10000000;
+
+        int random_int = (int)Math.floor(Math.random()*(max-min+1)+min);
+        this.id = random_int;
 
         this.beschikbaarheid = availability;
         this.hoofdpanel = parentPanel;
@@ -63,9 +69,11 @@ public class ServerOptie extends JButton implements ActionListener {
             public void mouseDragged(MouseEvent e) {
                 if (counter==0){
                     if (type=="databaseserver"){
-                        server1 = new DatabaseServer(naam, beschikbaarheid,prijs);
+                        server1 = new DatabaseServer(getId(),naam, beschikbaarheid,prijs);
+                        System.out.println("id = " + getId());
                     }else{
-                        server1 = new WebServer(naam, beschikbaarheid,prijs);
+                        server1 = new WebServer(getId(),naam, beschikbaarheid,prijs);
+                        System.out.println("id = " + getId());
                     }
                     server1.setBounds(10, hoofdpanel.getFrame().returnyhoogte(name), 125, 140);
                     server1.setLocation(10, e.getY());
@@ -145,11 +153,11 @@ public class ServerOptie extends JButton implements ActionListener {
         int randy = (int)(Math.random() * rangey) + miny;
         if (type == "webserver") {
 
-            ServerDragAndDrop server1 = new WebServer(naam, prijs, beschikbaarheid);
+            ServerDragAndDrop server1 = new WebServer(this.id,naam, prijs, beschikbaarheid);
             server1.setBounds(randx, randy, 125, 125);
             hoofdpanel.addArrayList(server1);
         }else if(type == "databaseserver"){
-            ServerDragAndDrop server1 = new DatabaseServer(naam, prijs, beschikbaarheid);
+            ServerDragAndDrop server1 = new DatabaseServer(this.id,naam, prijs, beschikbaarheid);
             server1.setBounds(randx, randy, 125, 125);
             hoofdpanel.addArrayList(server1);
         }
@@ -160,5 +168,19 @@ public class ServerOptie extends JButton implements ActionListener {
 
     }
 
+    public double getBeschikbaarheid() {
+        return beschikbaarheid;
+    }
 
+    public double getPrijs() {
+        return prijs;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String getType() {
+        return type;
+    }
 }
