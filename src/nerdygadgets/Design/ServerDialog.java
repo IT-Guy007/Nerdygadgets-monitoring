@@ -79,10 +79,23 @@ public class ServerDialog extends JDialog implements ActionListener {
                     String serverName = "Webserver [" + serverCountWeb + "]";
                     ServerDragAndDrop tempServer = new WebServer(0, serverName, 50, 50);
                     serverslist.add(tempServer);
+                    getArrayServer();
+                    for (String s :
+                            servers) {
+                        CBserverList.removeItemAt(0);
+                        CBserverList.addItem(s);
+                    }
+
                 } else if (radioDb.isSelected()) {
                     String serverName = "Databaseserver [" + serverCountWeb + "]";
                     ServerDragAndDrop tempServer = new DatabaseServer(0, serverName, 50, 50);
                     serverslist.add(tempServer);
+                    getArrayServer();
+                    for (String s :
+                            servers) {
+                        CBserverList.removeItemAt(0);
+                        CBserverList.addItem(s);
+                    }
                 }
 
             }
@@ -101,8 +114,7 @@ public class ServerDialog extends JDialog implements ActionListener {
                 tempServer.setPrijs(prijs);
                 serverslist.set(index, tempServer);
                 servers[index] = naam;
-                for (String s :
-                        servers) {
+                for (String s : servers) {
                     CBserverList.removeItemAt(0);
                     CBserverList.addItem(s);
                 }
