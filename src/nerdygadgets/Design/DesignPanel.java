@@ -166,17 +166,6 @@ public class DesignPanel extends JPanel implements ComponentListener{
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
         for (ServerDragAndDrop webservertje : frame_DesignFrame.getList().getServers()) {
-            /*
-            for (ServerDragAndDrop item: serversArray_ArrayList){
-                System.out.println("item id = " + item.getId());
-                System.out.println("webservertje id = " + webservertje.getId());
-                if (item.getId() == webservertje.getId() ){
-                    item.setNaam(webservertje.getNaam());
-                    item.setText();
-                }
-            }
-
-             */
             String naam = webservertje.getNaam();
             double prijs = webservertje.getPrijs();
             double beschikbaarheid = webservertje.getBeschikbaarheid();
