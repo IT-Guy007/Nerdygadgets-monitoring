@@ -172,11 +172,16 @@ public class ServerOptie extends JButton implements ActionListener {
         return beschikbaarheid;
     }
 
+
     public double getPrijs() {
         return prijs;
     }
 
     public int getId() {
         return this.id;
+    }
+
+    public String getType() {
+        return type;
     }
 }

@@ -24,14 +24,14 @@ public class openDialog extends JFrame{
         ArrayList<String> projectnames = new ArrayList<String>();
 try {
     Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://192.168.1.103:3306/application",
+            "jdbc:mysql://192.168.1.1:3306/application",
             "group4", "Qwerty1@");
     Statement stmt = conn.createStatement();
-    String uniqueQuery = "SELECT DISTINCT setupId from serverSetups";
+    String uniqueQuery = "SELECT DISTINCT name from project";
     ResultSet rset = stmt.executeQuery(uniqueQuery);
 
     while (rset.next()) {
-        projectnames.add(rset.getString("setupID"));
+        projectnames.add(rset.getString("name"));
     }
 } catch (Exception e){
     System.out.println(e);

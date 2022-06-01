@@ -17,6 +17,7 @@ public class ServerLists {
         WebServer ServerOptie4 = new WebServer(0,"HAL9001W",80,2200);
         WebServer ServerOptie5 = new WebServer(0,"HAL9002W",90,3200);
         WebServer ServerOptie6 = new WebServer(0,"HAL9003W",95,5100);
+
         servers.add(ServerOptie1);servers.add(ServerOptie2); servers.add(ServerOptie3);
         servers.add(ServerOptie4);servers.add(ServerOptie5);servers.add(ServerOptie6);
         /*
