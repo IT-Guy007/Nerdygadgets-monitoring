@@ -54,7 +54,7 @@ public class DeleteProject extends JFrame implements ActionListener {
                 Connection con = null;
                 PreparedStatement p = null;
 
-                String dbhost = "jdbc:mysql://192.168.1.103/application";
+                String dbhost = "jdbc:mysql://192.168.1.1/application";
                 String user = "group4";
                 String password = "Qwerty1@";
 

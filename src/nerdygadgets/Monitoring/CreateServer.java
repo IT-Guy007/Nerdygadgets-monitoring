@@ -4,15 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ServerToevoegen extends JFrame implements ActionListener {
+public class CreateServer extends JFrame implements ActionListener {
     JButton back,submit;
-    JLabel lbl1,lbl2,lbl_alias,lbl_price,lbl_availibility,lbl_port,lbl_server_kind,lbl_ip,lbl_storage;
-    JTextField alias,price,availibility,port,ip,storage;
+    JLabel lbl1,lbl2,lbl_alias,lbl_price,lbl_availibility,lbl_port,lbl_server_kind,lbl_ip,lbl_storage,lbl_subnet,lbl_ram;
+    JTextField alias,price,availibility,port,ip,storage,subnet,ram;
 
     String[] serverOptionsToChooseFrom = serverOptions();
     int projectID;
@@ -20,10 +22,9 @@ public class ServerToevoegen extends JFrame implements ActionListener {
     JComboBox<String> server_kind;
 
 
-    public ServerToevoegen(int projectID) {
+    public CreateServer(int projectID) {
         this.projectID = projectID;
-        String projectName = getProjectName(projectID);
-        setTitle("Server toevoegen aan het project " + projectName);
+        setTitle("Server toevoegen aan het project " + getProjectName(projectID));
         setLayout(new GridLayout(0,2,20,20));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400,500);
@@ -89,6 +90,14 @@ public class ServerToevoegen extends JFrame implements ActionListener {
         ip = new JTextField("",10);
         ip.setVisible(true);
         add(ip);
+        
+        //subnet
+        lbl_subnet = new JLabel("Subnet:");
+        lbl_subnet.setVisible(true);
+        add(lbl_subnet);
+        subnet = new JTextField("",10);
+        subnet.setVisible(true);
+        add(subnet);
 
         //storage
         lbl_storage = new JLabel("Opslag:");
@@ -97,6 +106,14 @@ public class ServerToevoegen extends JFrame implements ActionListener {
         storage = new JTextField("",10);
         storage.setVisible(true);
         add(storage);
+
+        //storage
+        lbl_ram = new JLabel("Ram:");
+        lbl_ram.setVisible(true);
+        add(lbl_ram);
+        ram = new JTextField("",10);
+        ram.setVisible(true);
+        add(ram);
 
         //lbl2
         lbl2 = new JLabel("");
@@ -118,12 +135,13 @@ public class ServerToevoegen extends JFrame implements ActionListener {
             setVisible(false);
 
         } else if(e.getSource() == submit) {
+            System.out.println("Adding server to" + getProjectName(projectID));
             setVisible(false);
 
             Connection con = null;
             PreparedStatement p = null;
             ResultSet rs = null;
-            String dbhost = "jdbc:mysql://192.168.1.103/application";
+            String dbhost = "jdbc:mysql://192.168.1.1/application";
             String user = "group4";
             String password = "Qwerty1@";
             String string_alias =  alias.getText();
@@ -132,9 +150,11 @@ public class ServerToevoegen extends JFrame implements ActionListener {
             String string_port  = port.getText();
             String string_storage =  storage.getText();
             String string_ip  = ip.getText();
-            int int_server_kind = 0;
+            String string_subnet = subnet.getText();
+            String string_ram = ram.getText();
+            int int_server_kind = 2;
             if(server_kind == null) {
-                int_server_kind = 1;
+                int_server_kind = 2;
             }
 
 
@@ -142,7 +162,7 @@ public class ServerToevoegen extends JFrame implements ActionListener {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 con = DriverManager.getConnection(dbhost,user,password);
 
-                String sql = "INSERT INTO servers values(null,\"" + string_alias + "\","  + string_price +"," + string_availibility + "," + string_port + "," + string_storage + "," + int_server_kind + ",\""  + string_ip + "\"" + ")";
+                String sql = "INSERT INTO servers values(null,\"" + string_alias + "\","  + string_price +"," + string_availibility + "," + string_port + "," + string_storage + "," + int_server_kind + ",\""  + string_ip + "\"" + "," + string_subnet + "," + string_ram + ")";
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
 
@@ -156,12 +176,10 @@ public class ServerToevoegen extends JFrame implements ActionListener {
                 }
 
                 sql = "INSERT INTO server_Present values(null," + id +",null,null,null,0)";
-                System.out.println(sql);
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
 
                 sql = "select server_PresentID from server_Present order by server_PresentID DESC limit 1";
-                System.out.println(sql);
                 p = con.prepareStatement(sql);
                 rs = p.executeQuery();
 
@@ -171,7 +189,6 @@ public class ServerToevoegen extends JFrame implements ActionListener {
                 }
 
                 sql = "INSERT INTO project_Has_Servers values(" + projectID + "," + id + ")";
-                System.out.println(sql);
                 p = con.prepareStatement(sql);
                 p.executeUpdate();
 
@@ -182,17 +199,27 @@ public class ServerToevoegen extends JFrame implements ActionListener {
 
             }
 
+            try {
+                Socket socket = new Socket();
+                socket.connect(new InetSocketAddress(string_ip, Integer.getInteger(string_port)), 300);
+                MonitoringFrame.updateUptimeServer(id,true);
+                System.out.println(" OK");
+            } catch (Exception exception) {
+                MonitoringFrame.updateUptimeServer(id,false);
+
+            }
+
         }
 
     }
 
     public String[] serverOptions() {
         int amount = 0;
-        String name = null;
-        Connection con = null;
-        PreparedStatement p = null;
-        ResultSet rs = null;
-        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String name;
+        Connection con;
+        PreparedStatement p;
+        ResultSet rs;
+        String dbhost = "jdbc:mysql://192.168.1.1/application";
         String user = "group4";
         String password = "Qwerty1@";
         String[] serverOptions = null;
@@ -235,11 +262,11 @@ public class ServerToevoegen extends JFrame implements ActionListener {
 
     public String getProjectName(int i) {
         String name = null;
-        Connection con = null;
-        PreparedStatement p = null;
-        ResultSet rs = null;
+        Connection con;
+        PreparedStatement p;
+        ResultSet rs;
 
-        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String dbhost = "jdbc:mysql://192.168.1.1/application";
         String user = "group4";
         String password = "Qwerty1@";
 
