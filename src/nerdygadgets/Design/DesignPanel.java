@@ -166,34 +166,36 @@ public class DesignPanel extends JPanel implements ComponentListener{
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
 
-        /*
+
         for (ServerDragAndDrop webservertje : frame_DesignFrame.getList().getServers()) {
             String naam = webservertje.getNaam();
             double prijs = webservertje.getPrijs();
             double beschikbaarheid = webservertje.getBeschikbaarheid();
-            if (webservertje instanceof WebServer) {
-                for (ServerDragAndDrop item: serversArray_ArrayList){
-                    if (item.getPrijs() == webservertje.getPrijs() || item.getNaam().equals(webservertje.getNaam()) || item.getBeschikbaarheid() == webservertje.getBeschikbaarheid() && item instanceof WebServer){
-                        item.setNaam(naam);
-                        item.setPrijs(prijs);
-                        item.setBeschikbaarheid(beschikbaarheid);
-                        item.setText();
+            if ((naam != "HAL9001DB"&&naam != "HAL9002DB"&&naam != "HAL9003DB"&&naam != "HAL9001DB"&&naam != "HAL9001W"
+                    &&naam != "HAL9002W"&&naam != "HAL9003W") || (prijs!=5100&&prijs!=3200&&prijs!=2200&&prijs!=7700
+                    &&prijs!=12200) || (beschikbaarheid!=80&&beschikbaarheid!=90&&beschikbaarheid!=95&&beschikbaarheid!=98)) {
+
+                if (webservertje instanceof WebServer) {
+                    for (ServerDragAndDrop item : serversArray_ArrayList) {
+                        if (item.getPrijs() == webservertje.getPrijs() || item.getNaam().equals(webservertje.getNaam()) || item.getBeschikbaarheid() == webservertje.getBeschikbaarheid() && item instanceof WebServer) {
+                            item.setNaam(naam);
+                            item.setPrijs(prijs);
+                            item.setBeschikbaarheid(beschikbaarheid);
+                            item.setText();
+                        }
+                    }
+                } else if (webservertje instanceof DatabaseServer) {
+                    for (ServerDragAndDrop item : serversArray_ArrayList) {
+                        if (item.getPrijs() == webservertje.getPrijs() || item.getNaam().equals(webservertje.getNaam()) || item.getBeschikbaarheid() == webservertje.getBeschikbaarheid() && item instanceof DatabaseServer) {
+                            item.setNaam(naam);
+                            item.setPrijs(prijs);
+                            item.setBeschikbaarheid(beschikbaarheid);
+                            item.setText();
+                        }
                     }
                 }
-            } else if (webservertje instanceof DatabaseServer) {
-                for (ServerDragAndDrop item: serversArray_ArrayList){
-                    if (item.getPrijs() == webservertje.getPrijs() || item.getNaam().equals(webservertje.getNaam()) || item.getBeschikbaarheid() == webservertje.getBeschikbaarheid() && item instanceof DatabaseServer){
-                        item.setNaam(naam);
-                        item.setPrijs(prijs);
-                        item.setBeschikbaarheid(beschikbaarheid);
-                        item.setText();
-                    }
-                }
-            }
-
-
+            }else {}
         }
-         */
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
         for (Component[] connection : connections_list) {
