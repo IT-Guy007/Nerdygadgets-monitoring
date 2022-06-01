@@ -96,6 +96,8 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                     }catch (Exception e){}
                 }
                     for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
+
+
                         try {
                             if (server instanceof WebServer) {
                                 String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 4, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
@@ -124,6 +126,8 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                         }catch (Exception e){
                             System.out.println(e);
                         }
+
+
                         String uniqueQuery2 = "SELECT serverID from servers WHERE name = '"+server.getNaam()+"'";
                         ResultSet rset2 = stmt.executeQuery(uniqueQuery2);
                         String juiste_id="0";
@@ -139,6 +143,9 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                         while(rset7.next()) {
                             juiste_id2 = rset7.getString("server_PresentID");
                         }
+                        String query40 = "INSERT INTO uptime_Check(server_PresentID,up,dateTime) VALUES ("+juiste_id2+",1,now())";
+                        stmt.executeUpdate(query40);
+
                         String query4 = "INSERT INTO project_Has_Servers(projectID,server_PresentID) VALUES ("+projectID+","+juiste_id2+")";
                         stmt.executeUpdate(query4);
                         failed.setVisible(false);
