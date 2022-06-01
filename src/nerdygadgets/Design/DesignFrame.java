@@ -324,7 +324,7 @@ public class DesignFrame extends JFrame implements ActionListener {
             activebutton(JBopslaan,"Opslaan-active","Opslaan");
 //            save();
 
-            new OpslaanDialog(designpanel);
+            new OpslaanDialog(designpanel,this);
 
         }else if(e.getSource() == back){
             activebutton(back,"back-active","back");

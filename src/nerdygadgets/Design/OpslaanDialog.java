@@ -24,6 +24,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
     private DesignFrame designFrame;
 
     private Timer timer;
+    private DesignFrame hoofdframe;
 
     JButton opslaan = new JButton("Opslaan");
     JTextField tekstveld = new JTextField(15);
@@ -31,13 +32,14 @@ public class OpslaanDialog extends JDialog implements ActionListener {
 //    JLabel failed = new JLabel("Voer een unieke naam in!");
     JLabel success = new JLabel("Uw design is succesvol opgeslagen!");
     JLabel failed = new JLabel("Voer een unieke naam in!");
+    private JDialog OpslaanDialog;
 
-    public OpslaanDialog(DesignPanel designpanel){
-
+    public OpslaanDialog(DesignPanel designpanel, DesignFrame hoofdframe){
+        this.hoofdframe = hoofdframe;
         this.designpanel = designpanel;
 
         //(Mustafa)
-        JDialog OpslaanDialog = new JDialog();
+        OpslaanDialog = new JDialog();
         OpslaanDialog.setTitle("Sla project op");
 
         OpslaanDialog.setSize(300,100);
@@ -54,6 +56,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
         OpslaanDialog.add(success);
 
         failed.setForeground(Color.red);
+        success.setForeground(Color.green);
 
         failed.setVisible(false);
         success.setVisible(false);
@@ -102,7 +105,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                  while(rset3.next()) {
                      projectID = rset3.getString("projectID");
                  }
-                for (ServerOptie opties: tempServerOpties){
+                for (ServerOptie opties: this.hoofdframe.tempServerOpties){
                     try {
                         if (opties.getType().equals("webserver")) {
                             String query2 = "INSERT INTO serverSetups(name,type,price,availability,setupID) VALUES ('" + opties.getName() + "','webserver'," + opties.getPrijs() + "," + opties.getBeschikbaarheid() + ",'"+setupID+"')";
@@ -145,9 +148,19 @@ public class OpslaanDialog extends JDialog implements ActionListener {
 
                         String query4 = "INSERT INTO project_Has_Servers(projectID,server_PresentID) VALUES ("+projectID+","+juiste_id2+")";
                         stmt.executeUpdate(query4);
+                        failed.setVisible(false);
+                        success.setVisible(true);
+
+                        //Thread.sleep(5000);
+                        //OpslaanDialog.dispose();
+
 
                     }
-                } else {System.out.println("niet uniek");}
+                } else {
+                 System.out.println("niet uniek");
+                 failed.setVisible(true);
+                 success.setVisible(false);
+             }
 
 
 
