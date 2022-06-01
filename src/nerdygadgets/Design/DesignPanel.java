@@ -298,7 +298,6 @@ public class DesignPanel extends JPanel implements ComponentListener{
         }
         double totaleBeschikbaarheid = (1 - firewallBeschikbaarheid) * (1 - webServerBeschikbaarheid) * (1 - databaseBeschikbaarheid);
         return removeTrailingZeros((double) Math.round((totaleBeschikbaarheid*100) * 1000d)/1000d);
-
     }
     public String removeTrailingZeros(double number) {
         // Deze functie haalt overbodige nullen weg.
@@ -330,6 +329,9 @@ public class DesignPanel extends JPanel implements ComponentListener{
         serversArray_ArrayList.add(server);
     }
     public void removeArrayList(Component server){
+        serversArray_ArrayList.remove(server);
+    }
+    public void removeArrayList(ServerDragAndDrop server){
         serversArray_ArrayList.remove(server);
     }
 

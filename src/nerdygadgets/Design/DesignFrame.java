@@ -78,7 +78,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         designpanel = new DesignPanel(this);
         //add(designpanel);
 
-        Firewall ServerOptie8 = new Firewall( "pfSense", 4000, 99.998);
+        Firewall ServerOptie8 = new Firewall( "pfSense", 99.998, 4000);
         ServerOptie8.setBounds(schermbreedte/2-200,schermhoogte/2-220,125,125);
         designpanel.add(ServerOptie8);
         designpanel.addArrayList(ServerOptie8);
@@ -130,26 +130,62 @@ public class DesignFrame extends JFrame implements ActionListener {
 
 
     private void TekenOptimaliseerd(){
-        designpanel.removeAll();
+        dispose();
+        DesignFrame design = new DesignFrame(null);
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension size = toolkit.getScreenSize();
+        design.setLocation(size.width/2 - design.getWidth()/2, size.height/2 - design.getHeight()/2);
 
-        firewall = new Firewall(firewall.getNaam(), firewall.getPrijs(), firewall.getBeschikbaarheid(), designpanel.getWidth()/2, designpanel.getHeight()/2);
-        designpanel.add(firewall);
+        int maxx;
+        if (design.getDesignpanel().getFrame().getisVolscherm()){
+            maxx = design.getDesignpanel().getFrame().getSchermbreedte() -280;
+        }else{
+            maxx = design.getDesignpanel().getFrame().getSchermbreedte()/36*26;
+        }
+        int minx = 140;
+        int range = maxx - minx + 1;
+        int randx;
+
+        int maxy;
+        if (design.getDesignpanel().getFrame().getisVolscherm()){
+            maxy = design.getDesignpanel().getFrame().getSchermhoogte() -180;
+        }else{
+            maxy = design.getDesignpanel().getFrame().getSchermhoogte()/41*26;
+        }
+        int miny = 0;
+        int rangey = maxy - miny + 1;
+        int randy ;
+
+        firewall = new Firewall(firewall.getNaam(),firewall.getBeschikbaarheid(), firewall.getPrijs());
+        firewall.setBounds(schermbreedte/2-200,schermhoogte/2-220, 125, 125);
+        design.getDesignpanel().addArrayList(firewall);
 
         for (int i = 0; i < WSgeoptimaliseerde.length; i++){
             for(int j = 0; j < WSgeoptimaliseerde[i]; j++){
-                ServerDragAndDrop WS = list.getServers().get(i);
-                ServerDragAndDrop WS2 = new WebServer(WS.getNaam(), WS.getPrijs(), WS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
-                designpanel.add(WS2);
-            }
-        }
+                randy = (int)(Math.random() * rangey) + miny;
+                randx = (int)(Math.random() * range) + minx;
 
-        for (int i = 0; i < DSgeoptimaliseerde.length; i++){
+                ServerDragAndDrop WS = list.getServers().get(i);
+                ServerDragAndDrop WS2 = new WebServer(0,WS.getNaam(),WS.getBeschikbaarheid(), WS.getPrijs());
+                WS2.setBounds(randx, randy, 125, 125);
+                design.getDesignpanel().addArrayList(WS2);
+            }
+        }for (int i = 0; i < DSgeoptimaliseerde.length; i++){
             for(int j = 0; j < DSgeoptimaliseerde[i]; j++){
+                randy = (int)(Math.random() * rangey) + miny;
+                randx = (int)(Math.random() * range) + minx;
+
                 ServerDragAndDrop DS = list.getServers().get(i);
-                ServerDragAndDrop DS2 = new DatabaseServer(DS.getNaam(), DS.getPrijs(), DS.getBeschikbaarheid(), designpanel.getWidth()/4, 110*j);
-                designpanel.add(DS2);
+                ServerDragAndDrop DS2 = new DatabaseServer(0,DS.getNaam(),DS.getBeschikbaarheid(), DS.getPrijs());
+                DS2.setBounds(randx, randy, 125, 125);
+                design.getDesignpanel().addArrayList(DS2);
             }
         }
+        for (ServerDragAndDrop server : design.getDesignpanel().getServersArray_ArrayList()){
+            design.getDesignpanel().add(design.getDesignpanel().getFrame().getFirewall(),server);
+            design.getDesignpanel().repaint();
+        }
+        generateSeverOpties();
 
     }
     private int WebserverLoop(int AantalWSTotaal, int WebServer){
@@ -546,5 +582,9 @@ public class DesignFrame extends JFrame implements ActionListener {
 
     public ArrayList<ServerOptie> getTempServerOpties() {
         return tempServerOpties;
+    }
+
+    public DesignPanel getDesignpanel() {
+        return designpanel;
     }
 }
