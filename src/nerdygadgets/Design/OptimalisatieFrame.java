@@ -13,7 +13,7 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
     private JCheckBox JCserverlimiet;
     private double beschikbaarheid_Double;
     private int serverlimiet_Int;
-    private int standaardaantalserver_Int = 5;
+    private int standaardaantalserver_Int = 10;
     private boolean go = false;
 
     // Nodig om frame op een percentage van schermgrootte te zetten
@@ -26,7 +26,9 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         // Optimalisatie frame
         super(frame, true);
         setLayout(new GridLayout(3, 2));
+
         setSize(schermbreedte/300*70,schermhoogte/300*70);
+
         setTitle("Optimaliseer");
 
         JLbeschikbaarheid = new JLabel("Beschikbaarheid %: ");
@@ -168,8 +170,8 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
 
         else if (e.getSource() == JBannuleer)
         {
+            setGo(false);
             setVisible(false);
-            return;
         }
     }
 }
