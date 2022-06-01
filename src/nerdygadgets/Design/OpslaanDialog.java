@@ -96,15 +96,33 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                     }catch (Exception e){}
                 }
                     for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
-                        if (server instanceof WebServer) {
-                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 4, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
-                            stmt.executeUpdate(query);
-                        } else if (server instanceof  DatabaseServer) {
-                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "',2, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
-                            stmt.executeUpdate(query);
-                        } else if (server instanceof  Firewall) {
-                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 6, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
-                            stmt.executeUpdate(query);
+                        try {
+                            if (server instanceof WebServer) {
+                                String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 4, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                                stmt.executeUpdate(query);
+                            } else if (server instanceof DatabaseServer) {
+                                String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "',2, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                                stmt.executeUpdate(query);
+                            } else if (server instanceof Firewall) {
+                                String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 6, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                                stmt.executeUpdate(query);
+                            }
+                        }catch (Exception e){
+                            System.out.println(e);
+                        }
+                        try {
+                            if (server instanceof WebServer) {
+                                String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 2, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                                stmt.executeUpdate(query);
+                            } else if (server instanceof DatabaseServer) {
+                                String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "',1, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                                stmt.executeUpdate(query);
+                            } else if (server instanceof Firewall) {
+                                String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 3, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                                stmt.executeUpdate(query);
+                            }
+                        }catch (Exception e){
+                            System.out.println(e);
                         }
                         String uniqueQuery2 = "SELECT serverID from servers WHERE name = '"+server.getNaam()+"'";
                         ResultSet rset2 = stmt.executeQuery(uniqueQuery2);
