@@ -44,7 +44,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         layout.gridheight = 1;
         layout.insets.set(0, 0, 0, 0);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1100,600);
+        setSize(1600,600);
 
         //Back button
         layout.gridx = 0; layout.gridy = 0; back = new JButton("Terug"); back.setSize(100,50);back.addActionListener(this);back.setVisible(true); add(back,layout);
@@ -99,7 +99,6 @@ public class MonitoringFrame extends JFrame implements ActionListener {
             layout.gridx = 13; JLabel ram = new JLabel("  Ram"); ram.setVisible(true); add(ram,layout);
 
 
-
             //Code that generates the serverlist
             JLabel lbl_up;
             for (int i = 0; i != servers.size(); i++) {
@@ -148,9 +147,8 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 }
             }
         }
-        setResizable(false);
+        setResizable(true);
         setVisible(true);
-
     }
 
     public ArrayList<Integer> servers_in_project(int projectID) {

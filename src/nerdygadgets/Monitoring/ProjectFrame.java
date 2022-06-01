@@ -17,7 +17,7 @@ public class ProjectFrame extends JFrame implements ActionListener {
 
     public ProjectFrame() {
         setTitle("Project lijst");
-        setSize(450,100);
+        setMinimumSize(new Dimension(800,500));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints layout = new GridBagConstraints();
@@ -44,12 +44,27 @@ public class ProjectFrame extends JFrame implements ActionListener {
         int number_of_projects;
         boolean projects_present = false;
         number_of_projects = projects.size();
+        System.out.println("Found " + number_of_projects + " projects");
 
         if(number_of_projects == 0) {
             layout.gridx = 0;
-            for(int i = 0;i != 5; i++) {
-                JLabel spacer = new JLabel();layout.gridy = i + 2;spacer.setVisible(true);add(spacer, layout);
+            for (int i = 0; i != 5; i++) {
+                JLabel spacer = new JLabel();
+                layout.gridy = i + 2;
+                spacer.setVisible(true);
+                add(spacer, layout);
             }
+        }
+        if(number_of_projects < 5) {
+            layout.gridx = 0;
+            for (int i = 0; i != 5; i++) {
+                JLabel spacer = new JLabel();
+                layout.gridy = i + 2;
+                spacer.setVisible(true);
+                add(spacer, layout);
+                projects_present = true;
+            }
+
         } else {
             projects_present = true;
             setSize(450,(100 + (number_of_projects * 40)));

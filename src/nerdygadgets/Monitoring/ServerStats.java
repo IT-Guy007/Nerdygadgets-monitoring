@@ -116,7 +116,6 @@ public class ServerStats extends JFrame implements ActionListener {
                     i++;
                 }
             }
-
         } catch (Exception e) {
             System.out.println(e);
         }
