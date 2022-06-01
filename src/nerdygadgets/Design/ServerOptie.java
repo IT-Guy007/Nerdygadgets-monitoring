@@ -156,11 +156,11 @@ public class ServerOptie extends JButton implements ActionListener {
         int randy = (int)(Math.random() * rangey) + miny;
         if (type == "webserver") {
 
-            ServerDragAndDrop server1 = new WebServer(this.id,naam, prijs, beschikbaarheid);
+            ServerDragAndDrop server1 = new WebServer(this.id,naam,beschikbaarheid, prijs);
             server1.setBounds(randx, randy, 125, 125);
             hoofdpanel.addArrayList(server1);
         }else if(type == "databaseserver"){
-            ServerDragAndDrop server1 = new DatabaseServer(this.id,naam, prijs, beschikbaarheid);
+            ServerDragAndDrop server1 = new DatabaseServer(this.id,naam,beschikbaarheid, prijs);
             server1.setBounds(randx, randy, 125, 125);
             hoofdpanel.addArrayList(server1);
         }
