@@ -425,48 +425,70 @@ public class DesignFrame extends JFrame implements ActionListener {
         return hoogte;
     }
     public void open() {
+        int projectID = 0;
+        ArrayList<Integer> idServers = new ArrayList<>();
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/application",
+                    "jdbc:mysql://192.168.1.1:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
-            String uniqueQuery = "SELECT * from serverSetups WHERE setupId = '" + save + "';";
-            ResultSet rset = stmt.executeQuery(uniqueQuery);
-            int maxx;
-            if (designpanel.getFrame().getisVolscherm()){
-                maxx = designpanel.getFrame().getSchermbreedte() -280;
-            }else{
-                maxx = designpanel.getFrame().getSchermbreedte()/36*26;
-            }
-            int minx = 140;
-            int range = maxx - minx + 1;
-
-            int maxy;
-            if (designpanel.getFrame().getisVolscherm()){
-                maxy = designpanel.getFrame().getSchermhoogte() -(designpanel.getFrame().getSchermhoogte()/3);
-            }else{
-                maxy = designpanel.getFrame().getSchermhoogte()/41*26;
-            }
-            int miny = 0;
-            int rangey = maxy - miny + 1;
-
+            String query1 = "SELECT projectID from project WHERE name = '" + save + "';";
+            ResultSet rset = stmt.executeQuery(query1);
             while (rset.next()) {
-                if (Objects.equals(rset.getString("type"), "webserver")) {
-                    int randx = (int)(Math.random() * range) + minx;
-                    int randy = (int)(Math.random() * rangey) + miny;
-                    ServerDragAndDrop server1 = new WebServer((int)Math.floor(Math.random()*(10000-0+1)+0),rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
-                    server1.setBounds(randx, randy, 125, 125);
-                    designpanel.addArrayList(server1);
-                }else if(Objects.equals(rset.getString("type"), "databaseserver")){
-                    int randx = (int)(Math.random() * range) + minx;
-                    int randy = (int)(Math.random() * rangey) + miny;
-                    ServerDragAndDrop server1 = new DatabaseServer((int)Math.floor(Math.random()*(10000-0+1)+0),rset.getString("type"), rset.getDouble("beschikbaarheid"), rset.getDouble("prijs"));
-                    server1.setBounds(randx, randy, 125, 125);
-                    designpanel.addArrayList(server1);
-                }
-                for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
-                    designpanel.add(designpanel.getFrame().getFirewall(),server);
-                    designpanel.repaint();
+                projectID = rset.getInt("projectID");
+            }
+
+            String query2 = "SELECT server_PresentID from project_Has_Servers WHERE projectID = " + projectID + ";";
+            Statement stmt2 = conn.createStatement();
+            ResultSet rset2 = stmt2.executeQuery(query2);
+            while (rset2.next()) {
+                idServers.add(rset2.getInt("server_PresentID"));
+            }
+        } catch (Exception e){
+            System.out.println(e);}
+        try{
+            for (Integer servers : idServers) {
+                Connection conn = DriverManager.getConnection(
+                        "jdbc:mysql://192.168.1.1:3306/application",
+                        "group4", "Qwerty1@");
+                Statement stmt = conn.createStatement();
+                String query3 = "SELECT * from servers WHERE serverID = " + servers + ";";
+                ResultSet rset3 = stmt.executeQuery(query3);
+                while (rset3.next()) {
+                    int maxx;
+                    if (designpanel.getFrame().getisVolscherm()) {
+                        maxx = designpanel.getFrame().getSchermbreedte() - 280;
+                    } else {
+                        maxx = designpanel.getFrame().getSchermbreedte() / 36 * 26;
+                    }
+                    int minx = 140;
+                    int range = maxx - minx + 1;
+
+                    int maxy;
+                    if (designpanel.getFrame().getisVolscherm()) {
+                        maxy = designpanel.getFrame().getSchermhoogte() - (designpanel.getFrame().getSchermhoogte() / 3);
+                    } else {
+                        maxy = designpanel.getFrame().getSchermhoogte() / 41 * 26;
+                    }
+                    int miny = 0;
+                    int rangey = maxy - miny + 1;
+                    if (rset3.getInt("server_KindID") == 2) {
+                        int randx = (int) (Math.random() * range) + minx;
+                        int randy = (int) (Math.random() * rangey) + miny;
+                        ServerDragAndDrop server1 = new WebServer((int) Math.floor(Math.random() * (10000 - 0 + 1) + 0),rset3.getString("name"),rset3.getDouble("availability"),rset3.getDouble("price"));
+                        server1.setBounds(randx, randy, 125, 125);
+                        designpanel.addArrayList(server1);
+                    } else if (rset3.getInt("server_KindID") == 1) {
+                        int randx = (int) (Math.random() * range) + minx;
+                        int randy = (int) (Math.random() * rangey) + miny;
+                        ServerDragAndDrop server1 = new DatabaseServer((int) Math.floor(Math.random() * (10000 - 0 + 1) + 0),rset3.getString("name"),rset3.getDouble("availability"),rset3.getDouble("price"));
+                        server1.setBounds(randx, randy, 125, 125);
+                        designpanel.addArrayList(server1);
+                    }
+                    for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()) {
+                        designpanel.add(designpanel.getFrame().getFirewall(), server);
+                        designpanel.repaint();
+                    }
                 }
             }
 
@@ -481,7 +503,7 @@ public class DesignFrame extends JFrame implements ActionListener {
         boolean unique = true;
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/application",
+                    "jdbc:mysql://192.168.1.1:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT name from project";
