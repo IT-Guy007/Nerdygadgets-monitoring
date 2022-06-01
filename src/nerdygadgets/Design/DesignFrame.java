@@ -221,19 +221,17 @@ public class DesignFrame extends JFrame implements ActionListener {
         int rangey = maxy - miny + 1;
         int randy ;
 
-        firewall = new Firewall(firewall.getNaam(),firewall.getBeschikbaarheid(), firewall.getPrijs());
-        firewall.setBounds(schermbreedte/2-200,schermhoogte/2-220, 125, 125);
-        design.getDesignpanel().addArrayList(firewall);
 
         for (int i = 0; i < WSgeoptimaliseerde.length; i++){
             for(int j = 0; j < WSgeoptimaliseerde[i]; j++){
                 randy = (int)(Math.random() * rangey) + miny;
                 randx = (int)(Math.random() * range) + minx;
 
-                ServerDragAndDrop WS = list.getServers().get(i);
+                ServerDragAndDrop WS = list.getServers().get(i+3);
                 ServerDragAndDrop WS2 = new WebServer(0,WS.getNaam(),WS.getBeschikbaarheid(), WS.getPrijs());
                 WS2.setBounds(randx, randy, 125, 125);
                 design.getDesignpanel().addArrayList(WS2);
+                System.out.println("Ik ben een database"+WS.getNaam()+" | "+WS.getBeschikbaarheid()+" | "+WS.getPrijs()+" | i = "+ i);
             }
         }for (int i = 0; i < DSgeoptimaliseerde.length; i++){
             for(int j = 0; j < DSgeoptimaliseerde[i]; j++){

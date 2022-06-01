@@ -70,11 +70,11 @@ public class ServerOptie extends JButton implements ActionListener {
             public void mouseDragged(MouseEvent e) {
                 if (counter==0){
                     if (type=="databaseserver"){
+                        System.out.println("Ik genereer een database met als naam: "+naam+" | "+beschikbaarheid+" | "+prijs);
                         server1 = new DatabaseServer(getId(),naam, beschikbaarheid,prijs);
-                        System.out.println("id = " + getId());
                     }else{
+                        System.out.println("Ik genereer een webserver met als naam: "+naam+" | "+beschikbaarheid+" | "+prijs);
                         server1 = new WebServer(getId(),naam, beschikbaarheid,prijs);
-                        System.out.println("id = " + getId());
                     }
                     server1.setBounds(10, hoofdpanel.getFrame().returnyhoogte(name), 125, 140);
                     server1.setLocation(10, e.getY());

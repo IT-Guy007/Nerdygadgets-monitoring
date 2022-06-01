@@ -34,10 +34,12 @@ public abstract class ServerDragAndDrop extends JLabel {
             icoon = new ImageIcon(this.getClass().getResource("/resources/server.png"));
             label.setBounds(10,100,100,25);
             label.setForeground(Color.black);
+            System.out.println("Ik ben een webserver");
         }else if (this instanceof DatabaseServer){
             icoon = new ImageIcon(this.getClass().getResource("/resources/database-icon.png"));
             label.setBounds(10,100,100,25);
             label.setForeground(Color.black);
+            System.out.println("Ik ben een database"+naam+" | "+beschikbaarheid+" | "+prijs+" | ");
         }
         setBounds(0,0,121,61);
         setIcon(icoon);
@@ -69,8 +71,9 @@ public abstract class ServerDragAndDrop extends JLabel {
         this.prijs = prijs;
     }
     public void setText(){
-        String myString = "   "+naam + "\n" + beschikbaarheid + "%, " + prijs + "€";
+        String myString = "   "+this.naam + "\n" + this.beschikbaarheid + "%, " + this.prijs + "€";
         label.setText("<html>" + myString.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
+        System.out.println(myString);
     }
     public int getId() {
         return id;
