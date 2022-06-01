@@ -1,10 +1,9 @@
 package nerdygadgets.Design.components;
 
 import nerdygadgets.Design.DesignFrame;
-import nerdygadgets.Design.ServerOptie;
-
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class ServerLists {
     private ArrayList<ServerDragAndDrop> servers = new ArrayList<>();
     private DesignFrame hoofdframe;
@@ -20,31 +19,6 @@ public class ServerLists {
 
         servers.add(ServerOptie1);servers.add(ServerOptie2); servers.add(ServerOptie3);
         servers.add(ServerOptie4);servers.add(ServerOptie5);servers.add(ServerOptie6);
-        /*
-        for (ServerOptie serverOptie:this.hoofdframe.getTempServerOpties()){
-            if (serverOptie.getName().equals("WD10239")&&serverOptie.getBeschikbaarheid() == 80&&serverOptie.getPrijs()==99.99){
-                DatabaseServer ServerOptie1 = new DatabaseServer(serverOptie.getId(),"WD10239",80,99.99);
-                servers.add(ServerOptie1);
-            }else if (serverOptie.getName().equals("WD10240")&&serverOptie.getBeschikbaarheid() == 85&&serverOptie.getPrijs()==130.4){
-                DatabaseServer ServerOptie1 = new DatabaseServer(serverOptie.getId(),"WD10240",85,130.4);
-                servers.add(ServerOptie1);
-            }else if (serverOptie.getName().equals("WD10241")&&serverOptie.getBeschikbaarheid() == 90&&serverOptie.getPrijs()==2200){
-                DatabaseServer ServerOptie1 = new DatabaseServer(serverOptie.getId(),"WD10241",90,2200);
-                servers.add(ServerOptie1);
-            }else if (serverOptie.getName().equals("HAL10239")&&serverOptie.getBeschikbaarheid() == 80&&serverOptie.getPrijs()==99.99){
-                WebServer ServerOptie1 = new WebServer(serverOptie.getId(),"HAL10239",80,99.99);
-                servers.add(ServerOptie1);
-            }else if (serverOptie.getName().equals("HAL10240")&&serverOptie.getBeschikbaarheid() == 85&&serverOptie.getPrijs()==130.4){
-                WebServer ServerOptie1 = new WebServer(serverOptie.getId(),"HAL10239",85,130.4);
-                servers.add(ServerOptie1);
-            }else if (serverOptie.getName().equals("HAL10241")&&serverOptie.getBeschikbaarheid() == 90&&serverOptie.getPrijs()==2200){
-                WebServer ServerOptie1 = new WebServer(serverOptie.getId(),"HAL10239",90,2200);
-                servers.add(ServerOptie1);
-            }
-        }
-
-         */
-
     }
 
     public String[] generateArray() {
@@ -53,14 +27,6 @@ public class ServerLists {
             serverArray[i] = servers.get(i).getNaam();
         }
         return serverArray;
-    }
-
-    public ArrayList<ServerDragAndDrop> getServers() {
-        return servers;
-    }
-
-    public void setServers(ArrayList<ServerDragAndDrop> servers) {
-        this.servers = servers;
     }
 
     public int countWebServers() {
@@ -72,7 +38,6 @@ public class ServerLists {
         }
         return webCount;
     }
-
     public int countDbServers() {
         int dbCount = 0;
         for (ServerDragAndDrop s : servers) {
@@ -83,6 +48,13 @@ public class ServerLists {
         return dbCount;
     }
 
+    // Getters en Setters
+    public ArrayList<ServerDragAndDrop> getServers() {
+        return servers;
+    }
+    public void setServers(ArrayList<ServerDragAndDrop> servers) {
+        this.servers = servers;
+    }
 }
 
 

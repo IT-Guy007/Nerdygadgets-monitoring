@@ -5,50 +5,41 @@ import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
-import nerdygadgets.Design.OpslaanDialog;
-
 
 import java.awt.event.*;
-import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static java.lang.Math.round;
 
+@SuppressWarnings("ALL")
 public class DesignPanel extends JPanel implements ComponentListener{
     private final DesignFrame frame_DesignFrame;
     private final Dimension schermgrootte_Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     private final int schermhoogte_int = schermgrootte_Dimension.height;
     private final int schermbreedte_int = schermgrootte_Dimension.width;
     private final List<Component[]> connections_list;
-    private static int x=0;
-    private JScrollPane schrollscherm;
-
+    private static final int x=0;
+    private final JScrollPane schrollscherm;
     private ArrayList<ServerDragAndDrop> serversArray_ArrayList = new ArrayList<>();
 
+    // Constructor
     public DesignPanel(DesignFrame frame) {
         // Deze constructor zorgt ervoor dat het panel de juiste kleur, layout en dergelijke krijgt.
         schrollscherm = new JScrollPane(this,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         frame.add(schrollscherm);
         schrollscherm.setPreferredSize(new Dimension(frame.getWidth() - 25, frame.getHeight() - 100));
 
-            connections_list = new ArrayList<>();
+        connections_list = new ArrayList<>();
         this.frame_DesignFrame = frame;
         this.frame_DesignFrame.addComponentListener(this);
         setResponsiveSize();
         setBackground(Color.white);
         setLayout(null);
         repaint();
-        //setVisible(true);
-        //test();
 
         MouseAdapter ma = new MouseAdapter() {
             private Component dragComponent;
@@ -106,6 +97,7 @@ public class DesignPanel extends JPanel implements ComponentListener{
         repaint();
     }
 
+    // Methodes voor toevoegen servers
     public void add(Component parent, Component child) {
         // Deze functie voegt de firewall toe als parent en zorgt dat het andere attribuut een child is, zodat deze er altijd overheen gaat.
         if (parent.getParent() != this) {
@@ -167,6 +159,9 @@ public class DesignPanel extends JPanel implements ComponentListener{
             repaint();
         }
     }
+
+
+    // Overridings methodes voor  painten components
     @Override
     protected void paintComponent(Graphics g) {
         // Deze functie tekent te lijnen tussen servers en schrijft de beschikbaarheid rechtsbovenenin.
@@ -221,42 +216,55 @@ public class DesignPanel extends JPanel implements ComponentListener{
         g.drawLine(140,0,140,getHeight());
         g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics metrics = g.getFontMetrics();
-            g.setColor(Color.black);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,getHeight());
-            g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5-50, 20);
-            g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5-50, 40);
-            g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5-50, 60);
-            g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,75, schermgrootte_Dimension.width, 75);
-            g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5-50, 90);
-            g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5-50, 110);
+        g.setColor(Color.black);
+        g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,0,getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,getHeight());
+        g.drawString("Aantal Database servers: " + countDBServers(), getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 5-50, 20);
+        g.drawString("Aantal Web Servers : " + countWebServers(), getWidth() - metrics.stringWidth("Aantal Web Servers : " + countWebServers()) - 5-50, 40);
+        g.drawString("Aantal PFSense Servers : 1", getWidth() - metrics.stringWidth("Aantal PFSense Servers : 1") - 5-50, 60);
+        g.drawLine(getWidth() - metrics.stringWidth("Aantal Database Servers: " + countDBServers()) - 10-50,75, schermgrootte_Dimension.width, 75);
+        g.drawString("Prijs per jaar: €" + berekenTotalePrijs(), getWidth() - metrics.stringWidth("Prijs per jaar: €"+ berekenTotalePrijs()) - 5-50, 90);
+        g.drawString("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%", getWidth() - metrics.stringWidth("Beschikbaarheid: " + berekenTotaleBeschikbaarheid() + "%") - 5-50, 110);
     }
     @Override
     public void componentResized(ComponentEvent e) {SetKleinScherm();}
-    public void setResponsiveSize() {
-        //Deze functie ze de responsive size van het panel
-        //setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, frame_DesignFrame.getHeight() - 100));
-        setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, 3000));
-    }
-
     @Override
     public void componentMoved(ComponentEvent e) {
         // Deze fucntie is nodig voor de Componentlistener
 
     }
-
     @Override
     public void componentShown(ComponentEvent e) {
         // Deze fucntie is nodig voor de Componentlistener
     }
-
     @Override
     public void componentHidden(ComponentEvent e) {
         // Deze fucntie is nodig voor de Componentlistener
     }
+
+    // Methodes voor grootte van panel
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(frame_DesignFrame.getWidth(),2000);
     }
+    public void setResponsiveSize() {
+        //Deze functie ze de responsive size van het panel
+        //setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, frame_DesignFrame.getHeight() - 100));
+        setPreferredSize(new Dimension(frame_DesignFrame.getWidth() - 25, 3000));
+    }
+    public void SetGrootScherm() {
+        // Deze functie vergroot het panel zodat dit ook in fullscreen werkt
+        setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
+        schrollscherm.setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
+        repaint();
+    }
+    public void SetKleinScherm(){
+        // Deze fucntie verkleind het panel zodat deze ook in normale omstandigheden werkt.
+        setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
+        schrollscherm.setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
+        repaint();
+    }
+
+    // Actuele beschikbaarheid berekenen.
     public String berekenTotalePrijs() {
         // Deze fucntie berekend de totale prijs per maand van het actuele design.
         double totalePrijs = 0;
@@ -309,24 +317,8 @@ public class DesignPanel extends JPanel implements ComponentListener{
             return String.valueOf(number);
         }
     }
-    public void SetGrootScherm() {
-        // Deze functie vergroot het panel zodat dit ook in fullscreen werkt
-        setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
-        schrollscherm.setPreferredSize(new Dimension((int) round(0.99*schermbreedte_int), (int) round(0.92*schermhoogte_int) ));
-        repaint();
-    }
-    public void SetKleinScherm(){
-        // Deze fucntie verkleind het panel zodat deze ook in normale omstandigheden werkt.
-        setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
-        schrollscherm.setPreferredSize(new Dimension((int) round(0.98*(schermbreedte_int/30*26)),(int) round(0.78*(schermhoogte_int/30*26)) ));
-        repaint();
-    }
 
-    public DesignFrame getFrame() {
-        //getter van het Designframe.
-        return frame_DesignFrame;
-
-    }
+    // Toevoegen aan servers array
     public void addArrayList(ServerDragAndDrop server){
         serversArray_ArrayList.add(server);
     }
@@ -337,12 +329,34 @@ public class DesignPanel extends JPanel implements ComponentListener{
         serversArray_ArrayList.remove(server);
     }
 
+    // Getters en setters
     public ArrayList<ServerDragAndDrop> getServersArray_ArrayList() {
         return serversArray_ArrayList;
     }
-
     public void setServersArray_ArrayList(ArrayList<ServerDragAndDrop> serversArray_ArrayList) {
         this.serversArray_ArrayList = serversArray_ArrayList;
     }
+    public DesignFrame getFrame() {
+        //getter van het Designframe.
+        return frame_DesignFrame;
 
+    }
+    public DesignFrame getFrame_DesignFrame() {
+        return frame_DesignFrame;
+    }
+    public Dimension getSchermgrootte_Dimension() {
+        return schermgrootte_Dimension;
+    }
+    public int getSchermhoogte_int() {
+        return schermhoogte_int;
+    }
+    public int getSchermbreedte_int() {
+        return schermbreedte_int;
+    }
+    public List<Component[]> getConnections_list() {
+        return connections_list;
+    }
+    public JScrollPane getSchrollscherm() {
+        return schrollscherm;
+    }
 }

@@ -12,29 +12,22 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class ServerDialog extends JDialog implements ActionListener {
 
-    JComboBox CBserverList;
-    JButton plusButton;
-    JRadioButton radioWeb;
-    JRadioButton radioDb;
-    JTextField naamField;
-    JTextField prijsField;
-    JLabel prijsLabel;
-    JTextField uptimeField;
-    JLabel uptimeLabel;
-    JButton opslaanButton;
-    JButton cancelButton;
-    Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
-    int schermhoogte = schermgrootte.height;
-    int schermbreedte = schermgrootte.width;
-    ArrayList serverslist;
-    String[] servers;
-    boolean allowChange = true;
-    int serverCountWeb = 0;
-    int serverCountDb = 0;
+    private JComboBox CBserverList;
+    private JRadioButton radioWeb,radioDb;
+    private JTextField naamField,prijsField,uptimeField;
+    private JLabel prijsLabel,uptimeLabel;
+    private JButton opslaanButton,cancelButton,plusButton;
+    private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
+    private int schermhoogte = schermgrootte.height,schermbreedte = schermgrootte.width;
+    private ArrayList serverslist;
+    private String[] servers;
+    private boolean allowChange = true;
+    private int serverCountWeb = 0,serverCountDb = 0;
 
-
+    // Constructor
     public ServerDialog(JFrame frame, boolean modal, String[] servers, ArrayList serverslist){
         super(frame, modal);
         setSize(200,600);
@@ -142,6 +135,7 @@ public class ServerDialog extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+    //Functies voor serverdialog
     public JButton create_button(JButton naam, String path) {
         naam = new JButton(""); // Knop die er voor zorgt dat de actuele toestand word opgeslagen.
         naam.setBorderPainted(false);
@@ -157,47 +151,6 @@ public class ServerDialog extends JDialog implements ActionListener {
         naam.addActionListener(this);
         return naam;
     }
-    public void activebutton(JButton knop, String active, String normal){
-
-        // Deze functie zorgt ervoor dat als een knop is ingedrukt, deze iets van kleur veranderd, en na een 200 miliseconde
-        // stop weer terug veranderd.
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/resources/"+active+".png"));
-        Image img = icon.getImage();
-        Image newimg = img.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
-        ImageIcon newIcon = new ImageIcon(newimg);
-        knop.setIcon(newIcon);
-
-        Timer timer = new Timer( 200, t -> {
-            ImageIcon icon2 = new ImageIcon(this.getClass().getResource("/resources/"+normal+".png"));
-            Image img2 = icon2.getImage();
-            Image newimg2 = img2.getScaledInstance(-5, schermbreedte/30,  java.awt.Image.SCALE_SMOOTH);
-            ImageIcon newIcon2 = new ImageIcon(newimg2);
-            knop.setIcon(newIcon2);
-
-        });
-        timer.setRepeats( false );
-        timer.start();
-    }
-    //Image Icon
-    public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
-        int nw = icon.getIconWidth();
-        int nh = icon.getIconHeight();
-        //if(icon.getIconWidth() > w) {
-        //    nw = w;
-        //    nh = (nw * icon.getIconHeight()) / icon.getIconWidth();
-        //}
-        if(nh > h) {
-            nh = h;
-            nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
-        }
-        return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
-    }
-
-    public ServerDragAndDrop getArrayServer() {
-        ServerDragAndDrop server = (ServerDragAndDrop) serverslist.get(CBserverList.getSelectedIndex());
-        return server;
-    }
-
     public String convertDouble(double da) {
         Double d = da;
         String text = ""+d;
@@ -205,7 +158,125 @@ public class ServerDialog extends JDialog implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {}
 
+    // Getters en Setters
+    public ServerDragAndDrop getArrayServer() {
+        ServerDragAndDrop server = (ServerDragAndDrop) serverslist.get(CBserverList.getSelectedIndex());
+        return server;
+    }
+    public JComboBox getCBserverList() {
+        return CBserverList;
+    }
+    public void setCBserverList(JComboBox CBserverList) {
+        this.CBserverList = CBserverList;
+    }
+    public JButton getPlusButton() {
+        return plusButton;
+    }
+    public void setPlusButton(JButton plusButton) {
+        this.plusButton = plusButton;
+    }
+    public JRadioButton getRadioWeb() {
+        return radioWeb;
+    }
+    public void setRadioWeb(JRadioButton radioWeb) {
+        this.radioWeb = radioWeb;
+    }
+    public JRadioButton getRadioDb() {
+        return radioDb;
+    }
+    public void setRadioDb(JRadioButton radioDb) {
+        this.radioDb = radioDb;
+    }
+    public JTextField getNaamField() {
+        return naamField;
+    }
+    public void setNaamField(JTextField naamField) {
+        this.naamField = naamField;
+    }
+    public JTextField getPrijsField() {
+        return prijsField;
+    }
+    public void setPrijsField(JTextField prijsField) {
+        this.prijsField = prijsField;
+    }
+    public JLabel getPrijsLabel() {
+        return prijsLabel;
+    }
+    public void setPrijsLabel(JLabel prijsLabel) {
+        this.prijsLabel = prijsLabel;
+    }
+    public JTextField getUptimeField() {
+        return uptimeField;
+    }
+    public void setUptimeField(JTextField uptimeField) {
+        this.uptimeField = uptimeField;
+    }
+    public JLabel getUptimeLabel() {
+        return uptimeLabel;
+    }
+    public void setUptimeLabel(JLabel uptimeLabel) {
+        this.uptimeLabel = uptimeLabel;
+    }
+    public JButton getOpslaanButton() {
+        return opslaanButton;
+    }
+    public void setOpslaanButton(JButton opslaanButton) {
+        this.opslaanButton = opslaanButton;
+    }
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
+    public void setCancelButton(JButton cancelButton) {
+        this.cancelButton = cancelButton;
+    }
+    public Dimension getSchermgrootte() {
+        return schermgrootte;
+    }
+    public void setSchermgrootte(Dimension schermgrootte) {
+        this.schermgrootte = schermgrootte;
+    }
+    public int getSchermhoogte() {
+        return schermhoogte;
+    }
+    public void setSchermhoogte(int schermhoogte) {
+        this.schermhoogte = schermhoogte;
+    }
+    public int getSchermbreedte() {
+        return schermbreedte;
+    }
+    public void setSchermbreedte(int schermbreedte) {
+        this.schermbreedte = schermbreedte;
+    }
+    public ArrayList getServerslist() {
+        return serverslist;
+    }
+    public void setServerslist(ArrayList serverslist) {
+        this.serverslist = serverslist;
+    }
+    public String[] getServers() {
+        return servers;
+    }
+    public void setServers(String[] servers) {
+        this.servers = servers;
+    }
+    public boolean isAllowChange() {
+        return allowChange;
+    }
+    public void setAllowChange(boolean allowChange) {
+        this.allowChange = allowChange;
+    }
+    public int getServerCountWeb() {
+        return serverCountWeb;
+    }
+    public void setServerCountWeb(int serverCountWeb) {
+        this.serverCountWeb = serverCountWeb;
+    }
+    public int getServerCountDb() {
+        return serverCountDb;
+    }
+    public void setServerCountDb(int serverCountDb) {
+        this.serverCountDb = serverCountDb;
     }
 }

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+@SuppressWarnings("ALL")
 public class OptimalisatieFrame extends JDialog implements ActionListener {
     private JButton JBok, JBannuleer;
     private JTextField JTbeschickbaarheid, JTserverlimiet;
@@ -17,12 +18,11 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
     private boolean go = false;
 
     // Nodig om frame op een percentage van schermgrootte te zetten
-    Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
-    int schermhoogte = schermgrootte.height;
-    int schermbreedte = schermgrootte.width;
+    private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
+    private int schermhoogte = schermgrootte.height;
+    private int schermbreedte = schermgrootte.width;
 
-    public OptimalisatieFrame(JFrame frame)
-    {
+    public OptimalisatieFrame(JFrame frame) {
         // Optimalisatie frame
         super(frame, true);
         setLayout(new GridLayout(3, 2));
@@ -55,51 +55,16 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
         add(JBannuleer);
         setVisible(true);
     }
-
-
-    public boolean serverlimiet()
-    {
-        if (JCserverlimiet.isSelected())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+    public boolean serverlimiet() {
+        if (JCserverlimiet.isSelected()) {return true;}
+        else {return false;}
     }
-
     public boolean isGo() {
         return go;
     }
 
-    public void setGo(boolean go) {
-        this.go = go;
-    }
-
-    public double getBeschikbaarheid_Double() {
-        return beschikbaarheid_Double;
-    }
-
-    public void setBeschikbaarheid_Double(double beschikbaarheid_Double) {
-        this.beschikbaarheid_Double = beschikbaarheid_Double;
-    }
-
-    public int getServerlimiet_Int() {
-        return serverlimiet_Int;
-    }
-
-    public void setServerlimiet_Int(int serverlimiet_Int) {
-        this.serverlimiet_Int = serverlimiet_Int;
-    }
-
-    public int getStandaardaantalserver_Int() {
-        return standaardaantalserver_Int;
-    }
-
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         if (e.getSource() == JBok)
         {
             // Controleert of er een aantal server limiet is ingevoerd wanneer de checkbox geselecteerd is
@@ -173,5 +138,82 @@ public class OptimalisatieFrame extends JDialog implements ActionListener {
             setGo(false);
             setVisible(false);
         }
+    }
+
+    // Getters en setters
+    public void setGo(boolean go) {
+        this.go = go;
+    }
+    public double getBeschikbaarheid_Double() {
+        return beschikbaarheid_Double;
+    }
+    public void setBeschikbaarheid_Double(double beschikbaarheid_Double) {
+        this.beschikbaarheid_Double = beschikbaarheid_Double;
+    }
+    public int getServerlimiet_Int() {
+        return serverlimiet_Int;
+    }
+    public void setServerlimiet_Int(int serverlimiet_Int) {
+        this.serverlimiet_Int = serverlimiet_Int;
+    }
+    public int getStandaardaantalserver_Int() {
+        return standaardaantalserver_Int;
+    }
+    public JButton getJBok() {
+        return JBok;
+    }
+    public void setJBok(JButton JBok) {
+        this.JBok = JBok;
+    }
+    public JButton getJBannuleer() {
+        return JBannuleer;
+    }
+    public void setJBannuleer(JButton JBannuleer) {
+        this.JBannuleer = JBannuleer;
+    }
+    public JTextField getJTbeschickbaarheid() {
+        return JTbeschickbaarheid;
+    }
+    public void setJTbeschickbaarheid(JTextField JTbeschickbaarheid) {
+        this.JTbeschickbaarheid = JTbeschickbaarheid;
+    }
+    public JTextField getJTserverlimiet() {
+        return JTserverlimiet;
+    }
+    public void setJTserverlimiet(JTextField JTserverlimiet) {
+        this.JTserverlimiet = JTserverlimiet;
+    }
+    public JLabel getJLbeschikbaarheid() {
+        return JLbeschikbaarheid;
+    }
+    public void setJLbeschikbaarheid(JLabel JLbeschikbaarheid) {
+        this.JLbeschikbaarheid = JLbeschikbaarheid;
+    }
+    public JCheckBox getJCserverlimiet() {
+        return JCserverlimiet;
+    }
+    public void setJCserverlimiet(JCheckBox JCserverlimiet) {
+        this.JCserverlimiet = JCserverlimiet;
+    }
+    public void setStandaardaantalserver_Int(int standaardaantalserver_Int) {
+        this.standaardaantalserver_Int = standaardaantalserver_Int;
+    }
+    public Dimension getSchermgrootte() {
+        return schermgrootte;
+    }
+    public void setSchermgrootte(Dimension schermgrootte) {
+        this.schermgrootte = schermgrootte;
+    }
+    public int getSchermhoogte() {
+        return schermhoogte;
+    }
+    public void setSchermhoogte(int schermhoogte) {
+        this.schermhoogte = schermhoogte;
+    }
+    public int getSchermbreedte() {
+        return schermbreedte;
+    }
+    public void setSchermbreedte(int schermbreedte) {
+        this.schermbreedte = schermbreedte;
     }
 }

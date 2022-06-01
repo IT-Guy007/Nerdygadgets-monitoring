@@ -4,41 +4,27 @@ import nerdygadgets.Design.components.DatabaseServer;
 import nerdygadgets.Design.components.Firewall;
 import nerdygadgets.Design.components.ServerDragAndDrop;
 import nerdygadgets.Design.components.WebServer;
-import nerdygadgets.Design.DesignFrame;
-import nerdygadgets.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.*;
 import java.sql.*;
-import java.util.ArrayList;
-
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-
+@SuppressWarnings("ALL")
 public class OpslaanDialog extends JDialog implements ActionListener {
-
     private DesignPanel designpanel;
-    private DesignFrame designFrame;
-
-    private Timer timer;
     private DesignFrame hoofdframe;
 
-    JButton opslaan = new JButton("Opslaan");
-    JTextField tekstveld = new JTextField(15);
-//    JLabel success = new JLabel("Uw design is succesvol opgeslagen.");
-//    JLabel failed = new JLabel("Voer een unieke naam in!");
-    JLabel success = new JLabel("Uw design is succesvol opgeslagen!");
-    JLabel failed = new JLabel("Voer een unieke naam in!");
+    private JButton opslaan = new JButton("Opslaan");
+    private JTextField tekstveld = new JTextField(15);
+    private JLabel success = new JLabel("Uw design is succesvol opgeslagen!");
+    private JLabel failed = new JLabel("Voer een unieke naam in!");
     private JDialog OpslaanDialog;
 
     public OpslaanDialog(DesignPanel designpanel, DesignFrame hoofdframe){
         this.hoofdframe = hoofdframe;
         this.designpanel = designpanel;
 
-        //(Mustafa)
         OpslaanDialog = new JDialog();
         OpslaanDialog.setTitle("Sla project op");
 
@@ -66,35 +52,25 @@ public class OpslaanDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource() == opslaan){
-
             save();
-
         }
-
     }
-
     public void save() {
-
-        String setupID = tekstveld.getText(); //TODO Via dialoog ff hier een unique "filename meegeven"
+        String setupID = tekstveld.getText();
         boolean unique = true;
         try {
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://192.168.1.103:3306/application",
+                    "jdbc:mysql://192.168.1.1:3306/application",
                     "group4", "Qwerty1@");
             Statement stmt = conn.createStatement();
             String uniqueQuery = "SELECT name from project";
             ResultSet rset = stmt.executeQuery(uniqueQuery);
-            System.out.println("test1");
             while(rset.next()) {
                 if (rset.getString("name").equals(setupID)) {
-                    System.out.println("test2");
                     unique = false;
                 }
             }
-
-
              if (unique) {
                  String query5 = "INSERT INTO project(name,wanted_Availability) VALUES ('"+setupID+"',100.0)";
                  stmt.executeUpdate(query5);
@@ -105,7 +81,7 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                  while(rset3.next()) {
                      projectID = rset3.getString("projectID");
                  }
-                for (ServerOptie opties: this.hoofdframe.tempServerOpties){
+                for (ServerOptie opties: this.hoofdframe.getTempServerOpties()){
                     try {
                         if (opties.getType().equals("webserver")) {
                             String query2 = "INSERT INTO serverSetups(name,type,price,availability,setupID) VALUES ('" + opties.getName() + "','webserver'," + opties.getPrijs() + "," + opties.getBeschikbaarheid() + ",'"+setupID+"')";
@@ -121,13 +97,13 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                 }
                     for (ServerDragAndDrop server : designpanel.getServersArray_ArrayList()){
                         if (server instanceof WebServer) {
-                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 2, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 4, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
                             stmt.executeUpdate(query);
                         } else if (server instanceof  DatabaseServer) {
-                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "',1, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "',2, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
                             stmt.executeUpdate(query);
                         } else if (server instanceof  Firewall) {
-                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 3, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
+                            String query = "INSERT INTO servers(name, server_kindID, availability, price) VALUES ('" + server.getNaam() + "', 6, " + server.getBeschikbaarheid() + ", " + server.getPrijs() + ");";
                             stmt.executeUpdate(query);
                         }
                         String uniqueQuery2 = "SELECT serverID from servers WHERE name = '"+server.getNaam()+"'";
@@ -145,29 +121,62 @@ public class OpslaanDialog extends JDialog implements ActionListener {
                         while(rset7.next()) {
                             juiste_id2 = rset7.getString("server_PresentID");
                         }
-
                         String query4 = "INSERT INTO project_Has_Servers(projectID,server_PresentID) VALUES ("+projectID+","+juiste_id2+")";
                         stmt.executeUpdate(query4);
                         failed.setVisible(false);
                         success.setVisible(true);
-
-                        //Thread.sleep(5000);
-                        //OpslaanDialog.dispose();
-
-
                     }
                 } else {
                  System.out.println("niet uniek");
                  failed.setVisible(true);
                  success.setVisible(false);
              }
-
-
-
-
-
         } catch (SQLException ex) {
             System.out.println(ex);
         }
+    }
+
+    // Getters en setters
+    public DesignPanel getDesignpanel() {
+        return designpanel;
+    }
+    public void setDesignpanel(DesignPanel designpanel) {
+        this.designpanel = designpanel;
+    }
+    public DesignFrame getHoofdframe() {
+        return hoofdframe;
+    }
+    public void setHoofdframe(DesignFrame hoofdframe) {
+        this.hoofdframe = hoofdframe;
+    }
+    public JButton getOpslaan() {
+        return opslaan;
+    }
+    public void setOpslaan(JButton opslaan) {
+        this.opslaan = opslaan;
+    }
+    public JTextField getTekstveld() {
+        return tekstveld;
+    }
+    public void setTekstveld(JTextField tekstveld) {
+        this.tekstveld = tekstveld;
+    }
+    public JLabel getSuccess() {
+        return success;
+    }
+    public void setSuccess(JLabel success) {
+        this.success = success;
+    }
+    public JLabel getFailed() {
+        return failed;
+    }
+    public void setFailed(JLabel failed) {
+        this.failed = failed;
+    }
+    public JDialog getOpslaanDialog() {
+        return OpslaanDialog;
+    }
+    public void setOpslaanDialog(JDialog opslaanDialog) {
+        OpslaanDialog = opslaanDialog;
     }
 }

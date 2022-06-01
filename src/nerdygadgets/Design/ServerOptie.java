@@ -18,15 +18,16 @@ import java.util.Objects;
 
 import static java.lang.Math.round;
 
+@SuppressWarnings("ALL")
 public class ServerOptie extends JButton implements ActionListener {
     private DesignPanel hoofdpanel;
     private String naam, type;
     private double beschikbaarheid, prijs;
     private ImageIcon icon;
-    private int x,y,width,height;
     private Color transparent=new Color(1f,0f,0f,0f );
     private int id;
 
+    // Constructor
     public ServerOptie(DesignPanel parentPanel, String name, double availability, double annualPrice, String type){
         int min = 0;
         int max = 10000000;
@@ -115,6 +116,8 @@ public class ServerOptie extends JButton implements ActionListener {
         addMouseMotionListener(ma);
         repaintParentPanel();
     }
+
+    // Genereren van serveroptie
     public void toevoegenafbeelding(){
         if (type=="webserver"){
             icon= new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/resources/Server-blauw.png")));
@@ -168,20 +171,54 @@ public class ServerOptie extends JButton implements ActionListener {
 
     }
 
+    // Getters en Setters
     public double getBeschikbaarheid() {
         return beschikbaarheid;
     }
-
-
     public double getPrijs() {
         return prijs;
     }
-
     public int getId() {
         return this.id;
     }
-
     public String getType() {
         return type;
+    }
+    public DesignPanel getHoofdpanel() {
+        return hoofdpanel;
+    }
+    public void setHoofdpanel(DesignPanel hoofdpanel) {
+        this.hoofdpanel = hoofdpanel;
+    }
+    public String getNaam() {
+        return naam;
+    }
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public void setBeschikbaarheid(double beschikbaarheid) {
+        this.beschikbaarheid = beschikbaarheid;
+    }
+    public void setPrijs(double prijs) {
+        this.prijs = prijs;
+    }
+    @Override
+    public ImageIcon getIcon() {
+        return icon;
+    }
+    public void setIcon(ImageIcon icon) {
+        this.icon = icon;
+    }
+    public Color getTransparent() {
+        return transparent;
+    }
+    public void setTransparent(Color transparent) {
+        this.transparent = transparent;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }
