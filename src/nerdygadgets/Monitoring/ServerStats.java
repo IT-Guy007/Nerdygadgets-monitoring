@@ -102,7 +102,6 @@ public class ServerStats extends JFrame implements ActionListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(dbhost, user, password);
             String sql = sql_String(1,interval);
-            System.out.println(sql);
             p = con.prepareStatement(sql);
             rs = p.executeQuery();
             int i =0;
