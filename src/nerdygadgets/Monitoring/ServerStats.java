@@ -396,10 +396,7 @@ public class ServerStats extends JFrame implements ActionListener {
             p = con.prepareStatement(sql);
             rs = p.executeQuery();
 
-            while(rs.next()) {
-                cpu_usage = rs.getDouble("cpUsage");
-            }
-            if(cpu_usage == 0) {
+            if(!rs.next()) {
                 return false;
             } else {
                 return true;
@@ -418,16 +415,16 @@ public class ServerStats extends JFrame implements ActionListener {
         String column_table ="";
         //Datatypes: 1 -> uptime, 2 -> storage, 3 -> ram, 4 -> cpu
         if(datatype == 1) {
-            column = "avg(up) * 100 as up";
+            column = "avg(up) * 100 as up, dateTime";
             column_table = "uptime_Check";
         } else if (datatype == 2) {
-            column = "avg(storage_Usage) * 100 as storage";
+            column = "avg(storage_Usage) * 100 as storage,dateTime";
             column_table = "storage_History";
         } else if (datatype == 3) {
-            column = "avg(ram_Usage) * 100 as ram";
+            column = "avg(ram_Usage) * 100 as ram, dateTime";
             column_table = "ram_History";
         } else if (datatype == 4) {
-            column = "avg(cpu_Usage) * 100 as cpu";
+            column = "avg(cpu_Usage) * 100 as cpu, dateTime";
             column_table = "cpu_History";
         }
 
