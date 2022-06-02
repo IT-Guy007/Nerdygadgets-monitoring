@@ -11,15 +11,14 @@ import java.awt.event.ActionListener;
 
 import static java.lang.Math.round;
 
+@SuppressWarnings("ALL")
 public class MainFrame extends JFrame implements ActionListener {
     //Main frame
-    Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
-    int schermhoogte = schermgrootte.height;
-    int schermbreedte = schermgrootte.width;
+    private Dimension schermgrootte = Toolkit.getDefaultToolkit().getScreenSize();
+    private int schermhoogte = schermgrootte.height;
+    private int schermbreedte = schermgrootte.width;
     private JButton Nieuw_Ontwerp, monitoring, Openen_Ontwerp;
-
-    // Applicatienaam (Mustafa)
-    JLabel tekst_label = new JLabel("Nerdygadgets monitoring & ontwerpapplicatie©");
+    private JLabel tekst_label = new JLabel("Nerdygadgets monitoring & ontwerpapplicatie©");
 
     public MainFrame() {
         setTitle("Nerdygadgets monitoring");
@@ -35,10 +34,7 @@ public class MainFrame extends JFrame implements ActionListener {
         tekst_label.setFont(new Font("HelveticaNeue-Light", Font.PLAIN, 24));
         tekst_label.setHorizontalAlignment(JLabel.CENTER);
 
-        //add(Nieuw_Ontwerp);
-        //add(monitoring);
         add(tekst_label);
-        //add(Openen_Ontwerp);
 
         setLayout(null);
         setResizable(false);
@@ -62,10 +58,6 @@ public class MainFrame extends JFrame implements ActionListener {
     public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
         int nh = icon.getIconHeight();
-        //if(icon.getIconWidth() > w) {
-        //    nw = w;
-        //    nh = (nw * icon.getIconHeight()) / icon.getIconWidth();
-        //}
         if(nh > h) {
             nh = h;
             nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
@@ -87,23 +79,18 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() ==  Nieuw_Ontwerp) {
             setVisible(false);
-            //JFrame design = new JFrame();
             DesignFrame design = new DesignFrame(null);
-            // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
             design.setLocation(size.width/2 - design.getWidth()/2, size.height/2 - design.getHeight()/2);
-
         } else if(e.getSource() == monitoring) {
             setVisible(false);
-            // JFrame monitoring = new JFrame();
             ProjectFrame Framemonitoring = new ProjectFrame();
             Framemonitoring.setVisible(true);
-            // center frame (Mustafa)
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension size = toolkit.getScreenSize();
             monitoring.setLocation(size.width/2 - monitoring.getWidth()/2, size.height/2 - monitoring.getHeight()/2);
-    } else if(e.getSource() == Openen_Ontwerp) {
+        } else if(e.getSource() == Openen_Ontwerp) {
             setVisible(false);
             openDialog dialog = new openDialog();
             Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -111,7 +98,5 @@ public class MainFrame extends JFrame implements ActionListener {
             dialog.setLocation(size.width/2 - dialog.getWidth()/2, size.height/2 - dialog.getHeight()/2);
         }
     }
-
-
 
 }

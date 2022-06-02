@@ -59,7 +59,7 @@ public class CreateProject extends JFrame implements ActionListener {
         PreparedStatement p = null;
         ResultSet rs = null;
         ArrayList<String> output = new ArrayList<String>();
-        String dbhost = "jdbc:mysql://192.168.1.103/application";
+        String dbhost = "jdbc:mysql://192.168.1.1/application";
         String user = "group4";
         String password = "Qwerty1@";
         projectnaam = "\"" + projectnaam + "\"";
