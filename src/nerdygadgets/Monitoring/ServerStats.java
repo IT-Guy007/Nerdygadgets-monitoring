@@ -44,7 +44,7 @@ public class ServerStats extends JFrame implements ActionListener {
         Server server = getServerInfo(serverPresentID);
         boolean agent_installed = check_if_agent_present();
 
-        serverStats.setTitle("Monitoring van " + server.name);
+        serverStats.setTitle("Monitoring van " + server.getName());
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints layout = new GridBagConstraints();
         serverStats.setLayout(gridbag);
@@ -121,7 +121,7 @@ public class ServerStats extends JFrame implements ActionListener {
 
         System.out.println("Drawing uptime chart");
         XYSeriesCollection uptime_data_collection = new XYSeriesCollection(uptime_series);
-        JFreeChart uptime_chart = ChartFactory.createXYLineChart("Uptime chart","","Uptime in %",uptime_data_collection, PlotOrientation.VERTICAL,true,true,true); uptime_chart.setTitle("Uptime van " + server.name);
+        JFreeChart uptime_chart = ChartFactory.createXYLineChart("Uptime chart","","Uptime in %",uptime_data_collection, PlotOrientation.VERTICAL,true,true,true); uptime_chart.setTitle("Uptime van " + server.getName());
         XYPlot up_plot = uptime_chart.getXYPlot(); up_plot.setBackgroundPaint(Color.DARK_GRAY);up_plot.setRangeGridlinesVisible(true);up_plot.setRangeGridlinePaint(Color.BLACK);up_plot.setDomainGridlinesVisible(true);up_plot.setDomainGridlinePaint(Color.BLACK); up_plot.setOutlinePaint(Color.BLUE);up_plot.setOutlineStroke(new BasicStroke(2.0f));
         ChartPanel uptime_panel = new ChartPanel(uptime_chart);
         setContentPane(uptime_panel); uptime_panel.setMinimumSize(new Dimension(500,300));
@@ -138,8 +138,8 @@ public class ServerStats extends JFrame implements ActionListener {
             final XYSeries storage_available_series = new XYSeries("Beschikbaar opslag");
 
             final XYSeries storage_total_series = new XYSeries("Totale opslag");
-            storage_total_series.add(0,server.storage);
-            storage_total_series.add(20,server.storage);
+            storage_total_series.add(0,server.getStorage());
+            storage_total_series.add(20,server.getStorage());
 
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -164,7 +164,7 @@ public class ServerStats extends JFrame implements ActionListener {
             System.out.println("Drawing storage chart");
             XYSeriesCollection storage_data_collection = new XYSeriesCollection();
             storage_data_collection.addSeries(storage_total_series); storage_data_collection.addSeries(storage_available_series);
-            JFreeChart storage_chart = ChartFactory.createXYLineChart("Storage chart","","Storage in GB",storage_data_collection, PlotOrientation.VERTICAL,true,true,true); storage_chart.setTitle("Opslag van " + server.name);
+            JFreeChart storage_chart = ChartFactory.createXYLineChart("Storage chart","","Storage in GB",storage_data_collection, PlotOrientation.VERTICAL,true,true,true); storage_chart.setTitle("Opslag van " + server.getName());
             XYPlot storage_plot = storage_chart.getXYPlot(); storage_plot.setBackgroundPaint(Color.DARK_GRAY);storage_plot.setRangeGridlinesVisible(true);storage_plot.setRangeGridlinePaint(Color.BLACK);storage_plot.setDomainGridlinesVisible(true);storage_plot.setDomainGridlinePaint(Color.BLACK); storage_plot.setOutlinePaint(Color.BLUE);storage_plot.setOutlineStroke(new BasicStroke(2.0f));
             ChartPanel storage_panel = new ChartPanel(storage_chart);
             setContentPane(storage_panel); storage_panel.setMinimumSize(new Dimension(500,300));
@@ -204,7 +204,7 @@ public class ServerStats extends JFrame implements ActionListener {
             System.out.println("Drawing CPU chart");
             XYSeriesCollection cpu_collection = new XYSeriesCollection();
             cpu_collection.addSeries(cpu_series);cpu_collection.addSeries(cpu_series_max);
-            JFreeChart cpu_chart = ChartFactory.createXYLineChart("CPU chart","","CPU in %",cpu_collection, PlotOrientation.VERTICAL,true,true,true); cpu_chart.setTitle("CPU gebruik van " + server.name);
+            JFreeChart cpu_chart = ChartFactory.createXYLineChart("CPU chart","","CPU in %",cpu_collection, PlotOrientation.VERTICAL,true,true,true); cpu_chart.setTitle("CPU gebruik van " + server.getName());
             XYPlot cpu_plot = cpu_chart.getXYPlot(); cpu_plot.setBackgroundPaint(Color.DARK_GRAY); cpu_plot.setRangeGridlinesVisible(true);cpu_plot.setRangeGridlinePaint(Color.BLACK);cpu_plot.setDomainGridlinesVisible(true);cpu_plot.setDomainGridlinePaint(Color.BLACK); cpu_plot.setOutlinePaint(Color.BLUE);cpu_plot.setOutlineStroke(new BasicStroke(2.0f));
             ChartPanel cpu_panel = new ChartPanel(cpu_chart);
             setContentPane(cpu_panel); cpu_panel.setMinimumSize(new Dimension(500,300));
@@ -215,8 +215,8 @@ public class ServerStats extends JFrame implements ActionListener {
             final XYSeries ram_available_series = new XYSeries("Beschikbaar ram");
 
             final XYSeries ram_total_series = new XYSeries("Totale ram");
-            ram_total_series.add(0,server.ram);
-            ram_total_series.add(20,server.ram);
+            ram_total_series.add(0,server.getRam());
+            ram_total_series.add(20,server.getRam());
 
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -244,7 +244,7 @@ public class ServerStats extends JFrame implements ActionListener {
             System.out.println("Drawing ram chart");
             XYSeriesCollection ram_collection = new XYSeriesCollection();
             ram_collection.addSeries(ram_available_series);ram_collection.addSeries(ram_total_series);
-            JFreeChart ram_chart = ChartFactory.createXYLineChart("RAM chart","","RAM in GB",ram_collection, PlotOrientation.VERTICAL,true,true,true); ram_chart.setTitle("RAM gebruik van " + server.name);
+            JFreeChart ram_chart = ChartFactory.createXYLineChart("RAM chart","","RAM in GB",ram_collection, PlotOrientation.VERTICAL,true,true,true); ram_chart.setTitle("RAM gebruik van " + server.getName());
             XYPlot ram_plot = ram_chart.getXYPlot(); ram_plot.setBackgroundPaint(Color.DARK_GRAY); ram_plot.setRangeGridlinesVisible(true);ram_plot.setRangeGridlinePaint(Color.BLACK);ram_plot.setDomainGridlinesVisible(true);ram_plot.setDomainGridlinePaint(Color.BLACK); ram_plot.setOutlinePaint(Color.BLUE);ram_plot.setOutlineStroke(new BasicStroke(2.0f));
             ChartPanel ram_panel = new ChartPanel(ram_chart);
             setContentPane(ram_panel); ram_panel.setMinimumSize(new Dimension(500,300));

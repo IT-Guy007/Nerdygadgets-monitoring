@@ -27,7 +27,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
         int amount_of_servers = servers.size();
         System.out.println("Found: " + amount_of_servers + " servers in project.");
         Project project = getProjectDetails(projectID);
-        String projectName = project.name;
+        String projectName = project.getName();
         this.projectID = projectID;
         this.projectName = projectName;
         setTitle("Monitoring van " + projectName);
@@ -48,7 +48,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
         //Back button
         layout.gridx = 0; layout.gridy = 0; back = new JButton("Terug"); back.setSize(100,50);back.addActionListener(this);back.setVisible(true); add(back,layout);
-        layout.gridx = 3; layout.gridy = 0; JLabel wanted_availability = new JLabel("Gewenste beschikbaarheid: " + project.wanted_availability + "%"); wanted_availability.setSize(100,50);wanted_availability.setVisible(true); layout.gridwidth = 4; add(wanted_availability,layout); layout.gridwidth = 1;
+        layout.gridx = 3; layout.gridy = 0; JLabel wanted_availability = new JLabel("Gewenste beschikbaarheid: " + project.getWanted_availability() + "%"); wanted_availability.setSize(100,50);wanted_availability.setVisible(true); layout.gridwidth = 4; add(wanted_availability,layout); layout.gridwidth = 1;
         layout.gridx = 6; layout.gridy = 0; JLabel actual_availability = new JLabel(); actual_availability.setSize(100,50);actual_availability.setVisible(true);
         layout.gridx = 14; layout.gridy = 0; refresh = new JButton("Refresh"); refresh.setSize(100,50);refresh.addActionListener(this);refresh.setVisible(true); add(refresh,layout);
         layout.gridx = 15; layout.gridy = 0; add = new JButton("Server toevoegen"); add.setSize(100,50);add.addActionListener(this);add.setVisible(true); add(add,layout);
@@ -105,36 +105,36 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 int serverID = servers.get(i);
                 Server server = getServerInfo(serverID);
                 //ServerID
-                layout.gridx = 0; layout.gridy = (i + 2); JLabel lbl_ID = new JLabel("    " + (server.serverID));lbl_ID.setVisible(true);add(lbl_ID, layout);
+                layout.gridx = 0; layout.gridy = (i + 2); JLabel lbl_ID = new JLabel("    " + (server.getServerID()));lbl_ID.setVisible(true);add(lbl_ID, layout);
                 //ServerName
-                layout.gridx = 1; layout.gridy = (i + 2); JLabel lbl_servername = new JLabel(server.name);lbl_servername.setVisible(true);layout.gridwidth = 2; add(lbl_servername, layout); layout.gridwidth = 1;
+                layout.gridx = 1; layout.gridy = (i + 2); JLabel lbl_servername = new JLabel(server.getName());lbl_servername.setVisible(true);layout.gridwidth = 2; add(lbl_servername, layout); layout.gridwidth = 1;
                 //Is up
-                layout.gridx = 3; layout.gridy = (i + 2); if(server.up) {lbl_up = new JLabel("   True");} else {lbl_up = new JLabel("   False");} lbl_up.setVisible(true);if(server.up){lbl_up.setForeground(Color.green);} else {lbl_up.setForeground(Color.red);}add(lbl_up, layout);
+                layout.gridx = 3; layout.gridy = (i + 2); if(server.isUp()) {lbl_up = new JLabel("   True");} else {lbl_up = new JLabel("   False");} lbl_up.setVisible(true);if(server.isUp()){lbl_up.setForeground(Color.green);} else {lbl_up.setForeground(Color.red);}add(lbl_up, layout);
                 //Availability
-                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel((server.availability)+ "%");lbl_availability.setVisible(true);add(lbl_availability, layout);
+                layout.gridx = 4; layout.gridy = (i + 2); JLabel lbl_availability = new JLabel((server.getAvailability())+ "%");lbl_availability.setVisible(true);add(lbl_availability, layout);
                 //Actual  Availability
-                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_eig_availability = new JLabel((String.format("%.2f",(server.actual_availability) * 100) + "%"));lbl_eig_availability.setVisible(true);if((server.actual_availability * 100) >= server.availability){lbl_eig_availability.setForeground(Color.green);} else {lbl_eig_availability.setForeground(Color.red);}add(lbl_eig_availability, layout);
+                layout.gridx = 5; layout.gridy = (i + 2); JLabel lbl_eig_availability = new JLabel((String.format("%.2f",(server.getActual_availability()) * 100) + "%"));lbl_eig_availability.setVisible(true);if((server.getAvailability() * 100) >= server.getAvailability()){lbl_eig_availability.setForeground(Color.green);} else {lbl_eig_availability.setForeground(Color.red);}add(lbl_eig_availability, layout);
                 //Price
-                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_price = new JLabel("€" + (server.price));lbl_price.setVisible(true);add(lbl_price, layout);
+                layout.gridx = 6; layout.gridy = (i + 2); JLabel lbl_price = new JLabel("€" + (server.getPrice()));lbl_price.setVisible(true);add(lbl_price, layout);
                 //Serverkind
-                layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.server_kind2);lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
+                layout.gridx = 7; layout.gridy = (i + 2); JLabel lbl_server_kind = new JLabel(server.getServer_kind2());lbl_server_kind.setVisible(true);add(lbl_server_kind, layout);
                 //Ipaddress
-                layout.gridx = 8; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.ipadress);lbl_ip.setVisible(true);layout.gridwidth = 2;add(lbl_ip, layout); layout.gridwidth = 1;
+                layout.gridx = 8; layout.gridy = (i + 2); JLabel lbl_ip = new JLabel(server.getIpadress());lbl_ip.setVisible(true);layout.gridwidth = 2;add(lbl_ip, layout); layout.gridwidth = 1;
                 //Port
-                layout.gridx = 10; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.port));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
+                layout.gridx = 10; layout.gridy = (i + 2); JLabel lbl_serverport = new JLabel(Integer.toString(server.getPort()));lbl_serverport.setVisible(true);add(lbl_serverport, layout);
                 //subnet
-                layout.gridx = 11; layout.gridy = (i + 2); JLabel lbl_subnet = new JLabel(Integer.toString(server.subnet));lbl_subnet.setVisible(true);add(lbl_subnet, layout);
+                layout.gridx = 11; layout.gridy = (i + 2); JLabel lbl_subnet = new JLabel(Integer.toString(server.getSubnet()));lbl_subnet.setVisible(true);add(lbl_subnet, layout);
                 //Storage
-                layout.gridx = 12; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(server.storage + "GB");lbl_storage.setVisible(true);add(lbl_storage, layout);
+                layout.gridx = 12; layout.gridy = (i + 2); JLabel lbl_storage = new JLabel(server.getStorage() + "GB");lbl_storage.setVisible(true);add(lbl_storage, layout);
                 //ram
-                layout.gridx = 13; layout.gridy = (i + 2); JLabel lbl_ram = new JLabel("  " + server.ram + "GB");lbl_ram.setVisible(true);add(lbl_ram, layout);
+                layout.gridx = 13; layout.gridy = (i + 2); JLabel lbl_ram = new JLabel("  " + server.getRam() + "GB");lbl_ram.setVisible(true);add(lbl_ram, layout);
                 //Analytics
                 layout.gridx = 14; layout.gridy = (i + 2); JButton analytics = new JButton("Analytics"); analytics.setVisible(true); add(analytics,layout); analytics.addActionListener(e -> new ServerStats(serverID,projectID,24));
                 // Delete
                 layout.gridx = 15
                 ; layout.gridy = (i + 2); JButton delete = new JButton("Delete"); delete.setVisible(true); add(delete,layout); delete.addActionListener(e -> {deleteServerOfProject(serverID);dispose(); new MonitoringFrame(projectID);});
 
-                project_actual_availability = project_actual_availability + server.actual_availability;
+                project_actual_availability = project_actual_availability + server.getActual_availability();
             }
             layout.gridy = 0;layout.gridx = 8;project_actual_availability = (project_actual_availability / amount_of_servers) * 100; layout.gridwidth = 4; actual_availability.setText("Actuele beschikbaarheid project: " + (String.format("%.2f",(project_actual_availability))) + "%");add(actual_availability,layout); layout.gridwidth = 1;
             if(amount_of_servers <= 5) {
@@ -431,7 +431,7 @@ public class MonitoringFrame extends JFrame implements ActionListener {
                 String sql = "select sP.server_PresentID as serverID, s.port as port, s.ipaddress as ip from servers as s\n" +
                         "join server_Present sP on s.serverID = sP.serverID\n" +
                         "join project_Has_Servers pHS on sP.server_PresentID = pHS.server_PresentID\n" +
-                        "where projectID = " + project.ProjectID;
+                        "where projectID = " + project.getProjectID();
 
                 p = con.prepareStatement(sql);
                 rs = p.executeQuery();
@@ -451,9 +451,9 @@ public class MonitoringFrame extends JFrame implements ActionListener {
 
             for (int j = 0; j < servers.size(); j++) {
                 Server server = servers.get(j);
-                int serverID = server.serverID;
-                String ipadress = server.ipadress;
-                int port = server.port;
+                int serverID = server.getServerID();
+                String ipadress = server.getIpadress();
+                int port = server.getPort();
                 boolean isup;
                 if (ipadress != null && !ipadress.equals("null") && !ipadress.equals("NULL") && !ipadress.equals("")) {
                     System.out.print("Checking if " + ipadress + " is online");

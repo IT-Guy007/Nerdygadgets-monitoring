@@ -76,12 +76,12 @@ public class ProjectFrame extends JFrame implements ActionListener {
             layout.gridx = 2; layout.gridy = 1; layout.gridwidth = 2; JLabel spacer = new JLabel("Beschikbaarheid");spacer.setVisible(true);add(spacer, layout); layout.gridwidth = 1;
             for(int i = 0; i != projects.size(); i++) {
                 Project project = projects.get(i);
-                int projectID = project.ProjectID;
+                int projectID = project.getProjectID();
 
                 //Projectname
-                layout.gridx = 0; layout.gridy = i + 2; layout.gridwidth = 2;JLabel lbl_projectname = new JLabel(project.name); lbl_projectname.setVisible(true); add(lbl_projectname, layout); layout.gridwidth = 1;
+                layout.gridx = 0; layout.gridy = i + 2; layout.gridwidth = 2;JLabel lbl_projectname = new JLabel(project.getName()); lbl_projectname.setVisible(true); add(lbl_projectname, layout); layout.gridwidth = 1;
                 //Projectname
-                layout.gridx = 2; layout.gridy = i + 2; JLabel lbl_availability = new JLabel(Double.toString(project.wanted_availability)); lbl_availability.setVisible(true); add(lbl_availability, layout);
+                layout.gridx = 2; layout.gridy = i + 2; JLabel lbl_availability = new JLabel(Double.toString(project.getWanted_availability())); lbl_availability.setVisible(true); add(lbl_availability, layout);
                 layout.gridx = 3; layout.gridy = i+ 2; JButton projectbutton = new JButton("Project bekijken"); projectbutton.setVisible(true); add(projectbutton, layout); int finalI = i; projectbutton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {new MonitoringFrame(projectID);setVisible(false);}});}
